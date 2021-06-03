@@ -22,7 +22,7 @@ const LandingPageGuard: React.FC<LPGuardProps> = (props) => {
       </React.Fragment>
     )
   }
-  return null
+  return null;
 };
 
 const MainPageGuard: React.FC<LPGuardProps> = (props) => {

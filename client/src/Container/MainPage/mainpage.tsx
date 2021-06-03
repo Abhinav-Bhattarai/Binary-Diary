@@ -1,9 +1,17 @@
 import React from 'react';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+
+const client = new ApolloClient({
+    uri: 'http://localhost:8000/graphql',
+    cache: new InMemoryCache()
+});
 
 const MainPage = () => {
     return (
         <React.Fragment>
-            <h1>MainPage</h1>
+            <ApolloProvider client={client}>
+                
+            </ApolloProvider>
         </React.Fragment>
     )
 }
