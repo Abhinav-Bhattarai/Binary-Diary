@@ -23,12 +23,22 @@ const Login: React.FC<LoginProps> = (props) => {
     <React.Fragment>
       <FormContainer>
         <FormHeader />
-        <Form>
-          <FormLabel />
-          <FormInput />
+        <Form Submit={Submit}>
+          <FormLabel html_for="username-login" name="Username" />
+          <FormInput
+            name="username-login"
+            value={username}
+            change={changeUsername}
+            type="text"
+          />
 
-          <FormLabel />
-          <FormInput />
+          <FormLabel html_for="password-login" name="Password" />
+          <FormInput
+            name="password-login"
+            value={password}
+            change={changePassword}
+            type="text"
+          />
         </Form>
       </FormContainer>
     </React.Fragment>

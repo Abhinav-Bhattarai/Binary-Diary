@@ -36,19 +36,39 @@ const Signup: React.FC<SignupProps> = (props) => {
   return (
     <React.Fragment>
       <FormContainer>
-        <FormHeader/>
-        <Form>
-          <FormLabel />
-          <FormInput />
+        <FormHeader />
+        <Form Submit={Submit}>
+          <FormLabel html_for="username-signup" name="Username" />
+          <FormInput
+            value={username}
+            change={changeUsername}
+            name="username-signup"
+            type="text"
+          />
 
-          <FormLabel />
-          <FormInput />
+          <FormLabel html_for="password-signup" name="Password" />
+          <FormInput
+            value={password}
+            change={changePassword}
+            name="password-signup"
+            type="password"
+          />
 
-          <FormLabel />
-          <FormInput />
+          <FormLabel html_for="confirm-signup" name="Confirm" />
+          <FormInput
+            value={confirm}
+            change={changeConfirm}
+            name="confirm-signup"
+            type="password"
+          />
 
-          <FormLabel />
-          <FormInput />
+          <FormLabel html_for="phone-signup" name="Phone" />
+          <FormInput
+            value={phone}
+            change={changePhone}
+            name="phone-signup"
+            type="text"
+          />
         </Form>
       </FormContainer>
     </React.Fragment>
