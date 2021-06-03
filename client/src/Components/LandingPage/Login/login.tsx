@@ -1,12 +1,12 @@
 import React from "react";
 import {
   Form,
+  FormButton,
   FormContainer,
   FormHeader,
   FormInput,
   FormLabel,
 } from "../Reusables/reusables";
-import "./login.scss";
 
 interface LoginProps {
   username: string;
@@ -18,11 +18,10 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = (props) => {
   const { username, password, Submit, changePassword, changeUsername } = props;
-
   return (
     <React.Fragment>
       <FormContainer>
-        <FormHeader />
+        <FormHeader name='Login'/>
         <Form Submit={Submit}>
           <FormLabel html_for="username-login" name="Username" />
           <FormInput
@@ -39,6 +38,7 @@ const Login: React.FC<LoginProps> = (props) => {
             change={changePassword}
             type="text"
           />
+          <FormButton name='Login'/>
         </Form>
       </FormContainer>
     </React.Fragment>

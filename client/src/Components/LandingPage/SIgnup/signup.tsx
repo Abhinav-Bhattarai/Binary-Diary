@@ -1,12 +1,12 @@
 import React from "react";
 import {
   Form,
+  FormButton,
   FormContainer,
   FormHeader,
   FormInput,
   FormLabel,
 } from "../Reusables/reusables";
-import "./signup.scss";
 
 interface SignupProps {
   username: string;
@@ -36,7 +36,7 @@ const Signup: React.FC<SignupProps> = (props) => {
   return (
     <React.Fragment>
       <FormContainer>
-        <FormHeader />
+        <FormHeader name='Signup'/>
         <Form Submit={Submit}>
           <FormLabel html_for="username-signup" name="Username" />
           <FormInput
@@ -69,6 +69,7 @@ const Signup: React.FC<SignupProps> = (props) => {
             name="phone-signup"
             type="text"
           />
+          <FormButton name='Signup'/>
         </Form>
       </FormContainer>
     </React.Fragment>

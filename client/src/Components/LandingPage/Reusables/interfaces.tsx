@@ -14,4 +14,12 @@ export interface FORMLABEL {
 
 export interface FORM {
     Submit: (event:React.FormEvent) => void
+};
+
+export interface BUTTON {
+    name: 'Login' | 'Signup' | 'Forgot Password';
+};
+
+export interface HEADER {
+    name: 'Signup' | 'Login';
 }
