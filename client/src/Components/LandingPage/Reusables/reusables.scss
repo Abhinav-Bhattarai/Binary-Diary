@@ -1,6 +1,8 @@
 $input-bg-color: rgb(236, 234, 234);
 $input-glow: rgb(221, 221, 221);
 $btn-color: #ff385c;
+$router-btn: rgb(206, 206, 206);
+$router-btn-hover: #39D353;
 
 #form-container {
   width: 33.333%;
@@ -11,7 +13,7 @@ $btn-color: #ff385c;
   flex-direction: column;
 
   #form-header {
-    padding: 6px 0;
+    padding: 1px 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -31,7 +33,7 @@ $btn-color: #ff385c;
       border: none;
       border-radius: 6px;
       background-color: $input-bg-color;
-      transition: background 0.3s;
+      transition: background 0.37867s;
 
       &:focus {
         outline: none;
@@ -59,8 +61,38 @@ $btn-color: #ff385c;
       border-radius: 6px;
 
       &:hover {
-        background-color: #da4762;
+        background-color: #f51740;
       }
     }
+  }
+};
+
+.router-btn {
+  padding: 15px 0px;
+  margin-top: 10px;
+  background-color: $router-btn;
+  border: none;
+  border-radius: 6px;
+  transition: 0.37867s;
+  font-weight: bold;
+
+  &:focus {
+    outline: none
+  };
+
+  &:hover {
+    background-color: $router-btn-hover;
+    color: #fff;
+  }
+};
+
+#logo-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+
+  div {
+    padding: 10px 10px;
+    background-color: $input-glow;
   }
 }

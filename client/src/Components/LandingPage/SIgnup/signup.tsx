@@ -1,5 +1,8 @@
 import React from "react";
+import { useHistory } from 'react-router-dom';
+import { SignupError } from "../../../Container/LandingPage/landingpage";
 import {
+  ChangeRouterButton,
   Form,
   FormButton,
   FormContainer,
@@ -18,6 +21,7 @@ interface SignupProps {
   changePassword: (event: React.ChangeEvent<HTMLInputElement>) => void;
   changeConfirm: (event: React.ChangeEvent<HTMLInputElement>) => void;
   changePhone: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  Error: SignupError
 }
 
 const Signup: React.FC<SignupProps> = (props) => {
@@ -32,6 +36,11 @@ const Signup: React.FC<SignupProps> = (props) => {
     changeConfirm,
     changePhone,
   } = props;
+  const history = useHistory();
+
+  const ChangeRoute = () => {
+    history.push('/login');
+  }
 
   return (
     <React.Fragment>
@@ -71,6 +80,7 @@ const Signup: React.FC<SignupProps> = (props) => {
           />
           <FormButton name='Signup'/>
         </Form>
+        <ChangeRouterButton name='Already Have an Account ?' Change={ChangeRoute}/>
       </FormContainer>
     </React.Fragment>
   );

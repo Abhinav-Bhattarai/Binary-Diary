@@ -1,5 +1,10 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import { LoginError } from '../../../Container/LandingPage/landingpage';
+// import FacebookLogo from '../../../assets/Images/facebook.svg';
+// import InstagramLogo from '../../../assets/Images/instagram.svg';
 import {
+  ChangeRouterButton,
   Form,
   FormButton,
   FormContainer,
@@ -14,14 +19,21 @@ interface LoginProps {
   Submit: (event: React.FormEvent) => void;
   changeUsername: (event: React.ChangeEvent<HTMLInputElement>) => void;
   changePassword: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  Error: LoginError
 }
 
 const Login: React.FC<LoginProps> = (props) => {
   const { username, password, Submit, changePassword, changeUsername } = props;
+  const history = useHistory();
+
+  const ChangeRoute = () => {
+    history.push("/signup");
+  };
+
   return (
     <React.Fragment>
       <FormContainer>
-        <FormHeader name='Login'/>
+        <FormHeader name="Login" />
         <Form Submit={Submit}>
           <FormLabel html_for="username-login" name="Username" />
           <FormInput
@@ -38,8 +50,13 @@ const Login: React.FC<LoginProps> = (props) => {
             change={changePassword}
             type="text"
           />
-          <FormButton name='Login'/>
+          <FormButton name="Login" />
         </Form>
+        <ChangeRouterButton name="Create New Account" Change={ChangeRoute} />
+        {/* <LogoContainer>
+          <LogoAuth url={FacebookLogo}/>
+          <LogoAuth url={InstagramLogo}/>
+        </LogoContainer> */}
       </FormContainer>
     </React.Fragment>
   );
