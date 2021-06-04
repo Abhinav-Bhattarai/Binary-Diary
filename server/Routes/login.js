@@ -13,16 +13,18 @@ const CheckPasswordHashing = async(LoginPassword, Hash) => {
 
 router.post('/', LoginMiddleware, async(req, res) => {
     const { Username, Password } = req.body;
-    const response = RegisterModel.findOne({Username});
-    if (response) {
-        const password_check = CheckPasswordHashing(Password, response.Password);
+    const response = await RegisterModel.findOne({Username});
+    if (response !== null) {
+        const password_check = await CheckPasswordHashing(Password, response.Password);
         if (password_check) {
             const token = GenerateAuthToken({Username, Password, Phone: response.Phone});
-            return res.json({auth_token: token});
+            return res.json({auth_token: token, username: Username, error: false});
         }else {
-            return res.json({invalid_credential: true});
+            return res.json({error: true, type: 'login'});
         }
-    }
+    }else {
+        return res.json({error: true, type: 'login'});
+    };
 })
 
 export default router;

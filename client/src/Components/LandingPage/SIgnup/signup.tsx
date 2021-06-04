@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { SignupError } from "../../../Container/LandingPage/landingpage";
 import {
   ChangeRouterButton,
+  CredentialError,
   Form,
   FormButton,
   FormContainer,
@@ -42,8 +43,10 @@ const Signup: React.FC<SignupProps> = (props) => {
     UsernameRef,
     PasswordRef,
     ConfirmRef,
-    PhoneRef
+    PhoneRef,
+    Error
   } = props;
+  const { cred_err } = Error;
   const history = useHistory();
 
   const ChangeRoute = () => {
@@ -54,6 +57,7 @@ const Signup: React.FC<SignupProps> = (props) => {
     <React.Fragment>
       <FormContainer>
         <FormHeader name='Signup'/>
+        {cred_err && <CredentialError name={cred_err}/>}
         <Form Submit={Submit}>
           <FormLabel html_for="username-signup" name="Username" />
           <FormInput

@@ -4,11 +4,15 @@ import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import { usePostRequest } from "../../Hooks/LandingPage";
 export interface POSTFETCH {
   auth_token: string;
+  type: string;
+  username: string;
+  error: boolean;
 };
 
 export interface LoginError {
   username_err: null | string;
   password_err: null | string;
+  cred_err: null | string;
 };
 
 export interface SignupError {
@@ -16,6 +20,7 @@ export interface SignupError {
   password_err: null | string;
   confirm_err: null | string;
   phone_err: null | string;
+  cred_err: null | string;
 }
 interface PROPS {
   ChangeAuthentication: (type: boolean) => void;
@@ -23,15 +28,16 @@ interface PROPS {
 
 const initial_login_error: LoginError = {
   username_err: null,
-  password_err: null
+  password_err: null,
+  cred_err: null
 }
 
 const initial_signup_error: SignupError = {
   username_err: null,
   password_err: null,
-
   confirm_err: null,
-  phone_err: null
+  phone_err: null,
+  cred_err: null
 }
 
 const AsyncSignup = React.lazy(
@@ -42,6 +48,7 @@ const AsyncLogin = React.lazy(
 );
 
 const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
+  // states
   const [login_username, setLoginUsername] = useState<string>("");
   const [login_password, setLoginPassword] = useState<string>("");
   const [login_error, setLoginError] = useState<LoginError>(initial_login_error);
@@ -50,6 +57,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   const [signup_password, setSignupPassword] = useState<string>("");
   const [signup_confirm, setSingupConfirm] = useState<string>("");
   const [signup_phone, setSignupPhone] = useState<string>("");
+  // refs
   const LoginUsernameRef = useRef<HTMLInputElement>(null);
   const LoginPasswordRef = useRef<HTMLInputElement>(null);
   const SignupUsernameRef = useRef<HTMLInputElement>(null);
@@ -59,12 +67,27 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
 
   const { SendPOSTRequest } = usePostRequest({
     onComplete: (data: POSTFETCH) => {
-      const { auth_token } = data;
+      const { auth_token, username } = data;
       localStorage.setItem("auth-token", auth_token);
+      localStorage.setItem("username", username);
       ChangeAuthentication(true);
     },
 
-    onError: (err: POSTFETCH) => {},
+    onError: (err: POSTFETCH) => {
+      if (err.type === 'login') {
+        LoginUsernameRef.current && (LoginUsernameRef.current.style.border = '2px solid #ff385c');
+        LoginPasswordRef.current && (LoginPasswordRef.current.style.border = '2px solid #ff385c');
+        const dummy = {...login_error};
+        dummy.cred_err = 'Invalid Credentials !!';
+        setLoginError(dummy);
+      } else {
+        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = '2px solid #ff385c');
+        SignupPasswordRef.current && (SignupPasswordRef.current.style.border = '2px solid #ff385c');
+        const dummy = {...signup_error};
+        dummy.cred_err = 'Username already taken !!';
+        setSignupError(dummy);
+      }
+    },
   });
 
   const ChangeUsernameLogin = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,18 +128,22 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
         SendPOSTRequest("/login", context);
       } else {
         const dummy = {...login_error};
-        dummy.password_err = 'Password must contain a number'
+        dummy.password_err = 'Password must contain a number';
+        LoginUsernameRef.current && (LoginUsernameRef.current.style.border = '2px solid #ff385c');
         setLoginError(dummy);
       }
     }else {
+      console.log('else part');
       if (login_username.length < 5) {
         const dummy = {...login_error};
-        dummy.username_err = 'Username length must be atleast 5'
+        dummy.username_err = 'Username length must be atleast 5';
+        LoginUsernameRef.current && (LoginUsernameRef.current.style.border = '2px solid #ff385c');
         setLoginError(dummy);
       } 
       if (login_password.length < 8) {
         const dummy = {...login_error};
-        dummy.password_err = 'Password length must be atleast 8'
+        dummy.password_err = 'Password length must be atleast 8';
+        LoginPasswordRef.current && (LoginPasswordRef.current.style.border = '2px solid #ff385c');
         setLoginError(dummy);
       }
     }
@@ -141,7 +168,8 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
         SendPOSTRequest("/signup", context);
       } else {
         const dummy = {...signup_error};
-        dummy.password_err = 'Password must contain a number'
+        dummy.password_err = 'Password must contain a number';
+        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = '2px solid #ff385c');
         setSignupError(dummy);
       }
     }else {

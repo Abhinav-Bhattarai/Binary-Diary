@@ -9,7 +9,7 @@ interface Config {
 export const usePostRequest = (config: Config) => {
     const SendPOSTRequest = async(uri: string, POSTdata: object) => {
         const { data }: { data: POSTFETCH } = await axios.post(uri, POSTdata);
-        if (JSON.stringify(data) !== JSON.stringify({error: true})) {
+        if (data.error === false) {
             config.onComplete(data);
         } else {
             config.onError(data);

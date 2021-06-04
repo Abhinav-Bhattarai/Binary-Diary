@@ -10,6 +10,8 @@ import cors from 'cors';
 dotenv.config();
 
 import CheckJWTRoute from './Routes/check-jwt.js';
+import LoginRoute from './Routes/login.js';
+import RegisterRoute from './Routes/register.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -18,7 +20,7 @@ const PORT = process.env.PORT || 8000;
 
 // middleware
 app.use(cors({
-    origin: ['http://localhost:3000']
+    origin: ['https://localhost:3000', 'https://192.168.56.1:3000']
 }));
 app.use(express.json({limit: '50mb'}))
 
@@ -35,6 +37,8 @@ app.use('/graphql', ExpressGraphQL({
 
 // REST api endpoints
 app.use('/check-jwt', CheckJWTRoute);
+app.use('/login', LoginRoute);
+app.use('/signup', RegisterRoute)
 
 // DB connection
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {

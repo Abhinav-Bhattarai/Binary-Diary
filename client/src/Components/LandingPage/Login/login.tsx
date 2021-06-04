@@ -5,6 +5,7 @@ import { LoginError } from '../../../Container/LandingPage/landingpage';
 // import InstagramLogo from '../../../assets/Images/instagram.svg';
 import {
   ChangeRouterButton,
+  CredentialError,
   Form,
   FormButton,
   FormContainer,
@@ -25,7 +26,8 @@ interface LoginProps {
 };
 
 const Login: React.FC<LoginProps> = (props) => {
-  const { username, password, Submit, changePassword, changeUsername, UsernameRef, PasswordRef } = props;
+  const { username, password, Submit, changePassword, changeUsername, UsernameRef, PasswordRef, Error } = props;
+  const { cred_err } = Error;
   const history = useHistory();
 
   const ChangeRoute = () => {
@@ -36,6 +38,7 @@ const Login: React.FC<LoginProps> = (props) => {
     <React.Fragment>
       <FormContainer>
         <FormHeader name="Login" />
+        {cred_err && <CredentialError name={cred_err}/>}
         <Form Submit={Submit}>
           <FormLabel html_for="username-login" name="Username" />
           <FormInput

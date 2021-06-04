@@ -40,6 +40,17 @@ export const FormHeader: React.FC<HEADER> = (props) => {
   );
 };
 
+export const CredentialError: React.FC<{name: string}> = (props) => {
+  const { name } = props;
+  return (
+    <React.Fragment>
+      <main id='cred-error'>
+        { name }
+      </main>
+    </React.Fragment>
+  )
+};
+
 export const FormInput: React.FC<FORMINPUT> = (props) => {
   const { type, value, change, name, Reference } = props;
   return (
@@ -71,7 +82,7 @@ export const FormButton: React.FC<BUTTON> = (props) => {
   const { name } = props;
   return (
     <React.Fragment>
-      <button type="button" className="submit-btn">
+      <button type="submit" className="submit-btn">
         {name}
       </button>
     </React.Fragment>
