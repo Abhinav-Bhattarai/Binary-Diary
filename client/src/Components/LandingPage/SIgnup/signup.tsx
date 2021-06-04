@@ -21,7 +21,11 @@ interface SignupProps {
   changePassword: (event: React.ChangeEvent<HTMLInputElement>) => void;
   changeConfirm: (event: React.ChangeEvent<HTMLInputElement>) => void;
   changePhone: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  Error: SignupError
+  Error: SignupError;
+  UsernameRef: React.RefObject<HTMLInputElement>
+  PasswordRef: React.RefObject<HTMLInputElement>
+  ConfirmRef: React.RefObject<HTMLInputElement>
+  PhoneRef: React.RefObject<HTMLInputElement>
 }
 
 const Signup: React.FC<SignupProps> = (props) => {

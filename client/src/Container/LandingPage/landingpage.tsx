@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useRef, useState } from "react";
 import { Route, Switch } from "react-router";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import { usePostRequest } from "../../Hooks/LandingPage";
@@ -50,6 +50,12 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   const [signup_password, setSignupPassword] = useState<string>("");
   const [signup_confirm, setSingupConfirm] = useState<string>("");
   const [signup_phone, setSignupPhone] = useState<string>("");
+  const LoginUsernameRef = useRef<HTMLInputElement>(null);
+  const LoginPasswordRef = useRef<HTMLInputElement>(null);
+  const SignupUsernameRef = useRef<HTMLInputElement>(null);
+  const SignupPasswordRef = useRef<HTMLInputElement>(null);
+  const SignupConfirmRef = useRef<HTMLInputElement>(null);
+  const SignupPhoneRef = useRef<HTMLInputElement>(null);
 
   const { SendPOSTRequest } = usePostRequest({
     onComplete: (data: POSTFETCH) => {
@@ -179,6 +185,8 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
                   changePassword={ChangePasswordLogin}
                   Submit={LoginFormSubmitHandler}
                   Error={login_error}
+                  UsernameRef={LoginUsernameRef}
+                  PasswordRef={LoginPasswordRef}
                 />
               </Suspense>
             );
@@ -201,6 +209,10 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
                   changePhone={ChangePhoneSingup}
                   Submit={SignupFormSubmitHandler}
                   Error={signup_error}
+                  UsernameRef={SignupUsernameRef}
+                  PasswordRef={SignupPasswordRef}
+                  ConfirmRef={SignupConfirmRef}
+                  PhoneRef={SignupPhoneRef}
                 />
               </Suspense>
             );
@@ -217,6 +229,8 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
                   changePassword={ChangePasswordLogin}
                   Submit={LoginFormSubmitHandler}
                   Error={login_error}
+                  UsernameRef={LoginUsernameRef}
+                  PasswordRef={LoginPasswordRef}
                 />
               </Suspense>
             );

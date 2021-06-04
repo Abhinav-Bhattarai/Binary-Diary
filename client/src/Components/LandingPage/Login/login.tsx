@@ -19,8 +19,10 @@ interface LoginProps {
   Submit: (event: React.FormEvent) => void;
   changeUsername: (event: React.ChangeEvent<HTMLInputElement>) => void;
   changePassword: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  Error: LoginError
-}
+  Error: LoginError;
+  UsernameRef: React.RefObject<HTMLInputElement>;
+  PasswordRef: React.RefObject<HTMLInputElement>;
+};
 
 const Login: React.FC<LoginProps> = (props) => {
   const { username, password, Submit, changePassword, changeUsername } = props;

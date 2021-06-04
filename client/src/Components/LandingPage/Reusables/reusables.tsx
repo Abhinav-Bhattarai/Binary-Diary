@@ -1,6 +1,14 @@
 import React from "react";
 import Logo from "../../../assets/Images/github.svg";
-import { BUTTON, FORM, FORMINPUT, FORMLABEL, HEADER, LOGO, ROUTERBUTTON } from "./interfaces";
+import {
+  BUTTON,
+  FORM,
+  FORMINPUT,
+  FORMLABEL,
+  HEADER,
+  LOGO,
+  ROUTERBUTTON,
+} from "./interfaces";
 import "./reusables.scss";
 
 export const FormContainer: React.FC<{}> = (props) => {
@@ -21,8 +29,13 @@ export const Form: React.FC<FORM> = (props) => {
 export const FormHeader: React.FC<HEADER> = (props) => {
   return (
     <nav id="form-header">
-      <img width="60px" height="60px" src={Logo} alt="logo" />
-      <h3 contentEditable={true} style={{ marginTop: "20px", marginBottom: 0 }}>{props.name}</h3>
+      <img width="60px" draggable={false} height="60px" src={Logo} alt="logo" />
+      <h3
+        contentEditable={false}
+        style={{ marginTop: "20px", marginBottom: 0, cursor: 'context-menu' }}
+      >
+        {props.name}
+      </h3>
     </nav>
   );
 };
@@ -76,14 +89,12 @@ export const ChangeRouterButton: React.FC<ROUTERBUTTON> = (props) => {
 };
 
 export const LogoContainer: React.FC<{}> = (props) => {
-  const { children }  = props;
+  const { children } = props;
   return (
     <React.Fragment>
-      <main id='logo-container'>
-        { children }
-      </main>
+      <main id="logo-container">{children}</main>
     </React.Fragment>
-  )
+  );
 };
 
 export const LogoAuth: React.FC<LOGO> = (props) => {
@@ -91,8 +102,8 @@ export const LogoAuth: React.FC<LOGO> = (props) => {
   return (
     <React.Fragment>
       <div>
-        <img width='60px' height='60px' src={url} alt='logo'/>
+        <img width="60px" height="60px" src={url} alt="logo" />
       </div>
     </React.Fragment>
-  )
-} 
+  );
+};
