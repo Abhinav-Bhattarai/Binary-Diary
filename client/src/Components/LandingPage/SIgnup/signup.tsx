@@ -39,6 +39,10 @@ const Signup: React.FC<SignupProps> = (props) => {
     changePassword,
     changeConfirm,
     changePhone,
+    UsernameRef,
+    PasswordRef,
+    ConfirmRef,
+    PhoneRef
   } = props;
   const history = useHistory();
 
@@ -57,6 +61,7 @@ const Signup: React.FC<SignupProps> = (props) => {
             change={changeUsername}
             name="username-signup"
             type="text"
+            Reference={UsernameRef}
           />
 
           <FormLabel html_for="password-signup" name="Password" />
@@ -65,6 +70,7 @@ const Signup: React.FC<SignupProps> = (props) => {
             change={changePassword}
             name="password-signup"
             type="password"
+            Reference={PasswordRef}
           />
 
           <FormLabel html_for="confirm-signup" name="Confirm" />
@@ -73,6 +79,7 @@ const Signup: React.FC<SignupProps> = (props) => {
             change={changeConfirm}
             name="confirm-signup"
             type="password"
+            Reference={ConfirmRef}
           />
 
           <FormLabel html_for="phone-signup" name="Phone" />
@@ -81,6 +88,7 @@ const Signup: React.FC<SignupProps> = (props) => {
             change={changePhone}
             name="phone-signup"
             type="text"
+            Reference={PhoneRef}
           />
           <FormButton name='Signup'/>
         </Form>

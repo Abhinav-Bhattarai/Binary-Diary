@@ -25,7 +25,7 @@ interface LoginProps {
 };
 
 const Login: React.FC<LoginProps> = (props) => {
-  const { username, password, Submit, changePassword, changeUsername } = props;
+  const { username, password, Submit, changePassword, changeUsername, UsernameRef, PasswordRef } = props;
   const history = useHistory();
 
   const ChangeRoute = () => {
@@ -43,6 +43,7 @@ const Login: React.FC<LoginProps> = (props) => {
             value={username}
             change={changeUsername}
             type="text"
+            Reference={UsernameRef}
           />
 
           <FormLabel html_for="password-login" name="Password" />
@@ -50,7 +51,8 @@ const Login: React.FC<LoginProps> = (props) => {
             name="password-login"
             value={password}
             change={changePassword}
-            type="text"
+            type="password"
+            Reference={PasswordRef}
           />
           <FormButton name="Login" />
         </Form>

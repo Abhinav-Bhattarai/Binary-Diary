@@ -41,7 +41,7 @@ export const FormHeader: React.FC<HEADER> = (props) => {
 };
 
 export const FormInput: React.FC<FORMINPUT> = (props) => {
-  const { type, value, change, name } = props;
+  const { type, value, change, name, Reference } = props;
   return (
     <React.Fragment>
       <input
@@ -50,6 +50,7 @@ export const FormInput: React.FC<FORMINPUT> = (props) => {
         onChange={change}
         className="form-input"
         name={name}
+        ref={Reference}
       />
     </React.Fragment>
   );

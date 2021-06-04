@@ -148,22 +148,26 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       if (signup_username.length < 5) {
         const dummy = {...signup_error};
         dummy.username_err = 'Username length must be atleast 5'
+        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = '2px solid #ff385c');
         setSignupError(dummy);
       }
 
       if (signup_password.length < 8) {
         const dummy = {...signup_error};
-        dummy.password_err = 'Password length must be atleast 8'
+        dummy.password_err = 'Password length must be atleast 8';
+        SignupPasswordRef.current && (SignupPasswordRef.current.style.border = '2px solid #ff385c');
         setSignupError(dummy);
       } else if (signup_confirm !== signup_password) {
         const dummy = {...signup_error};
-        dummy.confirm_err = 'Passwords donot match'
+        dummy.confirm_err = 'Passwords donot match';
+        SignupConfirmRef.current && (SignupConfirmRef.current.style.border = '2px solid #ff385c');
         setSignupError(dummy);
       }
 
       if (signup_phone.length < 10) {
         const dummy = {...signup_error};
-        dummy.phone_err = 'Phone number not found'
+        dummy.phone_err = 'Phone number not found';
+        SignupPhoneRef.current && (SignupPhoneRef.current.style.border = '2px solid #ff385c');
         setSignupError(dummy);
       }
     }

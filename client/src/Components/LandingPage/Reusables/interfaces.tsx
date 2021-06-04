@@ -5,6 +5,7 @@ export interface FORMINPUT {
   change: (event: React.ChangeEvent<HTMLInputElement>) => void;
   type: "text" | "password";
   name: string;
+  Reference: React.RefObject<HTMLInputElement>;
 }
 
 export interface FORMLABEL {
