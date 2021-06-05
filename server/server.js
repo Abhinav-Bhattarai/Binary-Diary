@@ -13,6 +13,7 @@ import CheckJWTRoute from './Routes/check-jwt.js';
 import LoginRoute from './Routes/login.js';
 import RegisterRoute from './Routes/register.js';
 import DeleteRouter from './Routes/deleter.js';
+import MainSchema from './GraphQL/graphql.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -32,7 +33,7 @@ io.on('connection', socket => {
 
 // graphql endpoint
 app.use('/graphql', ExpressGraphQL({
-    schema: '',
+    schema: MainSchema,
     graphiql: true
 }));
 
