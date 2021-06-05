@@ -12,6 +12,7 @@ dotenv.config();
 import CheckJWTRoute from './Routes/check-jwt.js';
 import LoginRoute from './Routes/login.js';
 import RegisterRoute from './Routes/register.js';
+import DeleteRouter from './Routes/deleter.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -38,7 +39,8 @@ app.use('/graphql', ExpressGraphQL({
 // REST api endpoints
 app.use('/check-jwt', CheckJWTRoute);
 app.use('/login', LoginRoute);
-app.use('/signup', RegisterRoute)
+app.use('/signup', RegisterRoute);
+app.use('/delete', DeleteRouter);
 
 // DB connection
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
