@@ -133,7 +133,6 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
         setLoginError(dummy);
       }
     }else {
-      console.log('else part');
       if (login_username.length < 5) {
         const dummy = {...login_error};
         dummy.username_err = 'Username length must be atleast 5';
@@ -155,7 +154,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       signup_username.length > 4 &&
       signup_password === signup_confirm &&
       signup_password.length > 7 &&
-      signup_phone.length > 10
+      signup_phone.length >= 10
     ) {
       const number_regex = /[0-9]/;
       if (number_regex.exec(signup_password)) {

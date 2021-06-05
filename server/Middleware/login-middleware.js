@@ -3,6 +3,6 @@ export const LoginMiddleware = (req, res, next) => {
     if (Username.length > 4 && Password.length > 7) {
         next();
     } else {
-        return res.json({client_config_change: true});
+        return res.json({client_config_change: true, error: true});
     }
 };

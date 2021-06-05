@@ -23,8 +23,8 @@ router.post('/', SignupMiddleware, async(req, res) => {
     const { Username, Password, Phone } = req.body;
     const response = await RegisterModel.find({Username});
     if (response.length === 0) {
-        Password = await HashPassword(Password);
-        const data = {Username, Password, Phone};
+        const HashedPassword = await HashPassword(Password);
+        const data = {Username, Password: HashedPassword, Phone: parseInt(Phone)};
         const RegisterData = new RegisterModel(data);
         await RegisterData.save();
         const token = GenerateAuthToken(data);
