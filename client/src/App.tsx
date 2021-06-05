@@ -29,12 +29,12 @@ const LandingPageGuard: React.FC<LPGuardProps> = (props) => {
 };
 
 const MainPageGuard: React.FC<LPGuardProps> = (props) => {
-  const { auth_status } = props;
+  const { auth_status, ChangeAuthentication } = props;
   if (auth_status === true) {
     return (
       <React.Fragment>
         <Suspense fallback={<LoadingPage />}>
-          <AsyncMainPage />
+          <AsyncMainPage ChangeAuthentication={ChangeAuthentication}/>
         </Suspense>
       </React.Fragment>
     );
