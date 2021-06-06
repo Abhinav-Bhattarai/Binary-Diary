@@ -6,6 +6,7 @@ const {
   GraphQLString,
   GraphQLSchema,
   GraphQLInt,
+  GraphQLList,
 } = require("graphql");
 
 const UserSchema = new GraphQLObjectType({
@@ -20,6 +21,24 @@ const UserSchema = new GraphQLObjectType({
       Bio: { type: GraphQLString },
       Followers: { type: GraphQLString },
       Following: { type: GraphQLString },
+      FollowList: {
+        type: new GraphQLList(UserSchema),
+        resolve: async(parent, _) => {
+          let { Followers } = parent;
+          Followers = JSON.parse(Followers);          
+          
+          const response = await RegisterModel.find({_id: {$in: Followers}});
+          if(response.length > 0) return response;
+        }
+      },
+      FollowingList: {
+        type: new GraphQLList(UserSchema),
+        resolve: async(parent, _) => {
+          const { Following } = parent;
+          const response = await RegisterModel.find({_id: {$in: JSON.parse(Following)}});
+          if(response.length > 0) return response;
+        }
+      }
     };
   },
 });

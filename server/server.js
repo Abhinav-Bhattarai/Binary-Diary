@@ -1,4 +1,5 @@
 import express from 'express';
+import depthLimit from 'graphql-depth-limit';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const ExpressGraphQL = require('express-graphql').graphqlHTTP;
@@ -39,9 +40,14 @@ io.on('connection', socket => {
 })
 
 // graphql endpoint
-app.use('/graphql', ExpressGraphQL({
+app.use('/graphql', (req, res, next) => {
+    console.log(req.body.query.length)
+    next();
+}, ExpressGraphQL({
     schema: MainSchema,
-    graphiql: true
+    graphiql: true,
+    // prevention from circular query overload
+    validationRules: [depthLimit(3)]
 }));
 
 // REST api endpoints
