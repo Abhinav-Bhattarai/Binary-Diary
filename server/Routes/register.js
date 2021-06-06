@@ -19,16 +19,21 @@ export const GenerateAuthToken = data => {
     return token;
 };
 
+const GenerateUniqueID = () => {
+    return Math.floor(Math.random() * 10000000000)
+}
+
 router.post('/', SignupMiddleware, async(req, res) => {
     const { Username, Password, Phone } = req.body;
     const response = await RegisterModel.find({Username});
     if (response.length === 0) {
         const HashedPassword = await HashPassword(Password);
-        const data = {Username, Password: HashedPassword, Phone: parseInt(Phone)};
+        const UniqueID = GenerateUniqueID();
+        const data = {Username, Password: HashedPassword, Phone: parseInt(Phone), UniqueID};
         const RegisterData = new RegisterModel(data);
         const registered_data = await RegisterData.save();
         const token = GenerateAuthToken(data);
-        return res.json({auth_token: token, id: registered_data._id, username: Username, error: false});
+        return res.json({auth_token: token, id: registered_data._id, username: Username, error: false, UniqueID});
     } else {
         return res.json({error: true, type: 'signup'});
     }

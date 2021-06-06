@@ -45,6 +45,11 @@ const Schema = new mongoose.Schema({
   Followers: {
       type: [String],
       default: []
+  },
+
+  UniqueID: {
+    type: String,
+    required: true
   }
 });
 

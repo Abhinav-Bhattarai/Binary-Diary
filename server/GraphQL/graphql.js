@@ -29,23 +29,25 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     GetUserData: {
       type: UserSchema,
-      args: { id: { type: GraphQLString } },
+      args: { id: { type: GraphQLString }, uid: { type: GraphQLString } },
       resolve: async (_, args) => {
-        const { id } = args;
-        console.log(id);
+        const { id, uid } = args;
         const response = await RegisterModel.findById(id);
         if (response) {
-          const { Username, Phone, DOB, RegistrationDate, ProfilePicture, Bio, Followers, Following} = response;
-          return {
-            Username,
-            Phone,
-            DOB,
-            RegistrationDate,
-            ProfilePicture,
-            Bio,
-            Followers: JSON.stringify(Followers),
-            Following: JSON.stringify(Following)
-          };
+          if (response.UniqueID === uid) {
+            const { Username, Phone, DOB, RegistrationDate, ProfilePicture, Bio, Followers, Following} = response;
+            return {
+              Username,
+              Phone,
+              DOB,
+              RegistrationDate,
+              ProfilePicture,
+              Bio,
+              Followers: JSON.stringify(Followers),
+              Following: JSON.stringify(Following)
+            };
+  
+          }
         }
       },
     },
