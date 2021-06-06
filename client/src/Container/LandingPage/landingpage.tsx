@@ -7,6 +7,7 @@ export interface POSTFETCH {
   type: string;
   username: string;
   error: boolean;
+  id: string;
 };
 
 export interface LoginError {
@@ -67,9 +68,10 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
 
   const { SendPOSTRequest } = usePostRequest({
     onComplete: (data: POSTFETCH) => {
-      const { auth_token, username } = data;
+      const { auth_token, username, id } = data;
       localStorage.setItem("auth-token", auth_token);
       localStorage.setItem("username", username);
+      localStorage.setItem("userID", id);
       ChangeAuthentication(true);
     },
 

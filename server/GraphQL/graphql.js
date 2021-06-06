@@ -32,6 +32,7 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLString } },
       resolve: async (_, args) => {
         const { id } = args;
+        console.log(id);
         const response = await RegisterModel.findById(id);
         if (response) {
           const { Username, Phone, DOB, RegistrationDate, ProfilePicture, Bio, Followers, Following} = response;
@@ -56,8 +57,7 @@ const Mutation = new GraphQLObjectType({
 });
 
 const MainSchema = new GraphQLSchema({
-  query: RootQuery,
-  mutation: Mutation,
+  query: RootQuery
 });
 
 export default MainSchema;

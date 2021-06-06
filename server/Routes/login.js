@@ -18,7 +18,7 @@ router.post('/', LoginMiddleware, async(req, res) => {
         const password_check = await CheckPasswordHashing(Password, response.Password);
         if (password_check) {
             const token = GenerateAuthToken({Username, Password, Phone: response.Phone});
-            return res.json({auth_token: token, username: Username, error: false});
+            return res.json({auth_token: token, username: Username, id: response._id, error: false});
         }else {
             return res.json({error: true, type: 'login'});
         }

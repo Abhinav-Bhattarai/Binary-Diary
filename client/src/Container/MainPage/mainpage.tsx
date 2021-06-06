@@ -4,17 +4,17 @@ import { UserInfo } from './interfaces';
 import { Context } from './Context';
 import { FetchUserData } from '../../GraphQL/main-page-gql';
 import LoadingPage from '../../Components/UI/LoadingPage/LoadingPage';
-
 interface PROPS {
     ChangeAuthentication: (type: boolean) => void
 };
 
 const client = new ApolloClient({
-    uri: 'http://localhost:8000/graphql',
+    uri: 'https://localhost:8000/graphql',
     cache: new InMemoryCache()
 });
 
 const MainPageWrapper: React.FC<PROPS> = (props) => {
+    
     return (
         <React.Fragment>
             <ApolloProvider client={client}>
@@ -27,19 +27,20 @@ const MainPageWrapper: React.FC<PROPS> = (props) => {
 const MainPage: React.FC<PROPS> = (props) => {
     const [user_info, setUserinfo] = useState<UserInfo | null>(null);
     const { loading } = useQuery(FetchUserData, {
+        variables: {id: localStorage.getItem('userID')},
+
         onCompleted: (data) => {
-            console.log(data);
         },
 
         onError: (error) => {
-           console.log(error);
         }
     });
 
     useEffect(() => {
         const auth_token = localStorage.getItem('auth-token');
         const username = localStorage.getItem('username');
-        (auth_token && username) && setUserinfo({auth_token, username});
+        const userID = localStorage.getItem('userID');
+        (auth_token && username && userID) && setUserinfo({auth_token, username, userID});
     }, []);
 
     if (loading === true) {

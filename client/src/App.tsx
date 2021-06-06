@@ -2,7 +2,6 @@ import React, { Suspense, useEffect, useState } from "react";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import LoadingPage from "./Components/UI/LoadingPage/LoadingPage";
-
 interface LPGuardProps {
   auth_status: boolean;
   ChangeAuthentication: (type: boolean) => void;
@@ -42,6 +41,7 @@ const MainPageGuard: React.FC<LPGuardProps> = (props) => {
   return null;
 };
 
+
 function App() {
   const [auth_status, setAuthStatus] = useState<null | boolean>(null);
 
@@ -52,7 +52,7 @@ function App() {
       if (token && username) {
         const config = { token, username };
         const { data } = await axios.post("/check-auth", config);
-        setAuthStatus(data);
+        setAuthStatus(data.auth_status);
       } else {
         setAuthStatus(false);
       }
@@ -62,6 +62,7 @@ function App() {
   }, []);
 
   const ChangeAuthentication = (type: boolean): void => {
+    if (type === false) localStorage.clear();
     setAuthStatus(type);
   };
 

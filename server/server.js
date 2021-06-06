@@ -7,7 +7,14 @@ import socket from 'socket.io';
 import http from 'http';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import https from 'https';
+import fs from 'fs';
 dotenv.config();
+
+const options = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
 
 import CheckJWTRoute from './Routes/check-jwt.js';
 import LoginRoute from './Routes/login.js';
@@ -16,9 +23,9 @@ import DeleteRouter from './Routes/deleter.js';
 import MainSchema from './GraphQL/graphql.js';
 
 const app = express();
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 const io = socket(server);
-const PORT = process.env.PORT || 8000;
+const PORT = 8000;
 
 // middleware
 app.use(cors({
@@ -38,7 +45,7 @@ app.use('/graphql', ExpressGraphQL({
 }));
 
 // REST api endpoints
-app.use('/check-jwt', CheckJWTRoute);
+app.use('/check-auth', CheckJWTRoute);
 app.use('/login', LoginRoute);
 app.use('/signup', RegisterRoute);
 app.use('/delete', DeleteRouter);

@@ -26,9 +26,9 @@ router.post('/', SignupMiddleware, async(req, res) => {
         const HashedPassword = await HashPassword(Password);
         const data = {Username, Password: HashedPassword, Phone: parseInt(Phone)};
         const RegisterData = new RegisterModel(data);
-        await RegisterData.save();
+        const registered_data = await RegisterData.save();
         const token = GenerateAuthToken(data);
-        return res.json({auth_token: token, username: Username, error: false});
+        return res.json({auth_token: token, id: registered_data._id, username: Username, error: false});
     } else {
         return res.json({error: true, type: 'signup'});
     }

@@ -10,7 +10,7 @@ router.post('/', (req, res) => {
     if (token && username) {
         const data = jwt.verify(token, process.env.JWT_AUTH_TOKEN);
         if (data) {
-            if (data.username === username) {
+            if (data.Username === username) {
                 return res.json({auth_status: true});
             }else {
                 return res.json({auth_status: false});
