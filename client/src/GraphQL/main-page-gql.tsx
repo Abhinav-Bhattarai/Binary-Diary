@@ -6,6 +6,13 @@ export const FetchUserData = gql`
       Username
       Followers
       Following
+      ProfilePicture
+      FollowingList {
+        Username
+        ProfilePicture
+        Following
+        Followers
+      }
     }
   }
 `;

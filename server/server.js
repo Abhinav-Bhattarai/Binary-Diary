@@ -12,11 +12,6 @@ import https from 'https';
 import fs from 'fs';
 dotenv.config();
 
-const options = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem')
-};
-
 import CheckJWTRoute from './Routes/check-jwt.js';
 import LoginRoute from './Routes/login.js';
 import RegisterRoute from './Routes/register.js';
@@ -24,6 +19,10 @@ import DeleteRouter from './Routes/deleter.js';
 import MainSchema from './GraphQL/graphql.js';
 
 const app = express();
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
 const server = https.createServer(options, app);
 const io = socket(server);
 const PORT = 8000;
@@ -41,13 +40,12 @@ io.on('connection', socket => {
 
 // graphql endpoint
 app.use('/graphql', (req, res, next) => {
-    console.log(req.body.query.length)
     next();
 }, ExpressGraphQL({
     schema: MainSchema,
     graphiql: true,
     // prevention from circular query overload
-    validationRules: [depthLimit(3)]
+    validationRules: [depthLimit(2)]
 }));
 
 // REST api endpoints

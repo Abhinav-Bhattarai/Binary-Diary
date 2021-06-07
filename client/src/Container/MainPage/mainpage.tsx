@@ -41,7 +41,10 @@ const MainPage: React.FC<PROPS> = (props) => {
         // localStorage.setItem('Following', data.Following)
     },
 
-    onError: (error) => {},
+    onError: (error) => {
+      console.log(error);
+      
+    },
   });
 
   useEffect(() => {
