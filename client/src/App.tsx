@@ -33,14 +33,13 @@ const MainPageGuard: React.FC<LPGuardProps> = (props) => {
     return (
       <React.Fragment>
         <Suspense fallback={<LoadingPage />}>
-          <AsyncMainPage ChangeAuthentication={ChangeAuthentication}/>
+          <AsyncMainPage ChangeAuthentication={ChangeAuthentication} />
         </Suspense>
       </React.Fragment>
     );
   }
   return null;
 };
-
 
 function App() {
   const [auth_status, setAuthStatus] = useState<null | boolean>(null);

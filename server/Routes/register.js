@@ -20,7 +20,7 @@ export const GenerateAuthToken = data => {
 };
 
 const GenerateUniqueID = () => {
-    return Math.floor(Math.random() * 10000000000)
+    return Math.floor(Math.random() * 100000000)
 }
 
 router.post('/', SignupMiddleware, async(req, res) => {

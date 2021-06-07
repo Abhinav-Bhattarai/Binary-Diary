@@ -12,6 +12,7 @@ export const FetchUserData = gql`
         ProfilePicture
         Following
         Followers
+        Posts
       }
     }
   }

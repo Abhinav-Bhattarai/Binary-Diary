@@ -9,13 +9,13 @@ export interface POSTFETCH {
   error: boolean;
   id: string;
   UniqueID: string;
-};
+}
 
 export interface LoginError {
   username_err: null | string;
   password_err: null | string;
   cred_err: null | string;
-};
+}
 
 export interface SignupError {
   username_err: null | string;
@@ -26,21 +26,21 @@ export interface SignupError {
 }
 interface PROPS {
   ChangeAuthentication: (type: boolean) => void;
-};
+}
 
 const initial_login_error: LoginError = {
   username_err: null,
   password_err: null,
-  cred_err: null
-}
+  cred_err: null,
+};
 
 const initial_signup_error: SignupError = {
   username_err: null,
   password_err: null,
   confirm_err: null,
   phone_err: null,
-  cred_err: null
-}
+  cred_err: null,
+};
 
 const AsyncSignup = React.lazy(
   () => import("../../Components/LandingPage/SIgnup/signup")
@@ -53,8 +53,10 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   // states
   const [login_username, setLoginUsername] = useState<string>("");
   const [login_password, setLoginPassword] = useState<string>("");
-  const [login_error, setLoginError] = useState<LoginError>(initial_login_error);
-  const [signup_error, setSignupError] = useState<SignupError>(initial_signup_error);
+  const [login_error, setLoginError] =
+    useState<LoginError>(initial_login_error);
+  const [signup_error, setSignupError] =
+    useState<SignupError>(initial_signup_error);
   const [signup_username, setSignupUsername] = useState<string>("");
   const [signup_password, setSignupPassword] = useState<string>("");
   const [signup_confirm, setSingupConfirm] = useState<string>("");
@@ -73,22 +75,26 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       localStorage.setItem("auth-token", auth_token);
       localStorage.setItem("username", username);
       localStorage.setItem("userID", id);
-      localStorage.setItem('uid', UniqueID);
+      localStorage.setItem("uid", UniqueID);
       ChangeAuthentication(true);
     },
 
     onError: (err: POSTFETCH) => {
-      if (err.type === 'login') {
-        LoginUsernameRef.current && (LoginUsernameRef.current.style.border = '2px solid #ff385c');
-        LoginPasswordRef.current && (LoginPasswordRef.current.style.border = '2px solid #ff385c');
-        const dummy = {...login_error};
-        dummy.cred_err = 'Invalid Credentials !!';
+      if (err.type === "login") {
+        LoginUsernameRef.current &&
+          (LoginUsernameRef.current.style.border = "2px solid #ff385c");
+        LoginPasswordRef.current &&
+          (LoginPasswordRef.current.style.border = "2px solid #ff385c");
+        const dummy = { ...login_error };
+        dummy.cred_err = "Invalid Credentials !!";
         setLoginError(dummy);
       } else {
-        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = '2px solid #ff385c');
-        SignupPasswordRef.current && (SignupPasswordRef.current.style.border = '2px solid #ff385c');
-        const dummy = {...signup_error};
-        dummy.cred_err = 'Username already taken !!';
+        SignupUsernameRef.current &&
+          (SignupUsernameRef.current.style.border = "2px solid #ff385c");
+        SignupPasswordRef.current &&
+          (SignupPasswordRef.current.style.border = "2px solid #ff385c");
+        const dummy = { ...signup_error };
+        dummy.cred_err = "Username already taken !!";
         setSignupError(dummy);
       }
     },
@@ -131,22 +137,25 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
         };
         SendPOSTRequest("/login", context);
       } else {
-        const dummy = {...login_error};
-        dummy.password_err = 'Password must contain a number';
-        LoginUsernameRef.current && (LoginUsernameRef.current.style.border = '2px solid #ff385c');
+        const dummy = { ...login_error };
+        dummy.password_err = "Password must contain a number";
+        LoginUsernameRef.current &&
+          (LoginUsernameRef.current.style.border = "2px solid #ff385c");
         setLoginError(dummy);
       }
-    }else {
+    } else {
       if (login_username.length < 5) {
-        const dummy = {...login_error};
-        dummy.username_err = 'Username length must be atleast 5';
-        LoginUsernameRef.current && (LoginUsernameRef.current.style.border = '2px solid #ff385c');
+        const dummy = { ...login_error };
+        dummy.username_err = "Username length must be atleast 5";
+        LoginUsernameRef.current &&
+          (LoginUsernameRef.current.style.border = "2px solid #ff385c");
         setLoginError(dummy);
-      } 
+      }
       if (login_password.length < 8) {
-        const dummy = {...login_error};
-        dummy.password_err = 'Password length must be atleast 8';
-        LoginPasswordRef.current && (LoginPasswordRef.current.style.border = '2px solid #ff385c');
+        const dummy = { ...login_error };
+        dummy.password_err = "Password length must be atleast 8";
+        LoginPasswordRef.current &&
+          (LoginPasswordRef.current.style.border = "2px solid #ff385c");
         setLoginError(dummy);
       }
     }
@@ -170,35 +179,40 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
         };
         SendPOSTRequest("/signup", context);
       } else {
-        const dummy = {...signup_error};
-        dummy.password_err = 'Password must contain a number';
-        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = '2px solid #ff385c');
+        const dummy = { ...signup_error };
+        dummy.password_err = "Password must contain a number";
+        SignupUsernameRef.current &&
+          (SignupUsernameRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);
       }
-    }else {
+    } else {
       if (signup_username.length < 5) {
-        const dummy = {...signup_error};
-        dummy.username_err = 'Username length must be atleast 5'
-        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = '2px solid #ff385c');
+        const dummy = { ...signup_error };
+        dummy.username_err = "Username length must be atleast 5";
+        SignupUsernameRef.current &&
+          (SignupUsernameRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);
       }
 
       if (signup_password.length < 8) {
-        const dummy = {...signup_error};
-        dummy.password_err = 'Password length must be atleast 8';
-        SignupPasswordRef.current && (SignupPasswordRef.current.style.border = '2px solid #ff385c');
+        const dummy = { ...signup_error };
+        dummy.password_err = "Password length must be atleast 8";
+        SignupPasswordRef.current &&
+          (SignupPasswordRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);
       } else if (signup_confirm !== signup_password) {
-        const dummy = {...signup_error};
-        dummy.confirm_err = 'Passwords donot match';
-        SignupConfirmRef.current && (SignupConfirmRef.current.style.border = '2px solid #ff385c');
+        const dummy = { ...signup_error };
+        dummy.confirm_err = "Passwords donot match";
+        SignupConfirmRef.current &&
+          (SignupConfirmRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);
       }
 
       if (signup_phone.length < 10) {
-        const dummy = {...signup_error};
-        dummy.phone_err = 'Phone number not found';
-        SignupPhoneRef.current && (SignupPhoneRef.current.style.border = '2px solid #ff385c');
+        const dummy = { ...signup_error };
+        dummy.phone_err = "Phone number not found";
+        SignupPhoneRef.current &&
+          (SignupPhoneRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);
       }
     }

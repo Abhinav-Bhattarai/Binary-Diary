@@ -37,13 +37,13 @@ const MainPage: React.FC<PROPS> = (props) => {
     },
 
     onCompleted: (data) => {
-        console.log(data);
-        // localStorage.setItem('Following', data.Following)
+      const { GetUserData } = data;
+      console.log(GetUserData);
+      // localStorage.setItem('Following', data.Following)
     },
 
     onError: (error) => {
       console.log(error);
-      
     },
   });
 

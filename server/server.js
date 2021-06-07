@@ -5,7 +5,6 @@ const require = createRequire(import.meta.url);
 const ExpressGraphQL = require('express-graphql').graphqlHTTP;
 import mongoose from 'mongoose';
 import socket from 'socket.io';
-import http from 'http';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import https from 'https';
