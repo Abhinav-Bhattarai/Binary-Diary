@@ -1,6 +1,5 @@
+import redis from "async-redis";
 import { createRequire } from "module";
-import { PostModel } from "../Models/post-model.js";
-import { RegisterModel } from "../Models/register-model.js";
 const require = createRequire(import.meta.url);
 const {
   GraphQLObjectType,
@@ -8,6 +7,10 @@ const {
   GraphQLSchema,
   GraphQLList,
 } = require("graphql");
+import { PostModel } from "../Models/post-model.js";
+import { RegisterModel } from "../Models/register-model.js";
+
+const cache = redis.createClient();
 
 const PostSchema = new GraphQLObjectType({
   name: "PostSchema",
@@ -18,7 +21,7 @@ const PostSchema = new GraphQLObjectType({
       Caption: { type: GraphQLString },
       PostDate: { type: GraphQLString },
       CreatorID: { type: GraphQLString },
-      CreatorUsername: { type: GraphQLString }
+      CreatorUsername: { type: GraphQLString },
     };
   },
 });
@@ -28,36 +31,47 @@ const UserSchema = new GraphQLObjectType({
   fields: () => {
     return {
       Username: { type: GraphQLString },
-      DOB: { type: GraphQLString },
       ProfilePicture: { type: GraphQLString },
       Bio: { type: GraphQLString },
       Followers: { type: new GraphQLList(GraphQLString) },
       Following: { type: new GraphQLList(GraphQLString) },
       Posts: { type: new GraphQLList(GraphQLString) },
-      FollowList: {
-        type: new GraphQLList(UserSchema),
-        resolve: async (parent, _) => {
-          const { Followers } = parent;
-          if (Followers.length > 0) {
-            const response = await RegisterModel.find({
-              _id: { $in: Followers },
-            });
-            if (response.length > 0) return response;
-          }
-        },
-      },
+      // FollowerList: {
+      //   type: new GraphQLList(UserSchema),
+      //   resolve: async (parent, _) => {
+      //     const { Followers } = parent;
+      //     if (Followers.length > 0) {
+      //       const response = await RegisterModel.find({
+      //         _id: { $in: Followers },
+      //       });
+      //       if (response.length > 0) return response;
+      //     }
+      //   },
+      // },
       FollowingList: {
         type: new GraphQLList(UserSchema),
         resolve: async (parent, _) => {
-          const { Following } = parent;
+          const { Username, Following } = parent;
           if (Following.length > 0) {
             const response = await RegisterModel.find({
               _id: { $in: Following },
+            }, {
+              Username: 1,
+              Followers: 1,
+              Following: 1,
+              Bio: 1,
+              Posts: 1,
+              ProfilePicture: 1
             });
-            if (response.length > 0) return response;
+            if (response.length > 0) {
+              // await cache.set(`FollowingInfo/${Username}`, JSON.stringify(response));
+              console.log(response, 'Response');
+              return response;
+            };
           }
         },
-      }
+
+      },
     };
   },
 });
@@ -70,27 +84,21 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLString }, uid: { type: GraphQLString } },
       resolve: async (_, args) => {
         const { id, uid } = args;
-        const response = await RegisterModel.findById(id);
-        if (response) {
+        const response = await RegisterModel.findById(id, {
+          Username: 1,
+          Followers: 1,
+          Following: 1,
+          Bio: 1,
+          Posts: 1,
+          ProfilePicture: 1,
+          UniqueID: 1,
+          _id: 0
+        });
+        if (response !== null) {
           if (response.UniqueID === uid) {
-            const {
-              Username,
-              DOB,
-              ProfilePicture,
-              Bio,
-              Followers,
-              Following,
-              Posts,
-            } = response;
-            return {
-              Username,
-              DOB,
-              ProfilePicture,
-              Bio,
-              Followers,
-              Following,
-              Posts,
-            };
+            let SerializedData = { Username, Followers, Following, Bio, Posts, ProfilePicture } = response; 
+            // await cache.set(`UserInfo/${response.Username}`, JSON.stringify(Data));
+            return SerializedData;
           }
         }
       },
