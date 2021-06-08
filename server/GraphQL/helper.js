@@ -1,4 +1,7 @@
 import { RegisterModel } from "../Models/register-model.js";
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const FollowingDataSearch = async (cache, Following, Username) => {
   const DummyData = await cache.get(`FollowingInfo/${Username}`);
@@ -62,4 +65,9 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
     return null;
   }
   return null;
+};
+
+export const CheckJWT = async(token) => {
+    const data = jwt.verify(token, process.env.JWT_AUTH_TOKEN);
+    return data;
 };
