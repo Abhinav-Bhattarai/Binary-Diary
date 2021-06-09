@@ -14,6 +14,8 @@ import {
   PrePostData,
 } from "../../GraphQL/main-page-gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
+import { MainPageContainer } from "../../Components/MainPage/Reusables/reusables";
+import Navbar from "../../Components/MainPage/Navbar/navbar";
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
@@ -45,6 +47,12 @@ const MainPage: React.FC<PROPS> = (props) => {
   const [user_info, setUserinfo] = useState<UserInfo | null>(null);
   const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
+  const [prepoststate, setPrePostState] = useState<boolean>(false);
+  const [search_value, setSearchValue] = useState<string>("");
+  const [profile_picture, setProfilePicture] = useState<string>('')
+
+  // apollo-client queries;
+
   const { loading } = useQuery(FetchUserData, {
     variables: {
       id: localStorage.getItem("userID"),
@@ -54,6 +62,7 @@ const MainPage: React.FC<PROPS> = (props) => {
     onCompleted: (data) => {
       const { GetUserData } = data;
       const { FollowingList } = GetUserData;
+      setProfilePicture(GetUserData.ProfilePicture);
       if (FollowingList) {
         let data: string[] = [];
         if (FollowingList.length > 0) data = Convert2Dto1D(FollowingList);
@@ -62,23 +71,27 @@ const MainPage: React.FC<PROPS> = (props) => {
     },
 
     onError: (error) => {
-      console.log(error, 'UserData');
+      console.log(error, "UserData");
     },
   });
   const [, PostFetch] = useLazyQuery(PostsData, {
     onCompleted: ({ GetPostsData }) => {
       if (GetPostsData && posts) {
-        const dummy = [...posts];
-        console.log(dummy);
-        console.log(postid_list);
+        if (prepoststate) {
+          setPosts(GetPostsData);
+          setPrePostState(false);
+        } else {
+          const dummy = [...posts];
+          console.log(dummy);
+          console.log(postid_list);
+        }
       }
     },
 
     onError: (error) => {
-      console.log(error, 'PostFetch');
-    }
+      console.log(error, "PostFetch");
+    },
   });
-
 
   const PrePosts = useQuery(PrePostData, {
     variables: {
@@ -88,30 +101,47 @@ const MainPage: React.FC<PROPS> = (props) => {
 
     onCompleted: (data) => {
       const { GetPrePostData } = data;
+      setPrePostState(true);
       GetPrePostData && setPosts(GetPrePostData);
     },
 
     onError: (error) => {
-      console.log(error, 'PrePosts');
-    }
+      console.log(error, "PrePosts");
+    },
   });
+
+  // RenderFunctions
+
+  const ChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchValue(value);
+  };
+
+  // SideEffects and Effects;
 
   useEffect(() => {
     const auth_token = localStorage.getItem("auth-token");
     const username = localStorage.getItem("username");
     const userID = localStorage.getItem("userID");
-    auth_token && username && userID && setUserinfo({ auth_token, username, userID });
+    auth_token &&
+      username &&
+      userID &&
+      setUserinfo({ auth_token, username, userID });
   }, []);
 
   if (loading === true || PrePosts.loading === true) {
     return <LoadingPage />;
-  };
+  }
 
   if (PostFetch.loading) {}
 
   return (
     <React.Fragment>
-      <Context.Provider value={{ userInfo: user_info }}></Context.Provider>
+      <Context.Provider value={{ userInfo: user_info, ProfilePicture: profile_picture }}>
+        <MainPageContainer>
+          <Navbar change={ChangeSearchValue} value={search_value}/>
+        </MainPageContainer>
+      </Context.Provider>
     </React.Fragment>
   );
 };
