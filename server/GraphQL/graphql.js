@@ -27,7 +27,7 @@ const PostSchema = new GraphQLObjectType({
       Caption: { type: GraphQLString },
       PostDate: { type: GraphQLString },
       CreatorID: { type: GraphQLString },
-      CreatorUsername: { type: GraphQLString },
+      CreatorUsername: { type: GraphQLString }
     };
   },
 });
@@ -108,7 +108,7 @@ const RootQuery = new GraphQLObjectType({
     },
 
     GetPrePostData: {
-      type: PostModel,
+      type: new GraphQLList(PostSchema),
       args: {
         auth_token: { type: GraphQLString },
         id: { type: GraphQLString }

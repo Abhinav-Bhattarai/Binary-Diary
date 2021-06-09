@@ -37,6 +37,8 @@ export const FollowingDataSearch = async (cache, Following, Username) => {
 };
 
 export const GetUserDataCacheCheck = async (cache, id, uid) => {
+  const UserData = await cache.get(`UserInfo/${id}/${uid}`);
+  if (UserData) return JSON.parse(UserData);
   const response = await RegisterModel.findById(id, {
     Username: 1,
     Followers: 1,
@@ -47,8 +49,6 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
     UniqueID: 1,
     _id: 0,
   });
-  const UserData = await cache.get(`UserInfo/${id}/${uid}`);
-  if (UserData) return JSON.parse(UserData);
   if (response !== null) {
     if (response.UniqueID === uid) {
       let SerializedData = {

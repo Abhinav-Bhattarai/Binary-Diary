@@ -4,19 +4,32 @@ import {
   ApolloClient,
   InMemoryCache,
   useQuery,
+  useLazyQuery,
 } from "@apollo/client";
-import { UserInfo } from "./interfaces";
+import { UserInfo, PROPS, POSTS } from "./interfaces";
 import { Context } from "./Context";
-import { FetchUserData } from "../../GraphQL/main-page-gql";
+import {
+  FetchUserData,
+  PostsData,
+  PrePostData,
+} from "../../GraphQL/main-page-gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
-interface PROPS {
-  ChangeAuthentication: (type: boolean) => void;
-}
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
   cache: new InMemoryCache(),
 });
+
+const Convert2Dto1D = (Array: Array<string>) => {
+  const dummy = [];
+  // O(n^2)
+  for (let userInfo of Array) {
+    for (let posts of userInfo) {
+      dummy.push(posts);
+    }
+  }
+  return dummy;
+};
 
 const MainPageWrapper: React.FC<PROPS> = (props) => {
   return (
@@ -30,6 +43,8 @@ const MainPageWrapper: React.FC<PROPS> = (props) => {
 
 const MainPage: React.FC<PROPS> = (props) => {
   const [user_info, setUserinfo] = useState<UserInfo | null>(null);
+  const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
+  const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const { loading } = useQuery(FetchUserData, {
     variables: {
       id: localStorage.getItem("userID"),
@@ -38,28 +53,61 @@ const MainPage: React.FC<PROPS> = (props) => {
 
     onCompleted: (data) => {
       const { GetUserData } = data;
-      console.log(GetUserData);
-      // localStorage.setItem('Following', data.Following)
+      const { FollowingList } = GetUserData;
+      if (FollowingList) {
+        let data: string[] = [];
+        if (FollowingList.length > 0) data = Convert2Dto1D(FollowingList);
+        setPostIDList(data);
+      }
     },
 
     onError: (error) => {
-      console.log(error);
+      console.log(error, 'UserData');
     },
+  });
+  const [, PostFetch] = useLazyQuery(PostsData, {
+    onCompleted: ({ GetPostsData }) => {
+      if (GetPostsData && posts) {
+        const dummy = [...posts];
+        console.log(dummy);
+        console.log(postid_list);
+      }
+    },
+
+    onError: (error) => {
+      console.log(error, 'PostFetch');
+    }
+  });
+
+
+  const PrePosts = useQuery(PrePostData, {
+    variables: {
+      id: localStorage.getItem("userID"),
+      auth_token: localStorage.getItem("auth-token"),
+    },
+
+    onCompleted: (data) => {
+      const { GetPrePostData } = data;
+      GetPrePostData && setPosts(GetPrePostData);
+    },
+
+    onError: (error) => {
+      console.log(error, 'PrePosts');
+    }
   });
 
   useEffect(() => {
     const auth_token = localStorage.getItem("auth-token");
     const username = localStorage.getItem("username");
     const userID = localStorage.getItem("userID");
-    auth_token &&
-      username &&
-      userID &&
-      setUserinfo({ auth_token, username, userID });
+    auth_token && username && userID && setUserinfo({ auth_token, username, userID });
   }, []);
 
-  if (loading === true) {
+  if (loading === true || PrePosts.loading === true) {
     return <LoadingPage />;
-  }
+  };
+
+  if (PostFetch.loading) {}
 
   return (
     <React.Fragment>
