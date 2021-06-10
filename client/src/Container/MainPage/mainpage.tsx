@@ -16,6 +16,7 @@ import {
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import { MainPageContainer } from "../../Components/MainPage/Reusables/reusables";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
+import DefaultProfile from '../../assets/Images/profile-user.svg';
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
@@ -49,8 +50,8 @@ const MainPage: React.FC<PROPS> = (props) => {
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [prepoststate, setPrePostState] = useState<boolean>(false);
   const [search_value, setSearchValue] = useState<string>("");
-  const [profile_picture, setProfilePicture] = useState<string>('')
-
+  const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
+  
   // apollo-client queries;
 
   const { loading } = useQuery(FetchUserData, {
@@ -62,7 +63,7 @@ const MainPage: React.FC<PROPS> = (props) => {
     onCompleted: (data) => {
       const { GetUserData } = data;
       const { FollowingList } = GetUserData;
-      setProfilePicture(GetUserData.ProfilePicture);
+      GetUserData.ProfilePicture.length > 0 && setProfilePicture(GetUserData.ProfilePicture);
       if (FollowingList) {
         let data: string[] = [];
         if (FollowingList.length > 0) data = Convert2Dto1D(FollowingList);

@@ -5,6 +5,10 @@ export interface NavbarProps {
   change: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+export interface ProfileAreaProps {
+  Username: string | undefined;
+  source: string;
+}
 export interface SearchBarProps {
   value: string;
   change: (event: React.ChangeEvent<HTMLInputElement>) => void;

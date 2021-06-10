@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import AppLogo from "../../../assets/Images/github.svg";
-import { LogoProps, NavbarProps, SearchBarProps } from "../interfaces";
+import { Context } from "../../../Container/MainPage/Context";
+import { LogoProps, NavbarProps, ProfileAreaProps, SearchBarProps } from "../interfaces";
+import { HomeIcon, MessageIcon, SuggesstionIcon } from "./logo";
 import "./navbar.scss";
 
-const SubContainer: React.FC<{ flex: number }> = (props) => {
-  const { flex, children } = props;
+const SubContainer: React.FC<{ id: string }> = (props) => {
+  const { children, id } = props;
   return (
-    <main id="sub-container" style={{ flex }}>
+    <main className="sub-container" id={id}>
       {children}
     </main>
   );
@@ -18,7 +20,7 @@ const NavbarContainer: React.FC<{}> = ({ children }) => {
 
 const Logo: React.FC<LogoProps> = (props) => {
   const { source, width, height } = props;
-  return <img src={source} alt="Logo" width={width} height={height} />;
+  return <img src={source} alt="Logo" id='logo-github' width={width} height={height} />;
 };
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
@@ -35,12 +37,27 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
   );
 };
 
+const ProfileArea: React.FC<ProfileAreaProps> = (props) => {
+  const { source, Username } = props;
+  return (
+    <React.Fragment>
+        <img width='34px' height='34px' src={source} id='profile-area-img' alt='profile-img'/>
+        <div id='profile-area-username'>{ Username }</div>
+    </React.Fragment>
+  )
+}
+
+const LogoContainer: React.FC<{}> = ({ children }) => {
+  return <nav id="logo-container">{children}</nav>;
+};
+
 const Navbar: React.FC<NavbarProps> = (props) => {
+  const context = useContext(Context);
   const { change, value } = props;
   return (
     <React.Fragment>
       <NavbarContainer>
-        <SubContainer flex={1}>
+        <SubContainer id='sub-container-1'>
           <Logo source={AppLogo} width="40px" height="40px" />
           <SearchBar
             change={change}
@@ -50,8 +67,27 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             type="text"
           />
         </SubContainer>
-        <SubContainer flex={1}></SubContainer>
-        <SubContainer flex={2}></SubContainer>
+        <SubContainer id='sub-container-2'></SubContainer>
+        <SubContainer id='sub-container-3'>
+          <LogoContainer>
+            <HomeIcon />
+          </LogoContainer>
+
+          <LogoContainer>
+            <SuggesstionIcon />
+          </LogoContainer>
+
+          <LogoContainer>
+            <MessageIcon />
+          </LogoContainer>
+
+          <LogoContainer>
+            <ProfileArea
+              source={context.ProfilePicture}
+              Username={context.userInfo?.username}
+            />
+          </LogoContainer>
+        </SubContainer>
       </NavbarContainer>
     </React.Fragment>
   );
