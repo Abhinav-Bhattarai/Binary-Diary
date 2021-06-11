@@ -73,10 +73,8 @@ $input-glow: rgb(235, 235, 235);
 
 .icon {
   font-size: 28px;
-}
-
-.suggestion-icon {
-  color: #00acee;
+  transition: 0.3s;
+  color: #333;
 }
 
 @media all and (max-width: 1200px) {

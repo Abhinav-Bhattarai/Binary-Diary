@@ -1,8 +1,14 @@
 import React, { useContext } from "react";
 import AppLogo from "../../../assets/Images/github.svg";
 import { Context } from "../../../Container/MainPage/Context";
-import { LogoProps, NavbarProps, ProfileAreaProps, SearchBarProps } from "../interfaces";
+import {
+  LogoProps,
+  NavbarProps,
+  ProfileAreaProps,
+  SearchBarProps,
+} from "../interfaces";
 import { HomeIcon, MessageIcon, SuggesstionIcon } from "./logo";
+import { useHistory } from "react-router-dom";
 import "./navbar.scss";
 
 const SubContainer: React.FC<{ id: string }> = (props) => {
@@ -20,7 +26,15 @@ const NavbarContainer: React.FC<{}> = ({ children }) => {
 
 const Logo: React.FC<LogoProps> = (props) => {
   const { source, width, height } = props;
-  return <img src={source} alt="Logo" id='logo-github' width={width} height={height} />;
+  return (
+    <img
+      src={source}
+      alt="Logo"
+      id="logo-github"
+      width={width}
+      height={height}
+    />
+  );
 };
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
@@ -41,24 +55,49 @@ const ProfileArea: React.FC<ProfileAreaProps> = (props) => {
   const { source, Username } = props;
   return (
     <React.Fragment>
-        <img width='34px' height='34px' src={source} id='profile-area-img' alt='profile-img'/>
-        <div id='profile-area-username'>{ Username }</div>
+      <img
+        width="34px"
+        height="34px"
+        src={source}
+        id="profile-area-img"
+        alt="profile-img"
+      />
+      <div id="profile-area-username">{Username}</div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-const LogoContainer: React.FC<{}> = ({ children }) => {
-  return <nav id="logo-container">{children}</nav>;
+const LogoContainer: React.FC<{
+  click: (event: React.MouseEvent<HTMLDivElement>) => void;
+}> = ({ children, click }) => {
+  return (
+    <nav id="logo-container" onClick={click}>
+      {children}
+    </nav>
+  );
 };
 
 const Navbar: React.FC<NavbarProps> = (props) => {
   const context = useContext(Context);
+  const history = useHistory();
   const { change, value } = props;
-  
+
+  const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
+    history.push("/posts");
+
+  const SuggestionPressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
+    history.push("/suggestions");
+
+  const MessagesPressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
+    history.push("/messages");
+
+  const ProfilePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
+    history.push(`/profile/${context.userInfo?.userID}`);
+
   return (
     <React.Fragment>
       <NavbarContainer>
-        <SubContainer id='sub-container-1'>
+        <SubContainer id="sub-container-1">
           <Logo source={AppLogo} width="40px" height="40px" />
           <SearchBar
             change={change}
@@ -68,21 +107,21 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             type="text"
           />
         </SubContainer>
-        <SubContainer id='sub-container-2'></SubContainer>
-        <SubContainer id='sub-container-3'>
-          <LogoContainer>
+        <SubContainer id="sub-container-2"></SubContainer>
+        <SubContainer id="sub-container-3">
+          <LogoContainer click={HomePressHandler}>
             <HomeIcon />
           </LogoContainer>
 
-          <LogoContainer>
+          <LogoContainer click={SuggestionPressHandler}>
             <SuggesstionIcon />
           </LogoContainer>
 
-          <LogoContainer>
+          <LogoContainer click={MessagesPressHandler}>
             <MessageIcon />
           </LogoContainer>
 
-          <LogoContainer>
+          <LogoContainer click={ProfilePressHandler}>
             <ProfileArea
               source={context.ProfilePicture}
               Username={context.userInfo?.username}

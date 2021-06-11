@@ -20,3 +20,15 @@ export const BigPopupContainer: React.FC<{}> = ({ children }) => {
         </React.Fragment>
     )
 };
+
+export const PopupHeader: React.FC<{name: string}> = ({ name }) => {
+    return <header id='popup-header'>{ name }</header>
+};
+
+export const PopupImageContainer: React.FC<{source: string | null}> = ({ source }) => {
+    return (
+        <main id='popup-img-container'>
+            {source ? <img src={source} alt='popuplogo'/> : <h1>No Photo Selected</h1>}
+        </main>
+    )
+};

@@ -26,6 +26,7 @@ const client = new ApolloClient({
 const AsyncPostContainer = React.lazy(() => import('../../Components/MainPage/PostContainer/post-container'));
 const AsyncMessageContainer = React.lazy(() => import('../../Components/MainPage/MessageContainer/message-container'));
 const AsyncProfileContainer = React.lazy(() => import('../../Components/MainPage/ProfileContainer/profile-container'));
+const AsyncSuggestionContainer = React.lazy(() => import('../../Components/MainPage/SuggestionContainer/suggestion-container'));
 
 const Convert2Dto1D = (Array: Array<string>) => {
   const dummy = [];
@@ -163,6 +164,13 @@ const MainPage: React.FC<PROPS> = (props) => {
             return (
               <Suspense fallback={<LoadingPage/>}>
                 <AsyncMessageContainer/>
+              </Suspense>
+            )
+          }}/>
+          <Route exact path='/suggestions' render={() => {
+            return (
+              <Suspense fallback={<LoadingPage/>}>
+                <AsyncSuggestionContainer/>
               </Suspense>
             )
           }}/>

@@ -1,14 +1,14 @@
 import React from 'react';
 import { MainPageContainer } from '../Reusables/reusables';
 
-const MessageContainer = () => {
+const SuggestionContainer = () => {
     return (
         <React.Fragment>
             <MainPageContainer>
-                <h1>Messages Container</h1>
+                <h1>SuggestionContainer</h1>
             </MainPageContainer>
         </React.Fragment>
     )
-};
+}
 
-export default MessageContainer;
+export default SuggestionContainer;
