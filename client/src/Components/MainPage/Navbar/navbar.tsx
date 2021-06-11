@@ -8,7 +8,6 @@ import {
   SearchBarProps,
 } from "../interfaces";
 import { HomeIcon, MessageIcon, SuggesstionIcon } from "./logo";
-import { useHistory } from "react-router-dom";
 import "./navbar.scss";
 
 const SubContainer: React.FC<{ id: string }> = (props) => {
@@ -79,20 +78,7 @@ const LogoContainer: React.FC<{
 
 const Navbar: React.FC<NavbarProps> = (props) => {
   const context = useContext(Context);
-  const history = useHistory();
-  const { change, value } = props;
-
-  const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
-    history.push("/posts");
-
-  const SuggestionPressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
-    history.push("/suggestions");
-
-  const MessagesPressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
-    history.push("/messages");
-
-  const ProfilePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
-    history.push(`/profile/${context.userInfo?.userID}`);
+  const { change, value, HomePressHandler, SuggestionPressHandler, MessagesPressHandler, ProfilePressHandler } = props;
 
   return (
     <React.Fragment>

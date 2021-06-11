@@ -8,25 +8,30 @@ import {
 } from "@apollo/client";
 import { UserInfo, PROPS, POSTS } from "./interfaces";
 import { Context } from "./Context";
-import {
-  FetchUserData,
-  PostsData,
-  PrePostData,
-} from "../../GraphQL/main-page-gql";
+import { FetchUserData, PostsData, PrePostData } from "../../GraphQL/gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
-import DefaultProfile from '../../assets/Images/profile-user.svg';
-import { Switch, Route } from "react-router";
+import DefaultProfile from "../../assets/Images/profile-user.svg";
+import { Switch, Route, useHistory } from "react-router";
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
   cache: new InMemoryCache(),
 });
 
-const AsyncPostContainer = React.lazy(() => import('../../Components/MainPage/PostContainer/post-container'));
-const AsyncMessageContainer = React.lazy(() => import('../../Components/MainPage/MessageContainer/message-container'));
-const AsyncProfileContainer = React.lazy(() => import('../../Components/MainPage/ProfileContainer/profile-container'));
-const AsyncSuggestionContainer = React.lazy(() => import('../../Components/MainPage/SuggestionContainer/suggestion-container'));
+const AsyncPostContainer = React.lazy(
+  () => import("../../Components/MainPage/PostContainer/post-container")
+);
+const AsyncMessageContainer = React.lazy(
+  () => import("../../Components/MainPage/MessageContainer/message-container")
+);
+const AsyncProfileContainer = React.lazy(
+  () => import("../../Components/MainPage/ProfileContainer/profile-container")
+);
+const AsyncSuggestionContainer = React.lazy(
+  () =>
+    import("../../Components/MainPage/SuggestionContainer/suggestion-container")
+);
 
 const Convert2Dto1D = (Array: Array<string>) => {
   const dummy = [];
@@ -56,7 +61,8 @@ const MainPage: React.FC<PROPS> = (props) => {
   const [prepoststate, setPrePostState] = useState<boolean>(false);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
-  
+  const history = useHistory();
+
   // apollo-client queries;
 
   const { loading } = useQuery(FetchUserData, {
@@ -68,7 +74,8 @@ const MainPage: React.FC<PROPS> = (props) => {
     onCompleted: (data) => {
       const { GetUserData } = data;
       const { FollowingList } = GetUserData;
-      GetUserData.ProfilePicture.length > 0 && setProfilePicture(GetUserData.ProfilePicture);
+      GetUserData.ProfilePicture.length > 0 &&
+        setProfilePicture(GetUserData.ProfilePicture);
       if (FollowingList) {
         let data: string[] = [];
         if (FollowingList.length > 0) data = Convert2Dto1D(FollowingList);
@@ -123,6 +130,18 @@ const MainPage: React.FC<PROPS> = (props) => {
     setSearchValue(value);
   };
 
+  const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
+    history.push("/posts");
+
+  const SuggestionPressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
+    history.push("/suggestions");
+
+  const MessagesPressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
+    history.push("/messages");
+
+  const ProfilePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
+    history.push(`/profile/${user_info?.userID}`);
+
   // SideEffects and Effects;
 
   useEffect(() => {
@@ -137,50 +156,78 @@ const MainPage: React.FC<PROPS> = (props) => {
 
   if (loading === true || PrePosts.loading === true) {
     return <LoadingPage />;
-  };
+  }
 
-  if (PostFetch.loading) {}
+  if (PostFetch.loading) {
+  }
 
   return (
     <React.Fragment>
-      <Context.Provider value={{ userInfo: user_info, ProfilePicture: profile_picture }}>
-        <Navbar change={ChangeSearchValue} value={search_value}/>
+      <Context.Provider
+        value={{ userInfo: user_info, ProfilePicture: profile_picture }}
+      >
+        <Navbar
+          HomePressHandler={HomePressHandler}
+          MessagesPressHandler={MessagesPressHandler}
+          ProfilePressHandler={ProfilePressHandler}
+          SuggestionPressHandler={SuggestionPressHandler}
+          change={ChangeSearchValue}
+          value={search_value}
+        />
         <Switch>
-          <Route exact path='/posts' render={() => {
-            return (
-              <Suspense fallback={<LoadingPage/>}>
-                <AsyncPostContainer/>
-              </Suspense>
-            )
-          }}/>
-          <Route exact path='/profile/:id' render={() => {
-            return (
-              <Suspense fallback={<LoadingPage/>}>
-                <AsyncProfileContainer/>
-              </Suspense>
-            )
-          }}/>
-          <Route exact path='/messages' render={() => {
-            return (
-              <Suspense fallback={<LoadingPage/>}>
-                <AsyncMessageContainer/>
-              </Suspense>
-            )
-          }}/>
-          <Route exact path='/suggestions' render={() => {
-            return (
-              <Suspense fallback={<LoadingPage/>}>
-                <AsyncSuggestionContainer/>
-              </Suspense>
-            )
-          }}/>
-          <Route render={() => {
-            return (
-              <Suspense fallback={<LoadingPage/>}>
-                <AsyncPostContainer/>
-              </Suspense>
-            )
-          }}/>
+          <Route
+            exact
+            path="/posts"
+            render={() => {
+              return (
+                <Suspense fallback={<LoadingPage />}>
+                  <AsyncPostContainer />
+                </Suspense>
+              );
+            }}
+          />
+          <Route
+            exact
+            path="/profile/:id"
+            render={() => {
+              return (
+                <Suspense fallback={<LoadingPage />}>
+                  <AsyncProfileContainer />
+                </Suspense>
+              );
+            }}
+          />
+          <Route
+            exact
+            path="/messages"
+            render={() => {
+              return (
+                <Suspense fallback={<LoadingPage />}>
+                  <AsyncMessageContainer />
+                </Suspense>
+              );
+            }}
+          />
+          <Route
+            exact
+            path="/suggestions"
+            render={() => {
+              return (
+                <Suspense fallback={<LoadingPage />}>
+                  <AsyncSuggestionContainer />
+                </Suspense>
+              );
+            }}
+          />
+          <Route
+            render={() => {
+              return (
+                <Suspense fallback={<LoadingPage />}>
+                  <AsyncPostContainer />
+                </Suspense>
+              );
+            }}
+          />
         </Switch>
       </Context.Provider>
     </React.Fragment>
