@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import {
   ApolloProvider,
   ApolloClient,
@@ -14,14 +14,18 @@ import {
   PrePostData,
 } from "../../GraphQL/main-page-gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
-import { MainPageContainer } from "../../Components/MainPage/Reusables/reusables";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
 import DefaultProfile from '../../assets/Images/profile-user.svg';
+import { Switch, Route } from "react-router";
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
   cache: new InMemoryCache(),
 });
+
+const AsyncPostContainer = React.lazy(() => import('../../Components/MainPage/PostContainer/post-container'));
+const AsyncMessageContainer = React.lazy(() => import('../../Components/MainPage/MessageContainer/message-container'));
+const AsyncProfileContainer = React.lazy(() => import('../../Components/MainPage/ProfileContainer/profile-container'));
 
 const Convert2Dto1D = (Array: Array<string>) => {
   const dummy = [];
@@ -132,16 +136,44 @@ const MainPage: React.FC<PROPS> = (props) => {
 
   if (loading === true || PrePosts.loading === true) {
     return <LoadingPage />;
-  }
+  };
 
   if (PostFetch.loading) {}
 
   return (
     <React.Fragment>
       <Context.Provider value={{ userInfo: user_info, ProfilePicture: profile_picture }}>
-        <MainPageContainer>
-          <Navbar change={ChangeSearchValue} value={search_value}/>
-        </MainPageContainer>
+        <Navbar change={ChangeSearchValue} value={search_value}/>
+        <Switch>
+          <Route exact path='/posts' render={() => {
+            return (
+              <Suspense fallback={<LoadingPage/>}>
+                <AsyncPostContainer/>
+              </Suspense>
+            )
+          }}/>
+          <Route exact path='/profile/:id' render={() => {
+            return (
+              <Suspense fallback={<LoadingPage/>}>
+                <AsyncProfileContainer/>
+              </Suspense>
+            )
+          }}/>
+          <Route exact path='/messages' render={() => {
+            return (
+              <Suspense fallback={<LoadingPage/>}>
+                <AsyncMessageContainer/>
+              </Suspense>
+            )
+          }}/>
+          <Route render={() => {
+            return (
+              <Suspense fallback={<LoadingPage/>}>
+                <AsyncPostContainer/>
+              </Suspense>
+            )
+          }}/>
+        </Switch>
       </Context.Provider>
     </React.Fragment>
   );

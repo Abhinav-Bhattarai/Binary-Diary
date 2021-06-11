@@ -54,6 +54,7 @@ const LogoContainer: React.FC<{}> = ({ children }) => {
 const Navbar: React.FC<NavbarProps> = (props) => {
   const context = useContext(Context);
   const { change, value } = props;
+  
   return (
     <React.Fragment>
       <NavbarContainer>
@@ -93,4 +94,4 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   );
 };
 
-export default Navbar;
+export default React.memo(Navbar);
