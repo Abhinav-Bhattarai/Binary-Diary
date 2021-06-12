@@ -1,6 +1,6 @@
 import redis from "async-redis";
 import { createRequire } from "module";
-import { PostModel } from "../Models/post-model.js";
+import { ByPassChecking } from "../Middleware/mutation-checker.js";
 const require = createRequire(import.meta.url);
 const {
   GraphQLObjectType,
@@ -12,8 +12,8 @@ const {
 } = require("graphql");
 
 import {
+  AddPostID,
   AddPostToDatabase,
-  CheckJWT,
   FollowingDataSearch,
   GetPostDataHandler,
   GetUserDataCacheCheck,
@@ -63,11 +63,14 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     GetUserData: {
       type: UserSchema,
-      args: { id: { type: GraphQLString }, uid: { type: GraphQLString } },
+      args: { id: { type: GraphQLString }, uid: { type: GraphQLString }, auth_token: { type: GraphQLString } },
       resolve: async (_, args) => {
-        const { id, uid } = args;
-        const response = GetUserDataCacheCheck(cache, id, uid);
-        return response;
+        const { id, uid, auth_token } = args;
+        const validity = ByPassChecking(auth_token, id, uid)
+        if (validity) {
+          const response = GetUserDataCacheCheck(cache, id, uid);
+          return response;  
+        }
       },
     },
 
@@ -78,11 +81,12 @@ const RootQuery = new GraphQLObjectType({
         posts: { type: new GraphQLList(GraphQLString) },
         request_count: { type: GraphQLInt },
         id: { type: GraphQLString },
+        uid: { type: GraphQLString }
       },
       resolve: async (_, args) => {
-        const { auth_token, posts, id, request_count } = args;
-        const data = CheckJWT(auth_token);
-        if (data) {
+        const { auth_token, posts, id, request_count, uid } = args;
+        const validity = ByPassChecking(auth_token, id, uid);
+        if (validity) {
           const response = await GetPostDataHandler(
             cache,
             id,
@@ -99,11 +103,12 @@ const RootQuery = new GraphQLObjectType({
       args: {
         auth_token: { type: GraphQLString },
         id: { type: GraphQLString },
+        uid: { type: GraphQLString }
       },
       resolve: async (_, args) => {
-        const { auth_token, id } = args;
-        const data = CheckJWT(auth_token);
-        if (data) {
+        const { auth_token, id, uid } = args;
+        const validity = ByPassChecking(auth_token, id, uid);
+        if (validity) {
           const PostData = await cache.get(`PrePostData/${id}`);
           if (PostData) {
             return JSON.parse(PostData);
@@ -124,15 +129,20 @@ const Mutation = new GraphQLObjectType({
         Username: { type: GraphQLString },
         Post: { type: GraphQLString },
         Caption: { type: GraphQLString },
-        uid: {type: GraphQLString}
+        uid: {type: GraphQLString},
+        auth_token: {type: GraphQLString}
       },
       resolve: async (_, args) => {
-        const db_response = await AddPostToDatabase(args);
-        const unserialized_data = await cache.get(`UserInfo/${args.id}/${args.uid}`)
-        const serialized_data = JSON.parse(unserialized_data);
-        serialized_data.Posts.push(db_response._id);
-        await cache.set(`UserInfo/${args.id}/${args.uid}`, JSON.stringify(serialized_data));
-        return { Mutated: true };
+        const validity = ByPassChecking(args.auth_token, args.id, args.uid);
+        if (validity) {
+          const db_response = await AddPostToDatabase(args);
+          const unserialized_data = await cache.get(`UserInfo/${args.id}/${args.uid}`);
+          await AddPostID(args.id, db_response._id);
+          const serialized_data = JSON.parse(unserialized_data);
+          serialized_data.Posts.push(db_response._id);
+          await cache.set(`UserInfo/${args.id}/${args.uid}`, JSON.stringify(serialized_data));
+          return { Mutated: true };
+        }
       },
     },
   },

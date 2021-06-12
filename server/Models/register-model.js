@@ -38,24 +38,24 @@ const Schema = new mongoose.Schema({
   },
 
   Following: {
-      type: [String],
-      default: []
+    type: [String],
+    default: [],
   },
 
   Followers: {
-      type: [String],
-      default: []
+    type: [String],
+    default: [],
   },
 
   Posts: {
     type: [String],
-    default: []
+    default: [],
   },
 
   UniqueID: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 export const RegisterModel = mongoose.model("RegisterModel", Schema);

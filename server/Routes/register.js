@@ -32,7 +32,7 @@ router.post('/', SignupMiddleware, async(req, res) => {
         const data = {Username, Password: HashedPassword, Phone: parseInt(Phone), UniqueID};
         const RegisterData = new RegisterModel(data);
         const registered_data = await RegisterData.save();
-        const token = GenerateAuthToken(data);
+        const token = GenerateAuthToken({...data, id: registered_data._id, uid: UniqueID});
         return res.json({auth_token: token, id: registered_data._id, username: Username, error: false, UniqueID});
     } else {
         return res.json({error: true, type: 'signup'});

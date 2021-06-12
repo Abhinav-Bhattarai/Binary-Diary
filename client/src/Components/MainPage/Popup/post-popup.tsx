@@ -26,15 +26,6 @@ const PostPopup = () => {
   const FileInputRef = useRef<HTMLInputElement>(null);
 
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    // if (event.target.files) {
-    //     const image = event.target.files[0];
-    //     const reader = new FileReader();
-    //     reader.onload = () => {
-    //         console.log('UncompressedImage');
-    //         console.log(reader.result);
-    //     };
-    //     reader.readAsDataURL(image);
-    // }
     if (event.target.files) {
       const image = event.target.files[0];
       // @ts-ignore

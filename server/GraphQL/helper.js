@@ -36,7 +36,7 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
     _id: 0,
   });
   if (response !== null) {
-    if (response.UniqueID === uid) {
+    if (response.UniqueID === parseInt(uid)) {
       let SerializedData = {
         Username: response.Username,
         Followers: response.Followers,
@@ -86,9 +86,13 @@ export const AddPostToDatabase = async ({ id, Username, Post, Caption }) => {
   });
   const response = await Data.save();
   return response;
-}
-
-export const CheckJWT = async(token) => {
-    const data = jwt.verify(token, process.env.JWT_AUTH_TOKEN);
-    return data;
 };
+
+export const AddPostID = async (user_id, post_id) => {
+  const response = await RegisterModel.findOne({_id: user_id});
+  if (response) {
+    response.Posts.push(post_id);
+    await response.save();
+    return
+  }
+}

@@ -69,6 +69,7 @@ const MainPage: React.FC<PROPS> = (props) => {
     variables: {
       id: localStorage.getItem("userID"),
       uid: localStorage.getItem("uid"),
+      auth_token: localStorage.getItem("auth-token")
     },
 
     onCompleted: (data) => {
@@ -110,6 +111,7 @@ const MainPage: React.FC<PROPS> = (props) => {
     variables: {
       id: localStorage.getItem("userID"),
       auth_token: localStorage.getItem("auth-token"),
+      uid: localStorage.getItem("uid")
     },
 
     onCompleted: (data) => {
