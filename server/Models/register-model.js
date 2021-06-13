@@ -48,7 +48,13 @@ const Schema = new mongoose.Schema({
   },
 
   Posts: {
-    type: [String],
+    type: [{
+      PostID: {type: String},
+      CreationDate: {
+        type: Date,
+        default: Date.now
+      }
+    }],
     default: [],
   },
 

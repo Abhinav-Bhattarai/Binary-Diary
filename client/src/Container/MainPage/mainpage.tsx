@@ -74,13 +74,15 @@ const MainPage: React.FC<PROPS> = (props) => {
 
     onCompleted: (data) => {
       const { GetUserData } = data;
-      const { FollowingList } = GetUserData;
-      GetUserData.ProfilePicture.length > 0 &&
-        setProfilePicture(GetUserData.ProfilePicture);
-      if (FollowingList) {
-        let data: string[] = [];
-        if (FollowingList.length > 0) data = Convert2Dto1D(FollowingList);
-        setPostIDList(data);
+      if (GetUserData) {
+        const { FollowingList } = GetUserData;
+        GetUserData.ProfilePicture.length > 0 &&
+          setProfilePicture(GetUserData.ProfilePicture);
+        if (FollowingList) {
+          let data: string[] = [];
+          if (FollowingList.length > 0) data = Convert2Dto1D(FollowingList);
+          setPostIDList(data);
+        }
       }
     },
 

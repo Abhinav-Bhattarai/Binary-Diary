@@ -1,5 +1,4 @@
 import { RegisterModel } from "../Models/register-model.js";
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { PostModel } from "../Models/post-model.js";
 dotenv.config();
@@ -11,20 +10,38 @@ export const FollowingDataSearch = async (Following) => {
     },
     {
       Username: 1,
-      Followers: 1,
-      Following: 1,
-      Bio: 1,
       Posts: 1,
       ProfilePicture: 1,
       _id: 0,
     }
-  );
-  return response;
+  ); 
+  const posts = FlattenPost(response.Posts);
+  const SerializedData = {
+    Username: response.Username,
+    Posts: posts,
+    ProfilePicture: response.ProfilePicture
+  }
+  return SerializedData;
 };
+
+function FlattenPost(posts) {
+  if (posts.length > 0) {
+    const new_post = [];
+    for (let post of posts) {
+      const DAY = 60 * 60 * 24;
+      const date_difference = (new Date() - new Date(post.CreationDate)) / 1000;
+      if (date_difference <= DAY*2) {
+        new_post.push(post.PostID);
+      };
+    };
+    return new_post;
+  }
+  return [];
+}
 
 export const GetUserDataCacheCheck = async (cache, id, uid) => {
   const UserData = await cache.get(`UserInfo/${id}/${uid}`);
-  if (UserData) return JSON.parse(UserData);
+  if (UserData !== null) {return JSON.parse(UserData)};
   const response = await RegisterModel.findById(id, {
     Username: 1,
     Followers: 1,
@@ -36,13 +53,14 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
     _id: 0,
   });
   if (response !== null) {
-    if (response.UniqueID === parseInt(uid)) {
+    if (response.UniqueID === uid) {
+      const FlattendPost = FlattenPost(response.Posts);
       let SerializedData = {
         Username: response.Username,
         Followers: response.Followers,
         Following: response.Following,
         Bio: response.Bio,
-        Posts: response.Posts,
+        Posts: FlattendPost,
         ProfilePicture: response.ProfilePicture,
       };
       await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
@@ -91,7 +109,7 @@ export const AddPostToDatabase = async ({ id, Username, Post, Caption }) => {
 export const AddPostID = async (user_id, post_id) => {
   const response = await RegisterModel.findOne({_id: user_id});
   if (response) {
-    response.Posts.push(post_id);
+    response.Posts.push({PostID: post_id});
     await response.save();
     return
   }

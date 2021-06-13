@@ -11,8 +11,6 @@ export const FetchUserData = gql`
       FollowingList {
         Username
         ProfilePicture
-        Following
-        Followers
         Posts
       }
     }

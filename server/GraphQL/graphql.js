@@ -50,8 +50,10 @@ const UserSchema = new GraphQLObjectType({
         type: new GraphQLList(UserSchema),
         resolve: async (parent, _) => {
           const { Following } = parent;
-          const response = await FollowingDataSearch(Following);
-          return response;
+          if (Following.length > 0) {
+            const response = await FollowingDataSearch(Following);
+            return response;  
+          }
         },
       },
     };
@@ -66,7 +68,7 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLString }, uid: { type: GraphQLString }, auth_token: { type: GraphQLString } },
       resolve: async (_, args) => {
         const { id, uid, auth_token } = args;
-        const validity = ByPassChecking(auth_token, id, uid)
+        const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
           const response = GetUserDataCacheCheck(cache, id, uid);
           return response;  

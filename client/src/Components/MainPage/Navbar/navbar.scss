@@ -104,12 +104,14 @@ $input-glow: rgb(235, 235, 235);
 @media all and (max-width: 760px) {
   #sub-container-2 {
     flex: 0;
+    display: none;
   }
 }
 
 @media all and (max-width: 600px) {
   #sub-container-1 {
     flex: 0;
+    display: none;
   }
   .search-bar {
     display: none;
