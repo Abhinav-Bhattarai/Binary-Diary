@@ -36,6 +36,23 @@ const PostSchema = new GraphQLObjectType({
   },
 });
 
+const ProfileSchema = new GraphQLObjectType({
+  name: 'ProfileObject',
+  fields: () => {
+    return {
+      Posts: { type: new GraphQLList(GraphQLString) },
+      Followers: { type: new GraphQLList(GraphQLString) },
+      Following: { type: new GraphQLList(GraphQLString) },
+      PostData: {
+        type: new GraphQLList(PostSchema),
+        resolve: async(parent, _) => {
+          const { } = parent;
+        }
+      }
+    }
+  }
+})
+
 const UserSchema = new GraphQLObjectType({
   name: "UserSchema",
   fields: () => {

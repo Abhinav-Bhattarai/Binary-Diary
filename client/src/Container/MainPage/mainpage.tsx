@@ -47,7 +47,7 @@ const MainPageWrapper: React.FC<PROPS> = (props) => {
 const MainPage: React.FC<PROPS> = (props) => {
   const [user_info, setUserinfo] = useState<UserInfo | null>(null);
   const [profile_data, setProfileData] = useState<null | UserData>(null);
-  const [following, setFollowing] = useState<Array<FollowingData> | null>(null);
+  // const [following, setFollowing] = useState<Array<FollowingData> | null>(null);
   const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [prepoststate, setPrePostState] = useState<boolean>(true);
@@ -80,16 +80,14 @@ const MainPage: React.FC<PROPS> = (props) => {
             request_count,
           };
           setPostIDList(data);
-          setFollowing(FollowingList);
+          // setFollowing(FollowingList);
           PostFetch({ variables: config });
         };
         setProfileData(GetUserData)
       }
     },
 
-    onError: (error) => {
-      console.log(error, "UserData");
-    },
+    onError: (error) => console.log(error, "UserData")
   });
 
   const [PostFetch, PostFetchConfig] = useLazyQuery(PostsData, {
@@ -107,9 +105,7 @@ const MainPage: React.FC<PROPS> = (props) => {
       }
     },
 
-    onError: (error) => {
-      console.log(error, "PostFetchConfig");
-    },
+    onError: (error) => console.log(error, "PostFetchConfig")
   });
 
   const PrePosts = useQuery(PrePostData, {
@@ -124,9 +120,7 @@ const MainPage: React.FC<PROPS> = (props) => {
       GetPrePostData && setPosts(GetPrePostData);
     },
 
-    onError: (error) => {
-      console.log(error, "PrePosts");
-    },
+    onError: (error) => console.log(error, "PrePosts")
   });
 
   // RenderFunctions
@@ -154,10 +148,8 @@ const MainPage: React.FC<PROPS> = (props) => {
     const auth_token = localStorage.getItem("auth-token");
     const username = localStorage.getItem("username");
     const userID = localStorage.getItem("userID");
-    auth_token &&
-      username &&
-      userID &&
-      setUserinfo({ auth_token, username, userID });
+    const uid = localStorage.getItem("uid");
+    (auth_token && username && userID && uid) && setUserinfo({ auth_token, username, userID, uid });
   }, []);
 
   if (loading === true || PrePosts.loading === true) {

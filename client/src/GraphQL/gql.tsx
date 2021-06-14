@@ -40,3 +40,14 @@ export const PrePostData = gql`
     }
   }
 `;
+
+export const ProfileData = gql`
+  query($auth_token: String!, $id: String!, $uid: String!, $searchID: String!, $verify: Boolean!) {
+    GetProfileData(auth_token: $auth_token, id: $id, uid: $uid, searchID: $searchID, verify: $verify) {
+      Followers
+      Following
+      Posts
+      PostData
+    }
+  }
+`;

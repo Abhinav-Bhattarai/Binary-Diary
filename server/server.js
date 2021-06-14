@@ -68,8 +68,6 @@ mongoose
   .catch(() => {
     console.log("didnot connect to mongoDB");
   });
-
-console.log(new Date() - new Date('2021-06-13T04:09:03.897Z'));
 // main listener
 server.listen(PORT, () => {
   console.log("connected to localhost:8000");

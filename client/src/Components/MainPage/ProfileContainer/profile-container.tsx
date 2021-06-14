@@ -7,6 +7,8 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { resizeFile } from "./helper";
 import "./profile-container.scss";
+import { useLazyQuery } from "@apollo/client";
+import { ProfileData } from "../../../GraphQL/gql";
 const transition_duration: number = 4000;
 
 const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
@@ -47,7 +49,14 @@ const ProfileContainer = () => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const FileInputRef = useRef<HTMLInputElement>(null);
-  const params = useParams<{ id: string; owner: string }>();
+  const params = useParams<{ id: string; owned: string }>();
+  const [GetProfileData] = useLazyQuery(ProfileData, {
+    onCompleted: (data) => {
+      setProfileInfo(data);
+    },
+
+    onError: (error) => console.log(error)
+  })
 
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -60,11 +69,24 @@ const ProfileContainer = () => {
 
   const ExitPopup = () => setTransitioning(false);
 
-  useEffect(
-    () => {
-      if (parseInt(params.owner) === 1 && params.id === context.userInfo?.userID) {
+  const ProfileDataCaller = (type: boolean) => {
+    GetProfileData({
+      variables: {
+        auth_token: context.userInfo?.auth_token,
+        id: context.userInfo?.userID,
+        uid: context.userInfo?.uid,
+        searchID: params.id,
+        verify: type
+      }
+    });
+  };
+
+  useEffect(() => {
+      if ( parseInt(params.owned) === 1 && params.id === context.userInfo?.userID) {
         setOwnerStatus(true);
+        ProfileDataCaller(true);
       } else {
+        ProfileDataCaller(false);
       }
     }, // eslint-disable-next-line
     []
@@ -80,7 +102,6 @@ const ProfileContainer = () => {
           timeout={transition_duration}
         >
           {(status) => {
-            console.log(status);
             return (
               <BigPopupContainer status={status}>
                 <PopupHeader Exit={ExitPopup} name="Add new Photo" />
@@ -100,9 +121,9 @@ const ProfileContainer = () => {
     return null;
   }, [transitioning, post]);
 
-  // if (owner_status === null) {
-  //   return <React.Fragment></React.Fragment>;
-  // }
+  if (owner_status === null) {
+    return <React.Fragment></React.Fragment>;
+  }
 
   return (
     <React.Fragment>
