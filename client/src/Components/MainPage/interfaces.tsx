@@ -11,7 +11,7 @@ export interface NavbarProps {
 
 export interface ProfileAreaProps {
   Username: string | undefined;
-  source: string;
+  source: string | undefined;
 }
 export interface SearchBarProps {
   value: string;

@@ -13,6 +13,7 @@ import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
 import DefaultProfile from "../../assets/Images/profile-user.svg";
 import { Switch, Route, useHistory } from "react-router";
+import { FollowingListSerialization } from "./helper";
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
@@ -33,17 +34,6 @@ const AsyncSuggestionContainer = React.lazy(
     import("../../Components/MainPage/SuggestionContainer/suggestion-container")
 );
 
-const Convert2Dto1D = (Posts: Array<FollowingData>) => {
-  const dummy = [];
-  // O(n^2)
-  for (let userInfo of Posts) {
-    for (let posts of userInfo.Posts) {
-      dummy.push(posts);
-    }
-  }
-  return dummy;
-};
-
 const MainPageWrapper: React.FC<PROPS> = (props) => {
   return (
     <React.Fragment>
@@ -60,9 +50,10 @@ const MainPage: React.FC<PROPS> = (props) => {
   const [following, setFollowing] = useState<Array<FollowingData> | null>(null);
   const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
-  const [prepoststate, setPrePostState] = useState<boolean>(false);
+  const [prepoststate, setPrePostState] = useState<boolean>(true);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
+  const [request_count, setReqestCount] = useState<number>(0);
   const history = useHistory();
 
   // apollo-client queries;
@@ -77,16 +68,22 @@ const MainPage: React.FC<PROPS> = (props) => {
     onCompleted: (data) => {
       const { GetUserData }: { GetUserData: UserData | null } = data;
       if (GetUserData) {
-        const { FollowingList }: { FollowingList: Array<FollowingData> } =
-          GetUserData;
-        GetUserData.ProfilePicture.length > 0 &&
-          setProfilePicture(GetUserData.ProfilePicture);
+        const { FollowingList }: { FollowingList: Array<FollowingData> | null } = GetUserData;
+        if (GetUserData.ProfilePicture.length > 0) setProfilePicture(GetUserData.ProfilePicture);
         if (FollowingList) {
-          let data: string[] = [];
-          if (FollowingList.length > 0) data = Convert2Dto1D(FollowingList);
+          const sliced_post = FollowingListSerialization(FollowingList);
+          const config = {
+            id: localStorage.getItem("userID"),
+            uid: localStorage.getItem("uid"),
+            auth_token: localStorage.getItem("auth-token"),
+            Posts: sliced_post,
+            request_count,
+          };
           setPostIDList(data);
           setFollowing(FollowingList);
-        }
+          PostFetch({ variables: config });
+        };
+        setProfileData(GetUserData)
       }
     },
 
@@ -94,7 +91,8 @@ const MainPage: React.FC<PROPS> = (props) => {
       console.log(error, "UserData");
     },
   });
-  const [, PostFetch] = useLazyQuery(PostsData, {
+
+  const [PostFetch, PostFetchConfig] = useLazyQuery(PostsData, {
     onCompleted: ({ GetPostsData }) => {
       if (GetPostsData && posts) {
         if (prepoststate) {
@@ -104,12 +102,13 @@ const MainPage: React.FC<PROPS> = (props) => {
           const dummy = [...posts];
           console.log(dummy);
           console.log(postid_list);
+          setReqestCount(request_count + 1);
         }
       }
     },
 
     onError: (error) => {
-      console.log(error, "PostFetch");
+      console.log(error, "PostFetchConfig");
     },
   });
 
@@ -122,7 +121,6 @@ const MainPage: React.FC<PROPS> = (props) => {
 
     onCompleted: (data) => {
       const { GetPrePostData } = data;
-      setPrePostState(true);
       GetPrePostData && setPosts(GetPrePostData);
     },
 
@@ -148,7 +146,7 @@ const MainPage: React.FC<PROPS> = (props) => {
     history.push("/messages");
 
   const ProfilePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
-    history.push(`/profile/${user_info?.userID}`);
+    history.push(`/profile/${user_info?.userID}/1`);
 
   // SideEffects and Effects;
 
@@ -166,13 +164,12 @@ const MainPage: React.FC<PROPS> = (props) => {
     return <LoadingPage />;
   }
 
-  if (PostFetch.loading) {
-  }
+  if (PostFetchConfig.loading) {}
 
   return (
     <React.Fragment>
       <Context.Provider
-        value={{ userInfo: user_info, ProfilePicture: profile_picture }}
+        value={{ userInfo: user_info, ProfileData: profile_data, ProfilePicture: profile_picture }}
       >
         <Navbar
           HomePressHandler={HomePressHandler}
@@ -196,7 +193,7 @@ const MainPage: React.FC<PROPS> = (props) => {
           />
           <Route
             exact
-            path="/profile/:id"
+            path="/profile/:id/:owned"
             render={() => {
               return (
                 <Suspense fallback={<LoadingPage />}>

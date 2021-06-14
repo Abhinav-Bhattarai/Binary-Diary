@@ -1,0 +1,36 @@
+$faint-white: rgb(250, 250, 249);
+
+#profile-header-container {
+  flex: 1;
+  padding: 25px 0;
+  background-color: $faint-white;
+
+  #profile-img-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #profile-information-overview {
+    display: flex;
+    align-items: center;
+    width: 60%;
+    margin: 20px auto;
+    padding-top: 10px;
+
+    #profile-overview-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+
+      .overview {
+        font-weight: bold;
+        text-transform: capitalize;
+        color: #333;
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ export const MainPageContainer: React.FC<{ popup?: boolean; Exit?: () => void }>
     );
   };
 
-export const BigPopupContainer: React.FC<{}> = ({ children }) => {
+export const BigPopupContainer: React.FC<{status: string}> = ({ children, status }) => {
   return (
     <React.Fragment>
       <main id="big-popup-container">{children}</main>

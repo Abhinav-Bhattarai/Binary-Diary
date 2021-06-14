@@ -14,7 +14,8 @@ export interface UserData {
     ProfilePicture: string;
     Posts: Array<string>;
     Username: string;
-    FollowingList: Array<FollowingData>
+    FollowingList: Array<FollowingData>;
+    __typename: string;
 }
 
 export interface POSTS {
