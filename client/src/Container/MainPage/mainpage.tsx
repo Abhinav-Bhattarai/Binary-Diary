@@ -6,7 +6,7 @@ import {
   useQuery,
   useLazyQuery,
 } from "@apollo/client";
-import { UserInfo, PROPS, POSTS } from "./interfaces";
+import { UserInfo, PROPS, POSTS, UserData, FollowingData } from "./interfaces";
 import { Context } from "./Context";
 import { FetchUserData, PostsData, PrePostData } from "../../GraphQL/gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
@@ -33,11 +33,11 @@ const AsyncSuggestionContainer = React.lazy(
     import("../../Components/MainPage/SuggestionContainer/suggestion-container")
 );
 
-const Convert2Dto1D = (Array: Array<string>) => {
+const Convert2Dto1D = (Posts: Array<FollowingData>) => {
   const dummy = [];
   // O(n^2)
-  for (let userInfo of Array) {
-    for (let posts of userInfo) {
+  for (let userInfo of Posts) {
+    for (let posts of userInfo.Posts) {
       dummy.push(posts);
     }
   }
@@ -56,6 +56,8 @@ const MainPageWrapper: React.FC<PROPS> = (props) => {
 
 const MainPage: React.FC<PROPS> = (props) => {
   const [user_info, setUserinfo] = useState<UserInfo | null>(null);
+  const [profile_data, setProfileData] = useState<null | UserData>(null);
+  const [following, setFollowing] = useState<Array<FollowingData> | null>(null);
   const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [prepoststate, setPrePostState] = useState<boolean>(false);
@@ -69,19 +71,21 @@ const MainPage: React.FC<PROPS> = (props) => {
     variables: {
       id: localStorage.getItem("userID"),
       uid: localStorage.getItem("uid"),
-      auth_token: localStorage.getItem("auth-token")
+      auth_token: localStorage.getItem("auth-token"),
     },
 
     onCompleted: (data) => {
-      const { GetUserData } = data;
+      const { GetUserData }: { GetUserData: UserData | null } = data;
       if (GetUserData) {
-        const { FollowingList } = GetUserData;
+        const { FollowingList }: { FollowingList: Array<FollowingData> } =
+          GetUserData;
         GetUserData.ProfilePicture.length > 0 &&
           setProfilePicture(GetUserData.ProfilePicture);
         if (FollowingList) {
           let data: string[] = [];
           if (FollowingList.length > 0) data = Convert2Dto1D(FollowingList);
           setPostIDList(data);
+          setFollowing(FollowingList);
         }
       }
     },
@@ -113,7 +117,7 @@ const MainPage: React.FC<PROPS> = (props) => {
     variables: {
       id: localStorage.getItem("userID"),
       auth_token: localStorage.getItem("auth-token"),
-      uid: localStorage.getItem("uid")
+      uid: localStorage.getItem("uid"),
     },
 
     onCompleted: (data) => {
