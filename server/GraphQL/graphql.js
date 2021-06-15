@@ -14,6 +14,7 @@ const {
 import {
   AddPostID,
   AddPostToDatabase,
+  FetchUserData,
   FlattenPost,
   FollowingDataSearch,
   GetPostDataHandler,
@@ -60,6 +61,8 @@ const ProfileSchema = new GraphQLObjectType({
               const PostData = await ProfilePostCollector(Posts);
               return PostData;
             }
+          } else {
+            return []
           }
         },
       },
@@ -169,11 +172,14 @@ const RootQuery = new GraphQLObjectType({
         if (verify) {
           const verification = ByPassChecking(auth_token, id, uid);
           if (verification) {
-            console.log(verification);
             return { Posts, Verified: true };
           } else {
+            const response = FetchUserData(searchID);
+            return response;
           }
         } else {
+          const response = FetchUserData(searchID);
+          return response;
         }
       },
     },

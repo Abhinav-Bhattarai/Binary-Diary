@@ -1,6 +1,17 @@
 $faint-white: rgb(250, 250, 249);
 
+#profile-post-area-container {
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
 #profile-header-container {
+  width: 100%;
   flex: 1;
   padding: 25px 0;
   background-color: $faint-white;

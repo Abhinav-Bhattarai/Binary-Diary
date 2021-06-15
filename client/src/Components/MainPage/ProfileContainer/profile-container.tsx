@@ -10,6 +10,8 @@ import "./profile-container.scss";
 import { useLazyQuery } from "@apollo/client";
 import { ProfileData } from "../../../GraphQL/gql";
 import { PostListType } from "../interfaces";
+import Spinner from "../../UI/Spinner/spinner";
+import DefaultProfile from '../../../assets/Images/profile-user.svg';
 const transition_duration: number = 4000;
 
 const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
@@ -43,6 +45,10 @@ const ProfileInformationOverView: React.FC<{}> = ({ children }) => {
   return <main id="profile-information-overview">{children}</main>;
 };
 
+const ProfilePostAreaContainer: React.FC<{}> = ({ children }) => {
+  return <article id="profile-post-area-container">{children}</article>;
+};
+
 const ProfileContainer = () => {
   const context = useContext(Context);
   const [profile_info, setProfileInfo] = useState<contextData>(context);
@@ -55,15 +61,28 @@ const ProfileContainer = () => {
   const [GetProfileData] = useLazyQuery(ProfileData, {
     onCompleted: (data) => {
       const { GetProfileData } = data;
-      if (GetProfileData.Verified === false) {
-        setProfileInfo(GetProfileData);
-      }else {
-        setPostList(GetProfileData.PostData);
-      };
+      if (GetProfileData) {
+        const { PostData } = GetProfileData;
+        if (GetProfileData.Verified === false || GetProfileData.Verified === null) {
+          setProfileInfo(GetProfileData);
+          setOwnerStatus(false);
+          setPostList(PostData);
+        } else {};
+        const SerializedData = {
+          ProfilePicture: GetProfileData.ProfilePicture.length > 0 ? GetProfileData.ProfilePicture : DefaultProfile,
+          ProfileData: {
+            Following: GetProfileData.Following,
+            Followers: GetProfileData.Followers,
+            Posts: GetProfileData.Posts
+          }
+        };          
+        // @ts-ignore
+        setProfileInfo(SerializedData);
+      }
     },
 
-    onError: (error) => console.log(error)
-  })
+    onError: (error) => console.log(error),
+  });
 
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -76,28 +95,29 @@ const ProfileContainer = () => {
 
   const ExitPopup = () => setTransitioning(false);
 
-  const ProfileDataCaller = (type: boolean) => {
-    GetProfileData({
-      variables: {
-        auth_token: context.userInfo?.auth_token,
-        id: context.userInfo?.userID,
-        uid: context.userInfo?.uid,
-        searchID: params.id,
-        verify: type,
-        Posts: context.ProfileData?.Posts
+  useEffect(
+    () => {
+      const ProfileDataCaller = (type: boolean) => {
+        GetProfileData({
+          variables: {
+            auth_token: context.userInfo?.auth_token,
+            id: context.userInfo?.userID,
+            uid: context.userInfo?.uid,
+            searchID: params.id,
+            verify: type,
+            Posts: context.ProfileData?.Posts,
+          },
+        });
+      };
+      if ( parseInt(params.owned) === 1 && params.id === context.userInfo?.userID ) {
+        setOwnerStatus(true);
+        ProfileDataCaller(true);
+      } else {
+        ProfileDataCaller(false);
       }
-    });
-  };
-
-  useEffect(() => {
-     if ( parseInt(params.owned) === 1 && params.id === context.userInfo?.userID) {
-       setOwnerStatus(true);
-       ProfileDataCaller(true);
-     } else {
-       ProfileDataCaller(false);
-     }
     }, // eslint-disable-next-line
-  []);
+    []
+  );
 
   const POPUP = useMemo(() => {
     if (transitioning) {
@@ -131,11 +151,25 @@ const ProfileContainer = () => {
   const PostArea = useMemo(() => {
     if (post_list) {
       if (post_list.length > 0) {
-        return <React.Fragment></React.Fragment>
-      } 
-      return <React.Fragment></React.Fragment>
+        return (
+          <React.Fragment>
+            <ProfilePostAreaContainer></ProfilePostAreaContainer>
+          </React.Fragment>
+        );
+      }
+      return (
+        <React.Fragment>
+          <ProfilePostAreaContainer></ProfilePostAreaContainer>
+        </React.Fragment>
+      );
     }
-    return null
+    return (
+      <React.Fragment>
+        <ProfilePostAreaContainer>
+          <Spinner />
+        </ProfilePostAreaContainer>
+      </React.Fragment>
+    );
   }, [post_list]);
 
   if (owner_status === null) {
@@ -164,7 +198,7 @@ const ProfileContainer = () => {
           </ProfileInformationOverView>
         </ProfileHeaderContainer>
 
-        { PostArea }
+        {PostArea}
       </MainPageContainer>
     </React.Fragment>
   );

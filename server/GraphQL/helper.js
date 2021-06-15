@@ -127,4 +127,16 @@ export const ProfilePostCollector = async(FlattenedPost) => {
   }
   const PostData = await GetPostDataHandler(null, null, ReducedPosts, -1);
   return PostData;
-}
+};
+
+export const FetchUserData = async(id) => {
+  const response = await RegisterModel.findById(id, {
+    Username: 1,
+    Followers: 1,
+    Following: 1,
+    Posts: 1,
+    ProfilePicture: 1,
+    _id: 0,
+  });
+  return response;
+};
