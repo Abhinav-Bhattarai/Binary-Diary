@@ -1,5 +1,5 @@
 import { RegisterModel } from "../Models/register-model.js";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 import { PostModel } from "../Models/post-model.js";
 dotenv.config();
 
@@ -14,26 +14,31 @@ export const FollowingDataSearch = async (Following) => {
       ProfilePicture: 1,
       _id: 0,
     }
-  ); 
-  const posts = FlattenPost(response.Posts);
+  );
+  const posts = FlattenPost(response.Posts, true);
   const SerializedData = {
     Username: response.Username,
     Posts: posts,
-    ProfilePicture: response.ProfilePicture
-  }
+    ProfilePicture: response.ProfilePicture,
+  };
   return SerializedData;
 };
 
-function FlattenPost(posts) {
+export function FlattenPost(posts, sort) {
   if (posts.length > 0) {
     const new_post = [];
     for (let post of posts) {
-      const DAY = 60 * 60 * 24;
-      const date_difference = (new Date() - new Date(post.CreationDate)) / 1000;
-      if (date_difference <= DAY*2) {
+      if (sort === true) {
+        const DAY = 60 * 60 * 24;
+        const date_difference =
+          (new Date() - new Date(post.CreationDate)) / 1000;
+        if (date_difference <= DAY * 2) {
+          new_post.push(post.PostID);
+        }
+      } else {
         new_post.push(post.PostID);
-      };
-    };
+      }
+    }
     return new_post;
   }
   return [];
@@ -41,7 +46,9 @@ function FlattenPost(posts) {
 
 export const GetUserDataCacheCheck = async (cache, id, uid) => {
   const UserData = await cache.get(`UserInfo/${id}/${uid}`);
-  if (UserData !== null) {return JSON.parse(UserData)};
+  if (UserData !== null) {
+    return JSON.parse(UserData);
+  }
   const response = await RegisterModel.findById(id, {
     Username: 1,
     Followers: 1,
@@ -71,7 +78,7 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
   return null;
 };
 
-export const GetPostDataHandler = async(cache, id, posts, request_count) => {
+export const GetPostDataHandler = async (cache, id, posts, request_count) => {
   const response = await PostModel.find({ _id: { $in: posts } }).sort({
     date: -1,
   });
@@ -83,16 +90,14 @@ export const GetPostDataHandler = async(cache, id, posts, request_count) => {
       CreatorID: response.CreatorID,
       CreatorUsername: response.CreatorUsername,
     };
-    const PrePostData = await cache.get(`PrePostData/${id}`);
-    if (!PrePostData && request_count === 1) {
-      await cache.set(
-        `PrePostData/${id}`,
-        JSON.stringify(SerializedData)
-      );
+    if (request_count === 1 && cache && id) {
+      const PrePostData = await cache.get(`PrePostData/${id}`);
+      if (!PrePostData)
+        await cache.set(`PrePostData/${id}`, JSON.stringify(SerializedData));
     }
     return SerializedData;
   }
-  return null
+  return null;
 };
 
 export const AddPostToDatabase = async ({ id, Username, Post, Caption }) => {
@@ -100,17 +105,26 @@ export const AddPostToDatabase = async ({ id, Username, Post, Caption }) => {
     CreatorID: id,
     CreatorUsername: Username,
     Post,
-    Caption
+    Caption,
   });
   const response = await Data.save();
   return response;
 };
 
 export const AddPostID = async (user_id, post_id) => {
-  const response = await RegisterModel.findOne({_id: user_id});
+  const response = await RegisterModel.findOne({ _id: user_id });
   if (response) {
-    response.Posts.push({PostID: post_id});
+    response.Posts.push({ PostID: post_id });
     await response.save();
-    return
+    return;
   }
+};
+
+export const ProfilePostCollector = async(FlattenedPost) => {
+  let ReducedPosts = FlattenedPost;
+  if (FlattenPost.length > 6) {
+    ReducedPosts = ReducedPosts.splice(0, 5);
+  }
+  const PostData = await GetPostDataHandler(null, null, ReducedPosts, -1);
+  return PostData;
 }

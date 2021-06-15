@@ -9,6 +9,7 @@ import { resizeFile } from "./helper";
 import "./profile-container.scss";
 import { useLazyQuery } from "@apollo/client";
 import { ProfileData } from "../../../GraphQL/gql";
+import { PostListType } from "../interfaces";
 const transition_duration: number = 4000;
 
 const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
@@ -48,11 +49,17 @@ const ProfileContainer = () => {
   const [transitioning, setTransitioning] = useState<boolean>(false);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
+  const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
   const FileInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string; owned: string }>();
   const [GetProfileData] = useLazyQuery(ProfileData, {
     onCompleted: (data) => {
-      setProfileInfo(data);
+      const { GetProfileData } = data;
+      if (GetProfileData.Verified === false) {
+        setProfileInfo(GetProfileData);
+      }else {
+        setPostList(GetProfileData.PostData);
+      };
     },
 
     onError: (error) => console.log(error)
@@ -76,21 +83,21 @@ const ProfileContainer = () => {
         id: context.userInfo?.userID,
         uid: context.userInfo?.uid,
         searchID: params.id,
-        verify: type
+        verify: type,
+        Posts: context.ProfileData?.Posts
       }
     });
   };
 
   useEffect(() => {
-      if ( parseInt(params.owned) === 1 && params.id === context.userInfo?.userID) {
-        setOwnerStatus(true);
-        ProfileDataCaller(true);
-      } else {
-        ProfileDataCaller(false);
-      }
+     if ( parseInt(params.owned) === 1 && params.id === context.userInfo?.userID) {
+       setOwnerStatus(true);
+       ProfileDataCaller(true);
+     } else {
+       ProfileDataCaller(false);
+     }
     }, // eslint-disable-next-line
-    []
-  );
+  []);
 
   const POPUP = useMemo(() => {
     if (transitioning) {
@@ -121,6 +128,16 @@ const ProfileContainer = () => {
     return null;
   }, [transitioning, post]);
 
+  const PostArea = useMemo(() => {
+    if (post_list) {
+      if (post_list.length > 0) {
+        return <React.Fragment></React.Fragment>
+      } 
+      return <React.Fragment></React.Fragment>
+    }
+    return null
+  }, [post_list]);
+
   if (owner_status === null) {
     return <React.Fragment></React.Fragment>;
   }
@@ -146,9 +163,11 @@ const ProfileContainer = () => {
             />
           </ProfileInformationOverView>
         </ProfileHeaderContainer>
+
+        { PostArea }
       </MainPageContainer>
     </React.Fragment>
   );
 };
 
-export default ProfileContainer;
+export default React.memo(ProfileContainer);

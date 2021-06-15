@@ -18,8 +18,20 @@ export const FetchUserData = gql`
 `;
 
 export const PostsData = gql`
-  query($auth_token: String!, $Posts: [String!], $id: String!, $request_count: Int!, $uid: String!) {
-    GetPostsData(auth_token: $auth_token, Posts: $Posts, id: $id, request_count: $request_count, uid: $uid) {
+  query (
+    $auth_token: String!
+    $Posts: [String!]
+    $id: String!
+    $request_count: Int!
+    $uid: String!
+  ) {
+    GetPostsData(
+      auth_token: $auth_token
+      Posts: $Posts
+      id: $id
+      request_count: $request_count
+      uid: $uid
+    ) {
       Post
       Caption
       PostDate
@@ -30,8 +42,8 @@ export const PostsData = gql`
 `;
 
 export const PrePostData = gql`
-  query($auth_token: String!, $id: String!, $uid: String!){
-    GetPrePostData(auth_token:$auth_token, id: $id, uid: $uid) {
+  query ($auth_token: String!, $id: String!, $uid: String!) {
+    GetPrePostData(auth_token: $auth_token, id: $id, uid: $uid) {
       Post
       Caption
       PostDate
@@ -42,12 +54,35 @@ export const PrePostData = gql`
 `;
 
 export const ProfileData = gql`
-  query($auth_token: String!, $id: String!, $uid: String!, $searchID: String!, $verify: Boolean!) {
-    GetProfileData(auth_token: $auth_token, id: $id, uid: $uid, searchID: $searchID, verify: $verify) {
+  query (
+    $auth_token: String!
+    $id: String!
+    $uid: String!
+    $searchID: String!
+    $verify: Boolean!
+    $Posts: [String]
+  ) {
+    GetProfileData(
+      auth_token: $auth_token
+      id: $id
+      uid: $uid
+      searchID: $searchID
+      verify: $verify
+      Posts: $Posts
+    ) {
       Followers
       Following
       Posts
-      PostData
+      ProfilePicture
+      Verified
+      PostData {
+        _id
+        Post
+        CreatorUsername
+        CreatorID
+        Caption
+        PostDate
+      }
     }
   }
 `;

@@ -25,4 +25,12 @@ export interface LogoProps {
   source: string;
   width: string;
   height: string;
+};
+
+export interface PostListType {
+  Post: string;
+  _id: string;
+  CreatorUsername: string;
+  CreatorID: string;
+  Caption: string;
 }

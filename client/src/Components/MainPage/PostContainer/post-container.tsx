@@ -11,4 +11,4 @@ const PostContainer = () => {
     )
 }
 
-export default PostContainer;
+export default React.memo(PostContainer);
