@@ -25,7 +25,7 @@ export interface LogoProps {
   source: string;
   width: string;
   height: string;
-};
+}
 
 export interface PostListType {
   Post: string;
@@ -33,4 +33,22 @@ export interface PostListType {
   CreatorUsername: string;
   CreatorID: string;
   Caption: string;
+}
+
+export interface GetProfileDataProps {
+  Followers: Array<string> | null;
+  Following: Array<string> | null;
+  PostData: Array<PostListType>;
+  Posts: Array<string>;
+  ProfilePicture: string | null;
+  Verified: boolean | null;
+}
+
+export interface SerializedProfile {
+  ProfilePicture: string;
+  ProfileData: {
+    Following: string[] | null;
+    Followers: string[] | null;
+    Posts: string[];
+  };
 }

@@ -1,4 +1,5 @@
 import Resizer from "react-image-file-resizer";
+import { GetProfileDataProps } from "../interfaces";
 
 export const resizeFile = async (file: Blob) => {
     new Promise((resolve) => {
@@ -18,3 +19,21 @@ export const resizeFile = async (file: Blob) => {
       );
     });
   };
+
+export const SerializeProfileData = (GetProfileData: GetProfileDataProps, DefaultProfile: string) => {
+  let ProfilePicture = DefaultProfile;
+  if (GetProfileData.ProfilePicture) {
+    if (GetProfileData.ProfilePicture.length > 0) {
+      ProfilePicture = GetProfileData.ProfilePicture;
+    }
+  } 
+  const SerializedData = {
+    ProfilePicture,
+    ProfileData: {
+      Following: GetProfileData.Following,
+      Followers: GetProfileData.Followers,
+      Posts: GetProfileData.Posts
+    }
+  }; 
+  return SerializedData;
+}

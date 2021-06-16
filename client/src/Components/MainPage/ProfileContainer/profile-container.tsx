@@ -5,53 +5,34 @@ import { PopupHeader, PopupImageContainer } from "../Reusables/reusables";
 import { Context, contextData } from "../../../Container/MainPage/Context";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { resizeFile } from "./helper";
+import { resizeFile, SerializeProfileData } from "./helper";
 import "./profile-container.scss";
 import { useLazyQuery } from "@apollo/client";
 import { ProfileData } from "../../../GraphQL/gql";
-import { PostListType } from "../interfaces";
+import {
+  GetProfileDataProps,
+  PostListType,
+  SerializedProfile,
+} from "../interfaces";
 import Spinner from "../../UI/Spinner/spinner";
-import DefaultProfile from '../../../assets/Images/profile-user.svg';
+import DefaultProfile from "../../../assets/Images/profile-user.svg";
+import {
+  ProfileHeaderContainer,
+  ProfilePostAreaContainer,
+  ProfileHeaderInfo,
+  ProfileHeaderImageContainer,
+  ProfileInformationOverView,
+  ProfilePostArea,
+  ProfilePostOverview,
+} from "./reusables";
+import { useCallback } from "react";
+
 const transition_duration: number = 4000;
-
-const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
-  source,
-}) => {
-  return (
-    <div id="profile-img-container">
-      <img src={source} width="200px" height="200px" alt="profile-pic" />
-    </div>
-  );
-};
-
-const ProfileHeaderContainer: React.FC<{}> = ({ children }) => {
-  return <header id="profile-header-container">{children}</header>;
-};
-
-const ProfileHeaderInfo: React.FC<{
-  name: string;
-  value: string | number | undefined;
-}> = (props) => {
-  const { name, value } = props;
-  return (
-    <main id="profile-overview-container">
-      <div className="overview">{name}</div>
-      <div className="overview">{value}</div>
-    </main>
-  );
-};
-
-const ProfileInformationOverView: React.FC<{}> = ({ children }) => {
-  return <main id="profile-information-overview">{children}</main>;
-};
-
-const ProfilePostAreaContainer: React.FC<{}> = ({ children }) => {
-  return <article id="profile-post-area-container">{children}</article>;
-};
 
 const ProfileContainer = () => {
   const context = useContext(Context);
-  const [profile_info, setProfileInfo] = useState<contextData>(context);
+  const [profile_info, setProfileInfo] =
+    useState<contextData | SerializedProfile>(context);
   const [transitioning, setTransitioning] = useState<boolean>(false);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
@@ -60,27 +41,25 @@ const ProfileContainer = () => {
   const params = useParams<{ id: string; owned: string }>();
   const [GetProfileData] = useLazyQuery(ProfileData, {
     onCompleted: (data) => {
-      const { GetProfileData } = data;
+      const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
       if (GetProfileData) {
         const { PostData } = GetProfileData;
-        if (GetProfileData.Verified === false || GetProfileData.Verified === null) {
-          setProfileInfo(GetProfileData);
+        if (
+          GetProfileData.Verified === false ||
+          GetProfileData.Verified === null
+        ) {
           setOwnerStatus(false);
           setPostList(PostData);
-        } else {};
-        const SerializedData = {
-          ProfilePicture: GetProfileData.ProfilePicture.length > 0 ? GetProfileData.ProfilePicture : DefaultProfile,
-          ProfileData: {
-            Following: GetProfileData.Following,
-            Followers: GetProfileData.Followers,
-            Posts: GetProfileData.Posts
-          }
-        };          
-        // @ts-ignore
-        setProfileInfo(SerializedData);
+          const SerializedData = SerializeProfileData(
+            GetProfileData,
+            DefaultProfile
+          );
+          setProfileInfo(SerializedData);
+        } else {
+          setPostList(GetProfileData.PostData);
+        }
       }
     },
-
     onError: (error) => console.log(error),
   });
 
@@ -109,7 +88,10 @@ const ProfileContainer = () => {
           },
         });
       };
-      if ( parseInt(params.owned) === 1 && params.id === context.userInfo?.userID ) {
+      if (
+        parseInt(params.owned) === 1 &&
+        params.id === context.userInfo?.userID
+      ) {
         setOwnerStatus(true);
         ProfileDataCaller(true);
       } else {
@@ -148,18 +130,44 @@ const ProfileContainer = () => {
     return null;
   }, [transitioning, post]);
 
+  const GetMorePostData = useCallback((id: string) => {
+    if (post_list) {
+      if (post_list.length > 0) {
+        const Required_index = post_list.findIndex((value) => value._id === id);
+        if (Required_index !== -1) {
+          // add the required post object in a more_post_info state;
+        }
+      }
+    }
+  }, [post_list]);
+
   const PostArea = useMemo(() => {
     if (post_list) {
       if (post_list.length > 0) {
         return (
           <React.Fragment>
-            <ProfilePostAreaContainer></ProfilePostAreaContainer>
+            <ProfilePostAreaContainer>
+              <ProfilePostArea>
+                {post_list.map(posts => {
+                  return (
+                    <ProfilePostOverview
+                      key={posts._id}
+                      source={posts.Post}
+                      Click={GetMorePostData}
+                      id={posts._id}
+                    />
+                  );
+                })}
+              </ProfilePostArea>
+            </ProfilePostAreaContainer>
           </React.Fragment>
         );
       }
       return (
         <React.Fragment>
-          <ProfilePostAreaContainer></ProfilePostAreaContainer>
+          <ProfilePostAreaContainer>
+            <h3>Sorry no Posts</h3>
+          </ProfilePostAreaContainer>
         </React.Fragment>
       );
     }
@@ -170,10 +178,16 @@ const ProfileContainer = () => {
         </ProfilePostAreaContainer>
       </React.Fragment>
     );
-  }, [post_list]);
+  }, [post_list, GetMorePostData]);
 
   if (owner_status === null) {
-    return <React.Fragment></React.Fragment>;
+    return (
+      <React.Fragment>
+        <MainPageContainer>
+          <Spinner />
+        </MainPageContainer>
+      </React.Fragment>
+    );
   }
 
   return (
@@ -185,11 +199,11 @@ const ProfileContainer = () => {
           <ProfileInformationOverView>
             <ProfileHeaderInfo
               name="Followers"
-              value={profile_info.ProfileData?.Followers.length}
+              value={profile_info.ProfileData?.Followers?.length}
             />
             <ProfileHeaderInfo
               name="Following"
-              value={profile_info.ProfileData?.Following.length}
+              value={profile_info.ProfileData?.Following?.length}
             />
             <ProfileHeaderInfo
               name="Posts"
