@@ -1,8 +1,7 @@
 import React from "react";
 import "./reusable.scss";
 
-export const MainPageContainer: React.FC<{ popup?: boolean; Exit?: () => void }> =
-  (props) => {
+export const MainPageContainer: React.FC<{ popup?: boolean; Exit?: () => void }> = React.memo((props) => {
     const { children, popup, Exit } = props;
     const JSX = () => {
       return (
@@ -16,7 +15,7 @@ export const MainPageContainer: React.FC<{ popup?: boolean; Exit?: () => void }>
         <JSX />
       </React.Fragment>
     );
-  };
+  });
 
 export const BigPopupContainer: React.FC<{status: string}> = ({ children, status }) => {
   return (

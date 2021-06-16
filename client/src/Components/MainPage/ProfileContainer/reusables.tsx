@@ -60,3 +60,7 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (props) =
     </React.Fragment>
   );
 };
+
+export const ProfileConfigurationContainer: React.FC<{}> = ({ children }) => {
+  return <React.Fragment></React.Fragment>
+};

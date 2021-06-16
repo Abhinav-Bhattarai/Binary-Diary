@@ -1,13 +1,13 @@
-import React, { useState, useMemo, useRef, useContext } from "react";
-import { BigPopupContainer, MainPageContainer } from "../Reusables/reusables";
+import React, { useState, useMemo, useRef, useContext, useEffect, useCallback } from "react";
 import { Transition } from "react-transition-group";
-import { PopupHeader, PopupImageContainer } from "../Reusables/reusables";
-import { Context, contextData } from "../../../Container/MainPage/Context";
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { resizeFile, SerializeProfileData } from "./helper";
-import "./profile-container.scss";
 import { useLazyQuery } from "@apollo/client";
+
+import "./profile-container.scss";
+import { BigPopupContainer, MainPageContainer } from "../Reusables/reusables";
+import { PopupHeader, PopupImageContainer } from "../Reusables/reusables";
+import { Context, contextData } from "../../../Container/MainPage/Context";
 import { ProfileData } from "../../../GraphQL/gql";
 import {
   GetProfileDataProps,
@@ -25,29 +25,27 @@ import {
   ProfilePostArea,
   ProfilePostOverview,
 } from "./reusables";
-import { useCallback } from "react";
 
 const transition_duration: number = 4000;
 
 const ProfileContainer = () => {
   const context = useContext(Context);
-  const [profile_info, setProfileInfo] =
-    useState<contextData | SerializedProfile>(context);
+  const [profile_info, setProfileInfo] = useState<contextData | SerializedProfile>(context);
   const [transitioning, setTransitioning] = useState<boolean>(false);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
+  const [profile_owner, setProfileOwner] = useState<boolean>(false);
   const FileInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string; owned: string }>();
+
+  // apollo-client;
   const [GetProfileData] = useLazyQuery(ProfileData, {
     onCompleted: (data) => {
       const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
       if (GetProfileData) {
         const { PostData } = GetProfileData;
-        if (
-          GetProfileData.Verified === false ||
-          GetProfileData.Verified === null
-        ) {
+        if (GetProfileData.Verified === false || GetProfileData.Verified === null) {
           setOwnerStatus(false);
           setPostList(PostData);
           const SerializedData = SerializeProfileData(
@@ -57,6 +55,7 @@ const ProfileContainer = () => {
           setProfileInfo(SerializedData);
         } else {
           setPostList(GetProfileData.PostData);
+          setProfileOwner(true);
         }
       }
     },
@@ -74,32 +73,30 @@ const ProfileContainer = () => {
 
   const ExitPopup = () => setTransitioning(false);
 
-  useEffect(
-    () => {
-      const ProfileDataCaller = (type: boolean) => {
-        GetProfileData({
-          variables: {
-            auth_token: context.userInfo?.auth_token,
-            id: context.userInfo?.userID,
-            uid: context.userInfo?.uid,
-            searchID: params.id,
-            verify: type,
-            Posts: context.ProfileData?.Posts,
-          },
-        });
-      };
-      if (
-        parseInt(params.owned) === 1 &&
-        params.id === context.userInfo?.userID
-      ) {
-        setOwnerStatus(true);
-        ProfileDataCaller(true);
-      } else {
-        ProfileDataCaller(false);
-      }
-    }, // eslint-disable-next-line
-    []
-  );
+  useEffect(() => {
+    const ProfileDataCaller = (type: boolean) => {
+      GetProfileData({
+        variables: {
+          auth_token: context.userInfo?.auth_token,
+          id: context.userInfo?.userID,
+          uid: context.userInfo?.uid,
+          searchID: params.id,
+          verify: type,
+          Posts: context.ProfileData?.Posts,
+        },
+      });
+    };
+    if (
+      parseInt(params.owned) === 1 &&
+      params.id === context.userInfo?.userID
+    ) {
+      setOwnerStatus(true);
+      ProfileDataCaller(true);
+    } else {
+      ProfileDataCaller(false);
+    }
+  }, // eslint-disable-next-line 
+  []);
 
   const POPUP = useMemo(() => {
     if (transitioning) {

@@ -36,4 +36,4 @@ export const SerializeProfileData = (GetProfileData: GetProfileDataProps, Defaul
     }
   }; 
   return SerializedData;
-}
+};
