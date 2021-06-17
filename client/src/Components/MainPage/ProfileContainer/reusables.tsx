@@ -1,4 +1,5 @@
 import React from "react";
+import { IconContext } from "react-icons";
 import "./profile-container.scss";
 
 export const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
@@ -28,6 +29,22 @@ export const ProfileHeaderInfo: React.FC<{
   );
 };
 
+export const Logo: React.FC<{}> = ({ children }) => {
+  return (
+    <IconContext.Provider value={{ style: {color: '#333', fontSize: '25px'} }}>
+      {children}
+    </IconContext.Provider>
+  );
+};
+
+export const ConfigLogoContainer: React.FC<{click: () => void}> = ({ children, click }) => {
+  return (
+    <nav id="config-logo-container" onClick={click}>
+      {children}
+    </nav>
+  );
+};
+
 export const ProfileInformationOverView: React.FC<{}> = ({ children }) => {
   return <main id="profile-information-overview">{children}</main>;
 };
@@ -50,17 +67,23 @@ interface ProfilePostOverviewProps {
   id: string;
 }
 
-export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (props) => {
+export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
+  props
+) => {
   const { source, Click, id } = props;
   return (
     <React.Fragment>
       <div id="profile-post-overview" onClick={Click.bind(this, id)}>
-        <img src={source} alt='profile-overview'/>
+        <img src={source} alt="profile-overview" />
       </div>
     </React.Fragment>
   );
 };
 
 export const ProfileConfigurationContainer: React.FC<{}> = ({ children }) => {
-  return <React.Fragment></React.Fragment>
+  return (
+    <React.Fragment>
+      <main id="profile-config-container">{children}</main>
+    </React.Fragment>
+  );
 };

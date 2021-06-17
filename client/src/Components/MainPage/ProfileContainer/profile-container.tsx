@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useRef, useContext, useEffect, useCallback } from "react";
 import { Transition } from "react-transition-group";
 import { useParams } from "react-router-dom";
-import { resizeFile, SerializeProfileData } from "./helper";
+import { AiOutlinePlus, AiOutlineProfile } from "react-icons/ai";
+import { BiCog } from "react-icons/bi";
 import { useLazyQuery } from "@apollo/client";
 
 import "./profile-container.scss";
@@ -16,6 +17,7 @@ import {
 } from "../interfaces";
 import Spinner from "../../UI/Spinner/spinner";
 import DefaultProfile from "../../../assets/Images/profile-user.svg";
+import { resizeFile, SerializeProfileData } from "./helper";
 import {
   ProfileHeaderContainer,
   ProfilePostAreaContainer,
@@ -24,6 +26,9 @@ import {
   ProfileInformationOverView,
   ProfilePostArea,
   ProfilePostOverview,
+  ProfileConfigurationContainer,
+  Logo,
+  ConfigLogoContainer,
 } from "./reusables";
 
 const transition_duration: number = 4000;
@@ -35,7 +40,6 @@ const ProfileContainer = () => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
-  const [profile_owner, setProfileOwner] = useState<boolean>(false);
   const FileInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string; owned: string }>();
 
@@ -55,7 +59,6 @@ const ProfileContainer = () => {
           setProfileInfo(SerializedData);
         } else {
           setPostList(GetProfileData.PostData);
-          setProfileOwner(true);
         }
       }
     },
@@ -72,6 +75,10 @@ const ProfileContainer = () => {
   };
 
   const ExitPopup = () => setTransitioning(false);
+
+  const AddPostHandler = () => {};
+  const SettingsPressedHandler = () => {};
+  const ChangeProfileHandler = () => {};
 
   useEffect(() => {
     const ProfileDataCaller = (type: boolean) => {
@@ -185,7 +192,32 @@ const ProfileContainer = () => {
         </MainPageContainer>
       </React.Fragment>
     );
-  }
+  };
+
+  let Configuration = () => <React.Fragment></React.Fragment>
+  if (owner_status === true) {
+    Configuration = () => {
+      return (
+        <ProfileConfigurationContainer>
+          <ConfigLogoContainer click={ChangeProfileHandler}>
+            <Logo>
+              <AiOutlineProfile/>
+            </Logo>
+          </ConfigLogoContainer>
+          <ConfigLogoContainer click={AddPostHandler}>
+            <Logo>
+              <AiOutlinePlus/>
+            </Logo>
+          </ConfigLogoContainer>
+          <ConfigLogoContainer click={SettingsPressedHandler}>
+            <Logo>
+              <BiCog/>
+            </Logo>
+          </ConfigLogoContainer>
+        </ProfileConfigurationContainer>
+      )
+    }
+  };
 
   return (
     <React.Fragment>
@@ -208,7 +240,7 @@ const ProfileContainer = () => {
             />
           </ProfileInformationOverView>
         </ProfileHeaderContainer>
-
+        <Configuration/>
         {PostArea}
       </MainPageContainer>
     </React.Fragment>
