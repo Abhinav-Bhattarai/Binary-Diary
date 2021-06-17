@@ -1,11 +1,11 @@
 @keyframes enter {
   from {
     opacity: 0.3;
-  };
+  }
   to {
     opacity: 1;
   }
-};
+}
 
 #main-mainpage-container {
   margin-top: 75px;
@@ -48,7 +48,7 @@
     padding: 20px 0;
 
     img {
-        border-radius: 10px;
+      border-radius: 10px;
     }
   }
 
@@ -68,16 +68,16 @@
       outline: none;
     }
   }
-};
+}
 
 @keyframes exit {
   from {
     opacity: 1;
-  };
+  }
   to {
     opacity: 0;
   }
-};
+}
 
 #popup-container-exiting {
   opacity: 1;
