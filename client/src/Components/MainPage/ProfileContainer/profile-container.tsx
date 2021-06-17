@@ -1,4 +1,11 @@
-import React, { useState, useMemo, useRef, useContext, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
 import { Transition } from "react-transition-group";
 import { useParams } from "react-router-dom";
 import { AiOutlinePlus, AiOutlineProfile } from "react-icons/ai";
@@ -6,7 +13,11 @@ import { BiCog } from "react-icons/bi";
 import { useLazyQuery } from "@apollo/client";
 
 import "./profile-container.scss";
-import { BigPopupContainer, MainPageContainer } from "../Reusables/reusables";
+import {
+  BigPopupContainer,
+  ImageSelector,
+  MainPageContainer,
+} from "../Reusables/reusables";
 import { PopupHeader, PopupImageContainer } from "../Reusables/reusables";
 import { Context, contextData } from "../../../Container/MainPage/Context";
 import { ProfileData } from "../../../GraphQL/gql";
@@ -31,12 +42,13 @@ import {
   ConfigLogoContainer,
 } from "./reusables";
 
-const transition_duration: number = 4000;
+const transition_duration: number = 500;
 
 const ProfileContainer = () => {
   const context = useContext(Context);
-  const [profile_info, setProfileInfo] = useState<contextData | SerializedProfile>(context);
-  const [transitioning, setTransitioning] = useState<boolean>(false);
+  const [profile_info, setProfileInfo] =
+    useState<contextData | SerializedProfile>(context);
+  const [transitioning, setTransitioning] = useState<boolean | null>(null);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
@@ -49,7 +61,10 @@ const ProfileContainer = () => {
       const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
       if (GetProfileData) {
         const { PostData } = GetProfileData;
-        if (GetProfileData.Verified === false || GetProfileData.Verified === null) {
+        if (
+          GetProfileData.Verified === false ||
+          GetProfileData.Verified === null
+        ) {
           setOwnerStatus(false);
           setPostList(PostData);
           const SerializedData = SerializeProfileData(
@@ -76,74 +91,108 @@ const ProfileContainer = () => {
 
   const ExitPopup = () => setTransitioning(false);
 
-  const AddPostHandler = () => {};
+  const AddPostHandler = () => {
+    setTransitioning(true);
+    if (FileInputRef.current) {
+      FileInputRef.current.click();
+    }
+  };
+
   const SettingsPressedHandler = () => {};
+
   const ChangeProfileHandler = () => {};
 
-  useEffect(() => {
-    const ProfileDataCaller = (type: boolean) => {
-      GetProfileData({
-        variables: {
-          auth_token: context.userInfo?.auth_token,
-          id: context.userInfo?.userID,
-          uid: context.userInfo?.uid,
-          searchID: params.id,
-          verify: type,
-          Posts: context.ProfileData?.Posts,
-        },
-      });
-    };
-    if (
-      parseInt(params.owned) === 1 &&
-      params.id === context.userInfo?.userID
-    ) {
-      setOwnerStatus(true);
-      ProfileDataCaller(true);
-    } else {
-      ProfileDataCaller(false);
-    }
-  }, // eslint-disable-next-line 
-  []);
+  const UploadImage = useCallback(() => {
+    if (post) {
+      if (post.length > 0) {
 
+      } 
+    } else {
+      alert('Please select a image to continue !!');
+    }
+  }, [post]);
+
+  useEffect(
+    () => {
+      const ProfileDataCaller = (type: boolean) => {
+        GetProfileData({
+          variables: {
+            auth_token: context.userInfo?.auth_token,
+            id: context.userInfo?.userID,
+            uid: context.userInfo?.uid,
+            searchID: params.id,
+            verify: type,
+            Posts: context.ProfileData?.Posts,
+          },
+        });
+      };
+      if (
+        parseInt(params.owned) === 1 &&
+        params.id === context.userInfo?.userID
+      ) {
+        setOwnerStatus(true);
+        ProfileDataCaller(true);
+      } else {
+        ProfileDataCaller(false);
+      }
+    }, // eslint-disable-next-line
+    []
+  );
+  
   const POPUP = useMemo(() => {
-    if (transitioning) {
+    if (transitioning !== null) {
+      console.log(transitioning);
       return (
         <Transition
           in={transitioning}
-          mountOnEnter
+          timeout={{
+            enter: transition_duration,
+            exit: transition_duration
+          }}
           unmountOnExit
-          timeout={transition_duration}
+          mountOnEnter
         >
           {(status) => {
+            console.log(`popup-container-${status}`);
             return (
-              <BigPopupContainer status={status}>
+              <BigPopupContainer ID={`popup-container-${status}`} status={status}>
                 <PopupHeader Exit={ExitPopup} name="Add new Photo" />
-                <input
-                  type="text"
-                  hidden
-                  onChange={FetchImages}
-                  ref={FileInputRef}
+                <PopupImageContainer
+                  Click={() => {
+                    if (FileInputRef.current) {
+                      FileInputRef.current.click();
+                    }
+                  }}
+                  source={post}
                 />
-                <PopupImageContainer source={post} />
+                <ImageSelector
+                  backgroundColor="#ff385c"
+                  name="Upload Image"
+                  Click={UploadImage}
+                />
               </BigPopupContainer>
             );
           }}
         </Transition>
       );
     }
-    return null;
-  }, [transitioning, post]);
+  }, [transitioning, UploadImage, post])
 
-  const GetMorePostData = useCallback((id: string) => {
-    if (post_list) {
-      if (post_list.length > 0) {
-        const Required_index = post_list.findIndex((value) => value._id === id);
-        if (Required_index !== -1) {
-          // add the required post object in a more_post_info state;
+  const GetMorePostData = useCallback(
+    (id: string) => {
+      if (post_list) {
+        if (post_list.length > 0) {
+          const Required_index = post_list.findIndex(
+            (value) => value._id === id
+          );
+          if (Required_index !== -1) {
+            // add the required post object in a more_post_info state;
+          }
         }
       }
-    }
-  }, [post_list]);
+    },
+    [post_list]
+  );
 
   const PostArea = useMemo(() => {
     if (post_list) {
@@ -152,7 +201,7 @@ const ProfileContainer = () => {
           <React.Fragment>
             <ProfilePostAreaContainer>
               <ProfilePostArea>
-                {post_list.map(posts => {
+                {post_list.map((posts) => {
                   return (
                     <ProfilePostOverview
                       key={posts._id}
@@ -192,36 +241,37 @@ const ProfileContainer = () => {
         </MainPageContainer>
       </React.Fragment>
     );
-  };
+  }
 
-  let Configuration = () => <React.Fragment></React.Fragment>
+  let Configuration = () => <React.Fragment></React.Fragment>;
   if (owner_status === true) {
     Configuration = () => {
       return (
         <ProfileConfigurationContainer>
           <ConfigLogoContainer click={ChangeProfileHandler}>
             <Logo>
-              <AiOutlineProfile/>
+              <AiOutlineProfile />
             </Logo>
           </ConfigLogoContainer>
           <ConfigLogoContainer click={AddPostHandler}>
             <Logo>
-              <AiOutlinePlus/>
+              <AiOutlinePlus />
             </Logo>
           </ConfigLogoContainer>
           <ConfigLogoContainer click={SettingsPressedHandler}>
             <Logo>
-              <BiCog/>
+              <BiCog />
             </Logo>
           </ConfigLogoContainer>
         </ProfileConfigurationContainer>
-      )
-    }
-  };
+      );
+    };
+  }
 
   return (
     <React.Fragment>
       {POPUP}
+      <input type="file" hidden onChange={FetchImages} ref={FileInputRef} />
       <MainPageContainer popup={transitioning} Exit={ExitPopup}>
         <ProfileHeaderContainer>
           <ProfileHeaderImageContainer source={profile_info.ProfilePicture} />
@@ -240,7 +290,7 @@ const ProfileContainer = () => {
             />
           </ProfileInformationOverView>
         </ProfileHeaderContainer>
-        <Configuration/>
+        <Configuration />
         {PostArea}
       </MainPageContainer>
     </React.Fragment>

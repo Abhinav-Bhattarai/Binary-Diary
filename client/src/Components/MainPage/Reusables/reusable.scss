@@ -1,15 +1,86 @@
+@keyframes enter {
+  from {
+    opacity: 0.3;
+  };
+  to {
+    opacity: 1;
+  }
+};
+
 #main-mainpage-container {
-    margin-top: 75px;
+  margin-top: 75px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.big-popup-container {
+  position: fixed;
+  z-index: 4;
+  top: 130px;
+  left: 30%;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(241, 241, 241);
+  border-radius: 10px;
+  animation-name: enter;
+  animation-duration: 500ms;
+
+  #popup-header {
+    display: flex;
+    padding: 20px 0;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  #popup-img-container {
     width: 100%;
+    min-height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    background-color: rgb(235, 235, 235);
+    padding: 20px 0;
+
+    img {
+        border-radius: 10px;
+    }
+  }
+
+  #image-selector-btn {
+    padding: 15px 0;
+    font-weight: bold;
+    background-color: #ff385c;
+    border: none;
+    width: 90%;
+    border-radius: 5px;
+    margin: 10px auto;
+    margin-bottom: 15px;
+    color: #fff;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+  }
 };
 
-#big-popup-container {
-    position: fixed;
-    top: 400px;
-    left: 30%;
-    width: 30%;
+@keyframes exit {
+  from {
+    opacity: 1;
+  };
+  to {
+    opacity: 0;
+  }
+};
+
+#popup-container-exiting {
+  opacity: 1;
+  animation-name: exit;
+  animation-duration: 500ms;
 }
