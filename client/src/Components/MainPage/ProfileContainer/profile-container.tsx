@@ -10,7 +10,7 @@ import { Transition } from "react-transition-group";
 import { useParams } from "react-router-dom";
 import { AiOutlinePlus, AiOutlineProfile } from "react-icons/ai";
 import { BiCog } from "react-icons/bi";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 
 import "./profile-container.scss";
 import {
@@ -41,6 +41,7 @@ import {
   Logo,
   ConfigLogoContainer,
 } from "./reusables";
+import { AddPost } from "../../../GraphQL/mutations";
 
 const transition_duration: number = 500;
 
@@ -59,6 +60,7 @@ const ProfileContainer = () => {
   const [GetProfileData] = useLazyQuery(ProfileData, {
     onCompleted: (data) => {
       const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
+      console.log(GetProfileData);
       if (GetProfileData) {
         const { PostData } = GetProfileData;
         if (
@@ -78,6 +80,14 @@ const ProfileContainer = () => {
       }
     },
     onError: (error) => console.log(error),
+  });
+
+  const [MutatePost] = useMutation(AddPost, {
+    onCompleted: (data) => {
+      console.log(data)
+      setTransitioning(false);
+    },
+    onError: (error) => console.log(error)
   });
 
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,12 +115,21 @@ const ProfileContainer = () => {
   const UploadImage = useCallback(() => {
     if (post) {
       if (post.length > 0) {
-
+        MutatePost({
+          variables: {
+            auth_token: context.userInfo?.auth_token,
+            uid: context.userInfo?.uid,
+            id: context.userInfo?.userID,
+            Caption: '',
+            Post: post,
+            Username: context.userInfo?.username
+          }
+        })
       } 
     } else {
       alert('Please select a image to continue !!');
     }
-  }, [post]);
+  }, [post, MutatePost, context.userInfo]);
 
   useEffect(
     () => {

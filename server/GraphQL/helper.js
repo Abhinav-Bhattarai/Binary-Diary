@@ -80,22 +80,27 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
 
 export const GetPostDataHandler = async (cache, id, posts, request_count) => {
   const response = await PostModel.find({ _id: { $in: posts } }).sort({
-    date: -1,
+    "date": 1,
   });
   if (response.length > 0) {
-    const SerializedData = {
-      Post: response.Post,
-      Caption: response.Caption,
-      PostDate: response.PostDate,
-      CreatorID: response.CreatorID,
-      CreatorUsername: response.CreatorUsername,
-    };
+    const SerializedDataContainer = [];
+    for (let data of response) {
+      const SerializedData = {
+        _id: data._id,
+        Post: data.Post,
+        Caption: data.Caption,
+        PostDate: data.PostDate,
+        CreatorID: data.CreatorID,
+        CreatorUsername: data.CreatorUsername,
+      };
+      SerializedDataContainer.push(SerializedData);
+    }
     if (request_count === 1 && cache && id) {
       const PrePostData = await cache.get(`PrePostData/${id}`);
       if (!PrePostData)
-        await cache.set(`PrePostData/${id}`, JSON.stringify(SerializedData));
+        await cache.set(`PrePostData/${id}`, JSON.stringify(SerializedDataContainer));
     }
-    return SerializedData;
+    return SerializedDataContainer;
   }
   return null;
 };

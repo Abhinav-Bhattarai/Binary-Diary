@@ -206,13 +206,13 @@ const Mutation = new GraphQLObjectType({
           const unserialized_data = await cache.get(
             `UserInfo/${args.id}/${args.uid}`
           );
-          await AddPostID(args.id, db_response._id);
           const serialized_data = JSON.parse(unserialized_data);
-          serialized_data.Posts.push(db_response._id);
+          serialized_data.Posts.unshift(db_response._id);
           await cache.set(
             `UserInfo/${args.id}/${args.uid}`,
             JSON.stringify(serialized_data)
           );
+          await AddPostID(args.id, db_response._id);
           return { Mutated: true };
         }
       },
