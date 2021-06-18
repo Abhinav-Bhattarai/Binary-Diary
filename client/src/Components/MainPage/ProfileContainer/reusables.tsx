@@ -7,7 +7,13 @@ export const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
 }) => {
   return (
     <div id="profile-img-container">
-      <img src={source} width="200px" height="200px" alt="profile-pic" />
+      <img
+        draggable={false}
+        src={source}
+        width="200px"
+        height="200px"
+        alt="profile-pic"
+      />
     </div>
   );
 };
@@ -31,13 +37,18 @@ export const ProfileHeaderInfo: React.FC<{
 
 export const Logo: React.FC<{}> = ({ children }) => {
   return (
-    <IconContext.Provider value={{ style: {color: '#333', fontSize: '25px'} }}>
+    <IconContext.Provider
+      value={{ style: { color: "#333", fontSize: "25px" } }}
+    >
       {children}
     </IconContext.Provider>
   );
 };
 
-export const ConfigLogoContainer: React.FC<{click: () => void}> = ({ children, click }) => {
+export const ConfigLogoContainer: React.FC<{ click: () => void }> = ({
+  children,
+  click,
+}) => {
   return (
     <nav id="config-logo-container" onClick={click}>
       {children}
@@ -74,7 +85,7 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
   return (
     <React.Fragment>
       <div id="profile-post-overview" onClick={Click.bind(this, id)}>
-        <img src={source} alt="profile-overview" />
+        <img draggable={false} src={source} alt="profile-overview" />
       </div>
     </React.Fragment>
   );
