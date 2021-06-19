@@ -92,7 +92,7 @@ export const Encrypt = (Encryption) => {
 
 export const GetPostDataHandler = async (cache, id, posts, request_count) => {
   const response = await PostModel.find({ _id: { $in: posts } }).sort({
-    "date": 1,
+    "date": -1,
   });
   if (response.length > 0) {
     const SerializedDataContainer = [];

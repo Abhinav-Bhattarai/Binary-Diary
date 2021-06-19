@@ -42,6 +42,7 @@ export interface GetProfileDataProps {
   Posts: Array<string>;
   ProfilePicture: string | null;
   Verified: boolean | null;
+  FetchLimit: boolean;
 }
 
 export interface SerializedProfile {

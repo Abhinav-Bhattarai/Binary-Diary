@@ -54,14 +54,26 @@ const ProfileContainer = () => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
+  const [fetch_limit_reached, setFetchLimit] = useState<boolean | null>(false);
+  const [request_count, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string; owned: string }>();
 
+  // apollo-client-helper
+  const SerializeNewPosts = (PostData: Array<PostListType>) => {
+    let serialized_post_list = PostData;
+    if (post_list && PostData.length > 0) {
+      serialized_post_list = [...post_list];
+      for (let post of PostData) {
+        serialized_post_list.push(post);
+      };
+    };
+    return serialized_post_list;
+  };
   // apollo-client;
   const [GetProfileData] = useLazyQuery(ProfileData, {
     onCompleted: (data) => {
       const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
-      console.log(GetProfileData);
       if (GetProfileData) {
         const { PostData } = GetProfileData;
         if (
@@ -69,26 +81,30 @@ const ProfileContainer = () => {
           GetProfileData.Verified === null
         ) {
           setOwnerStatus(false);
-          setPostList(PostData);
+          const serialized_post_list = SerializeNewPosts(PostData);
+          if (GetProfileData.Posts.length < 6) setFetchLimit(true)
           const SerializedData = SerializeProfileData(
             GetProfileData,
             DefaultProfile
           );
           setProfileInfo(SerializedData);
+          setPostList(serialized_post_list);
         } else {
-          setPostList(GetProfileData.PostData);
+          const serialized_post_list = SerializeNewPosts(PostData);
+          setPostList(serialized_post_list);
         }
       }
+      setRequestCount(request_count + 1);
     },
     onError: (error) => console.log(error),
   });
 
   const [MutatePost] = useMutation(AddPost, {
     onCompleted: (data) => {
-      console.log(data)
+      console.log(data);
       setTransitioning(false);
     },
-    onError: (error) => console.log(error)
+    onError: (error) => console.log(error),
   });
 
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,16 +137,34 @@ const ProfileContainer = () => {
             auth_token: context.userInfo?.auth_token,
             uid: context.userInfo?.uid,
             id: context.userInfo?.userID,
-            Caption: '',
+            Caption: "",
             Post: post,
-            Username: context.userInfo?.username
-          }
-        })
-      } 
+            Username: context.userInfo?.username,
+          },
+        });
+      }
     } else {
-      alert('Please select a image to continue !!');
+      alert("Please select a image to continue !!");
     }
   }, [post, MutatePost, context.userInfo]);
+
+  const FetchMorePosts = () => {
+    if (context.ProfileData?.Posts && fetch_limit_reached === false) {
+      if (owner_status === false) {
+      } else if (owner_status === true) {
+        let DummyPost = [...context.ProfileData?.Posts];
+        if (DummyPost.length)
+        GetProfileData({
+          variables: {
+            auth_token: context.userInfo?.auth_token,
+            id: context.userInfo?.userID,
+            uid: context.userInfo?.uid,
+            Posts: DummyPost,
+          },
+        });
+      }
+    }
+  };
 
   useEffect(
     () => {
@@ -158,7 +192,7 @@ const ProfileContainer = () => {
     }, // eslint-disable-next-line
     []
   );
-  
+
   const POPUP = useMemo(() => {
     if (transitioning !== null) {
       console.log(transitioning);
@@ -167,7 +201,7 @@ const ProfileContainer = () => {
           in={transitioning}
           timeout={{
             enter: transition_duration,
-            exit: transition_duration
+            exit: transition_duration,
           }}
           unmountOnExit
           mountOnEnter
@@ -175,7 +209,10 @@ const ProfileContainer = () => {
           {(status) => {
             console.log(`popup-container-${status}`);
             return (
-              <BigPopupContainer ID={`popup-container-${status}`} status={status}>
+              <BigPopupContainer
+                ID={`popup-container-${status}`}
+                status={status}
+              >
                 <PopupHeader Exit={ExitPopup} name="Add new Photo" />
                 <PopupImageContainer
                   Click={() => {
@@ -196,7 +233,7 @@ const ProfileContainer = () => {
         </Transition>
       );
     }
-  }, [transitioning, UploadImage, post])
+  }, [transitioning, UploadImage, post]);
 
   const GetMoreInformationAboutPostData = useCallback(
     (id: string) => {

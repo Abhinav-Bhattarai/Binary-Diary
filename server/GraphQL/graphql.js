@@ -183,6 +183,23 @@ const RootQuery = new GraphQLObjectType({
         }
       },
     },
+
+    GetMoreProfilePosts: {
+      type: ProfileSchema,
+      args: {
+        auth_token: { type: GraphQLString },
+        id: { type: GraphQLString },
+        uid: { type: GraphQLString },
+        Posts: { type: new GraphQLList(GraphQLString) }
+      },
+      resolve: async(_, args) => {
+        const { auth_token, id, uid, Posts } = args;
+        const verification = ByPassChecking(auth_token, id, uid);
+        if (verification) {
+          return {Posts};
+        }
+      }
+    }
   },
 });
 
