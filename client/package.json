@@ -16,6 +16,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/react-transition-group": "^4.4.1",
     "axios": "^0.21.1",
+    "crypto-js": "^4.0.0",
     "graphql": "^15.5.0",
     "node-sass": "^4.14.1",
     "react": "^17.0.2",
@@ -57,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.0.1",
     "@types/simple-peer": "^9.6.3",
     "@types/socket.io-client": "^3.0.0",
     "dotenv": "^10.0.0"

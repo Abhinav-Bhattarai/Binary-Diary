@@ -1,6 +1,7 @@
 import { RegisterModel } from "../Models/register-model.js";
 import dotenv from "dotenv";
 import { PostModel } from "../Models/post-model.js";
+import Crypto from 'crypto-js';
 dotenv.config();
 
 export const FollowingDataSearch = async (Following) => {
@@ -77,6 +78,17 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
   }
   return null;
 };
+
+export const Decrypt = (Encryption) => {
+  const bytes = Crypto.AES.decrypt(Encryption, process.env.ENCRYPT_TOKEN);
+  const data = bytes.toString(Crypto.enc.Utf8);
+  return JSON.parse(data);
+};
+
+export const Encrypt = (Encryption) => {
+  const bytes = Crypto.AES.encrypt(JSON.stringify(Encryption), process.env.ENCRYPT_TOKEN).toString();
+  return bytes;
+}
 
 export const GetPostDataHandler = async (cache, id, posts, request_count) => {
   const response = await PostModel.find({ _id: { $in: posts } }).sort({

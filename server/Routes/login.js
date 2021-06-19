@@ -3,6 +3,7 @@ import { LoginMiddleware } from "../Middleware/login-middleware.js";
 import { RegisterModel } from "../Models/register-model.js";
 import { GenerateAuthToken } from "./register.js";
 import bcrypt from "bcrypt";
+import { Encrypt } from "../GraphQL/helper.js";
 
 const router = express.Router();
 
@@ -27,13 +28,14 @@ router.post("/", LoginMiddleware, async (req, res) => {
         id: response._id,
         uid: response.UniqueID,
       });
-      return res.json({
+      const response_data = {
         auth_token: token,
         username: Username,
         id: response._id,
-        error: false,
         UniqueID: response.UniqueID,
-      });
+      };
+      const EncryptedString = Encrypt(response_data);
+      return res.json({ EncryptedData: EncryptedString, error: false });
     } else {
       return res.json({ error: true, type: "login" });
     }

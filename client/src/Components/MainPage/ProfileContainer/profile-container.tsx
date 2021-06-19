@@ -42,6 +42,7 @@ import {
   ConfigLogoContainer,
 } from "./reusables";
 import { AddPost } from "../../../GraphQL/mutations";
+// import crypto from 'crypto-js';
 
 const transition_duration: number = 500;
 
@@ -197,7 +198,7 @@ const ProfileContainer = () => {
     }
   }, [transitioning, UploadImage, post])
 
-  const GetMorePostData = useCallback(
+  const GetMoreInformationAboutPostData = useCallback(
     (id: string) => {
       if (post_list) {
         if (post_list.length > 0) {
@@ -225,7 +226,7 @@ const ProfileContainer = () => {
                     <ProfilePostOverview
                       key={posts._id}
                       source={posts.Post}
-                      Click={GetMorePostData}
+                      Click={GetMoreInformationAboutPostData}
                       id={posts._id}
                     />
                   );
@@ -250,7 +251,7 @@ const ProfileContainer = () => {
         </ProfilePostAreaContainer>
       </React.Fragment>
     );
-  }, [post_list, GetMorePostData]);
+  }, [post_list, GetMoreInformationAboutPostData]);
 
   if (owner_status === null) {
     return (

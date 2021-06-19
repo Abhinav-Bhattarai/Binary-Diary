@@ -8,7 +8,7 @@ export const resizeFile = (file: Blob) =>
     550,
     550,
     "JPEG",
-    90,
+    80,
     0,
     (uri) => {
       resolve(uri);

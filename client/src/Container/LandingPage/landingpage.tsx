@@ -2,6 +2,7 @@ import React, { Suspense, useRef, useState } from "react";
 import { Route, Switch } from "react-router";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import { usePostRequest } from "../../Hooks/LandingPage";
+import Crypto from 'crypto-js';
 export interface POSTFETCH {
   auth_token: string;
   type: string;
@@ -9,6 +10,7 @@ export interface POSTFETCH {
   error: boolean;
   id: string;
   UniqueID: string;
+  EncryptedData: string;
 }
 
 export interface LoginError {
@@ -49,6 +51,18 @@ const AsyncLogin = React.lazy(
   () => import("../../Components/LandingPage/Login/login")
 );
 
+export const Decrypt = (Encryption: string) => {
+  const bytes = Crypto.AES.decrypt(Encryption, "VJ02394JG0-0@!");
+  // @ts-ignore
+  const data = bytes.toString(Crypto.enc.Utf8);
+  return JSON.parse(data);
+};
+
+const Encrypt = (Encryption: object | string) => {
+  const bytes = Crypto.AES.encrypt(JSON.stringify(Encryption), "VJ02394JG0-0@!").toString();
+  return bytes;
+}
+
 const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   // states
   const [login_username, setLoginUsername] = useState<string>("");
@@ -71,7 +85,8 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
 
   const { SendPOSTRequest } = usePostRequest({
     onComplete: (data: POSTFETCH) => {
-      const { auth_token, username, id, UniqueID } = data;
+      const { EncryptedData } = data;
+      const { auth_token, username, id, UniqueID } = Decrypt(EncryptedData);
       localStorage.setItem("auth-token", auth_token);
       localStorage.setItem("username", username);
       localStorage.setItem("userID", id);
@@ -131,11 +146,12 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
     if (login_username.length > 4 && login_password.length > 7) {
       const number_regex = /[0-9]/;
       if (number_regex.exec(login_password)) {
-        const context = {
+        let context: any = {
           Username: login_username,
           Password: login_password,
         };
-        SendPOSTRequest("/login", context);
+        context = Encrypt(context);
+        SendPOSTRequest("/login", { ContextData: context });
       } else {
         const dummy = { ...login_error };
         dummy.password_err = "Password must contain a number";
@@ -171,13 +187,14 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
     ) {
       const number_regex = /[0-9]/;
       if (number_regex.exec(signup_password)) {
-        const context = {
+        let context: any = {
           Username: signup_username,
           Password: signup_password,
           Confirm: signup_confirm,
           Phone: signup_phone,
         };
-        SendPOSTRequest("/signup", context);
+        context = Encrypt(context);
+        SendPOSTRequest("/signup", { ContextData: context });
       } else {
         const dummy = { ...signup_error };
         dummy.password_err = "Password must contain a number";

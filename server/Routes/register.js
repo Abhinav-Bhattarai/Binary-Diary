@@ -6,6 +6,7 @@ dotenv.config();
 
 import { SignupMiddleware } from '../Middleware/signup-middleware.js';
 import { RegisterModel } from '../Models/register-model.js';
+import { Encrypt } from '../GraphQL/helper.js';
 
 const router = express.Router();
 
@@ -33,7 +34,9 @@ router.post('/', SignupMiddleware, async(req, res) => {
         const RegisterData = new RegisterModel(data);
         const registered_data = await RegisterData.save();
         const token = GenerateAuthToken({...data, id: registered_data._id, uid: UniqueID});
-        return res.json({auth_token: token, id: registered_data._id, username: Username, error: false, UniqueID});
+        const response_data = {auth_token: token, id: registered_data._id, username: Username, UniqueID}
+        const EncryptedString = Encrypt(response_data);
+        return res.json({ EncryptedData: EncryptedString, error: false });
     } else {
         return res.json({error: true, type: 'signup'});
     }
