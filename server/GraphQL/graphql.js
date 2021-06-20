@@ -52,18 +52,9 @@ const ProfileSchema = new GraphQLObjectType({
         type: new GraphQLList(PostSchema),
         resolve: async (parent, _) => {
           const { Posts } = parent;
-          if (Posts.length > 0) {
-            if (typeof Posts[0] === "object") {
-              const FlattenedPost = FlattenPost(Posts, false);
-              const PostData = await ProfilePostCollector(FlattenedPost);
-              return PostData;
-            } else {
-              const PostData = await ProfilePostCollector(Posts);
-              return PostData;
-            }
-          } else {
-            return []
-          }
+          console.log(Posts);
+          const PostData = await ProfilePostCollector(Posts);
+          return PostData;
         },
       },
     };

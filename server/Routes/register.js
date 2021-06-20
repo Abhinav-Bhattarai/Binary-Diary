@@ -43,3 +43,6 @@ router.post('/', SignupMiddleware, async(req, res) => {
 });
 
 export default router;
+
+// (DATA: any, '09F0294F092J30-')
+// => 'WEPORGJ2-0JV-0J2E-0J2EFKJLESKJF'

@@ -8,7 +8,10 @@ import React, {
 } from "react";
 import { Transition } from "react-transition-group";
 import { useParams } from "react-router-dom";
-import { AiOutlinePlus, AiOutlineProfile } from "react-icons/ai";
+import {
+  AiOutlinePlus,
+  AiOutlineProfile,
+} from "react-icons/ai";
 import { BiCog } from "react-icons/bi";
 import { useLazyQuery, useMutation } from "@apollo/client";
 
@@ -66,8 +69,8 @@ const ProfileContainer = () => {
       serialized_post_list = [...post_list];
       for (let post of PostData) {
         serialized_post_list.push(post);
-      };
-    };
+      }
+    }
     return serialized_post_list;
   };
   // apollo-client;
@@ -82,7 +85,6 @@ const ProfileContainer = () => {
         ) {
           setOwnerStatus(false);
           const serialized_post_list = SerializeNewPosts(PostData);
-          if (GetProfileData.Posts.length < 6) setFetchLimit(true)
           const SerializedData = SerializeProfileData(
             GetProfileData,
             DefaultProfile
@@ -93,8 +95,9 @@ const ProfileContainer = () => {
           const serialized_post_list = SerializeNewPosts(PostData);
           setPostList(serialized_post_list);
         }
+        setFetchLimit(GetProfileData.Posts.length < 6);
+        setRequestCount(request_count + 1);
       }
-      setRequestCount(request_count + 1);
     },
     onError: (error) => console.log(error),
   });
@@ -149,19 +152,22 @@ const ProfileContainer = () => {
   }, [post, MutatePost, context.userInfo]);
 
   const FetchMorePosts = () => {
-    if (context.ProfileData?.Posts && fetch_limit_reached === false) {
+    if (context.ProfileData?.Posts.length && fetch_limit_reached === false) {
+      setFetchLimit(null);
       if (owner_status === false) {
       } else if (owner_status === true) {
         let DummyPost = [...context.ProfileData?.Posts];
-        if (DummyPost.length)
-        GetProfileData({
-          variables: {
-            auth_token: context.userInfo?.auth_token,
-            id: context.userInfo?.userID,
-            uid: context.userInfo?.uid,
-            Posts: DummyPost,
-          },
-        });
+        if (DummyPost.length > 6) {
+          DummyPost = DummyPost.slice(request_count * 6, (request_count * 1) * 6);
+          GetProfileData({
+            variables: {
+              auth_token: context.userInfo?.auth_token,
+              id: context.userInfo?.userID,
+              uid: context.userInfo?.uid,
+              Posts: DummyPost,
+            },
+          });
+        }
       }
     }
   };
@@ -349,6 +355,15 @@ const ProfileContainer = () => {
         </ProfileHeaderContainer>
         <Configuration />
         {PostArea}
+        {fetch_limit_reached === null ? (
+          <Spinner />
+        ) : fetch_limit_reached === true ? null : (
+          <div id='add-logo-container' onClick={FetchMorePosts}>
+            <Logo>
+              <AiOutlinePlus />
+            </Logo>
+          </div>
+        )}
       </MainPageContainer>
     </React.Fragment>
   );

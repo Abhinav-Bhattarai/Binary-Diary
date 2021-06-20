@@ -139,9 +139,9 @@ export const AddPostID = async (user_id, post_id) => {
 
 export const ProfilePostCollector = async(FlattenedPost) => {
   let ReducedPosts = FlattenedPost;
-  if (FlattenPost.length > 6) {
-    ReducedPosts = ReducedPosts.splice(0, 5);
-  }
+  if (ReducedPosts.length > 6) {
+    ReducedPosts = ReducedPosts.slice(0, 6);
+  };
   const PostData = await GetPostDataHandler(null, null, ReducedPosts, -1);
   return PostData;
 };
@@ -155,5 +155,16 @@ export const FetchUserData = async(id) => {
     ProfilePicture: 1,
     _id: 0,
   });
-  return response;
+  let FlattenedPost = []
+  if (response.Posts.length > 0) {
+    FlattenedPost = FlattenPost(response.Posts, false);
+  }
+  const SerializedData = {
+    Username: response.Username,
+    Followers: response.Followers,
+    Following: response.Following,
+    Posts: FlattenedPost,
+    ProfilePicture: response.ProfilePicture
+  }
+  return SerializedData;
 };
