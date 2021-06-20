@@ -65,6 +65,7 @@ const ProfileContainer = () => {
   // apollo-client-helper
   const SerializeNewPosts = (PostData: Array<PostListType>) => {
     let serialized_post_list = PostData;
+    if (!PostData) return [];
     if (post_list && PostData.length > 0) {
       serialized_post_list = [...post_list];
       for (let post of PostData) {
@@ -256,6 +257,7 @@ const ProfileContainer = () => {
     },
     [post_list]
   );
+  console.log(post_list);
 
   const PostArea = useMemo(() => {
     if (post_list) {

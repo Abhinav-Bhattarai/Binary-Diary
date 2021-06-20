@@ -52,7 +52,6 @@ const ProfileSchema = new GraphQLObjectType({
         type: new GraphQLList(PostSchema),
         resolve: async (parent, _) => {
           const { Posts } = parent;
-          console.log(Posts);
           const PostData = await ProfilePostCollector(Posts);
           return PostData;
         },
@@ -211,9 +210,7 @@ const Mutation = new GraphQLObjectType({
         const validity = ByPassChecking(args.auth_token, args.id, args.uid);
         if (validity) {
           const db_response = await AddPostToDatabase(args);
-          const unserialized_data = await cache.get(
-            `UserInfo/${args.id}/${args.uid}`
-          );
+          const unserialized_data = await cache.get(`UserInfo/${args.id}/${args.uid}`);
           const serialized_data = JSON.parse(unserialized_data);
           serialized_data.Posts.unshift(db_response._id);
           await cache.set(
