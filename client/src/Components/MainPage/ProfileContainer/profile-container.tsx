@@ -100,15 +100,13 @@ const ProfileContainer = () => {
         setRequestCount(request_count + 1);
       }
     },
-    onError: (error) => console.log(error),
   });
 
   const [MutatePost] = useMutation(AddPost, {
     onCompleted: (data) => {
-      console.log(data);
       setTransitioning(false);
+      setPost(null);
     },
-    onError: (error) => console.log(error),
   });
 
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -202,7 +200,6 @@ const ProfileContainer = () => {
 
   const POPUP = useMemo(() => {
     if (transitioning !== null) {
-      console.log(transitioning);
       return (
         <Transition
           in={transitioning}
@@ -214,7 +211,6 @@ const ProfileContainer = () => {
           mountOnEnter
         >
           {(status) => {
-            console.log(`popup-container-${status}`);
             return (
               <BigPopupContainer
                 ID={`popup-container-${status}`}
@@ -257,7 +253,6 @@ const ProfileContainer = () => {
     },
     [post_list]
   );
-  console.log(post_list);
 
   const PostArea = useMemo(() => {
     if (post_list) {

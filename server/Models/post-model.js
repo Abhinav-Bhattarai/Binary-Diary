@@ -39,6 +39,6 @@ const Schema = new mongoose.Schema({
     type: [String],
     default: [],
   },
-});
+}, {timestamps: true});
 
 export const PostModel = new mongoose.model("PostModel", Schema);

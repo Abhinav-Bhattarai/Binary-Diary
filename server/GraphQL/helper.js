@@ -92,9 +92,9 @@ export const Encrypt = (Encryption) => {
 
 export const GetPostDataHandler = async (cache, id, posts, request_count) => {
   const response = await PostModel.find({ _id: { $in: posts } });
-  console.log(response);
   if (response.length > 0) {
-    const SerializedDataContainer = [];
+    const SortedSerializedDataContainer = [];
+    const UnSortedSerializedDataContainer = [];
     for (let data of response) {
       const SerializedData = {
         _id: data._id,
@@ -104,14 +104,17 @@ export const GetPostDataHandler = async (cache, id, posts, request_count) => {
         CreatorID: data.CreatorID,
         CreatorUsername: data.CreatorUsername,
       };
-      SerializedDataContainer.push(SerializedData);
-    }
+      UnSortedSerializedDataContainer.push(SerializedData);
+    };
+    for (let i = UnSortedSerializedDataContainer.length - 1; i >= 0; i--) {
+      SortedSerializedDataContainer.push(UnSortedSerializedDataContainer[i]);
+    };
     if (request_count === 1 && cache && id) {
       const PrePostData = await cache.get(`PrePostData/${id}`);
       if (!PrePostData)
-        await cache.set(`PrePostData/${id}`, JSON.stringify(SerializedDataContainer));
+        await cache.set(`PrePostData/${id}`, JSON.stringify(SortedSerializedDataContainer));
     }
-    return SerializedDataContainer;
+    return SortedSerializedDataContainer;
   }
   return [];
 };

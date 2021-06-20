@@ -11,7 +11,7 @@ $faint-white: rgb(250, 250, 249);
   #profile-post-area {
     display: grid;
     width: 50%;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: 33% 33% 33%;
     align-items: center;
     padding: 10px 0;
     grid-gap: 5px;
