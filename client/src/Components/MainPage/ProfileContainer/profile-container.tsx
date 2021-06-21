@@ -23,7 +23,7 @@ import {
 } from "../Reusables/reusables";
 import { PopupHeader, PopupImageContainer } from "../Reusables/reusables";
 import { Context, contextData } from "../../../Container/MainPage/Context";
-import { ProfileData } from "../../../GraphQL/gql";
+import { FetchMoreProfilePosts, ProfileData } from "../../../GraphQL/gql";
 import {
   GetProfileDataProps,
   PostListType,
@@ -57,7 +57,7 @@ const ProfileContainer = () => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
-  const [fetch_limit_reached, setFetchLimit] = useState<boolean | null>(false);
+  const [fetch_limit_reached, setFetchLimit] = useState<boolean | null>(true);
   const [request_count, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string; owned: string }>();
@@ -101,6 +101,19 @@ const ProfileContainer = () => {
       }
     },
   });
+
+  const [FetchMorePostData] = useLazyQuery(FetchMoreProfilePosts, {
+    onCompleted: (data) => {
+      const { GetMoreProfilePosts }: { GetMoreProfilePosts: GetProfileDataProps } = data;
+      if (GetMoreProfilePosts) {
+        const { PostData } = GetMoreProfilePosts;
+        const serialized_post_list = SerializeNewPosts(PostData);
+        setFetchLimit(PostData.length < 6);
+        setRequestCount(request_count + 1);
+        setPostList(serialized_post_list)
+      }
+    }
+  })
 
   const [MutatePost] = useMutation(AddPost, {
     onCompleted: (data) => {
@@ -151,22 +164,23 @@ const ProfileContainer = () => {
   }, [post, MutatePost, context.userInfo]);
 
   const FetchMorePosts = () => {
-    if (context.ProfileData?.Posts.length && fetch_limit_reached === false) {
+    if (profile_info.ProfileData?.Posts && fetch_limit_reached === false) {
       setFetchLimit(null);
-      if (owner_status === false) {
-      } else if (owner_status === true) {
-        let DummyPost = [...context.ProfileData?.Posts];
-        if (DummyPost.length > 6) {
-          DummyPost = DummyPost.slice(request_count * 6, (request_count * 1) * 6);
-          GetProfileData({
-            variables: {
-              auth_token: context.userInfo?.auth_token,
-              id: context.userInfo?.userID,
-              uid: context.userInfo?.uid,
-              Posts: DummyPost,
-            },
-          });
-        }
+      let DummyPost = [...profile_info.ProfileData?.Posts];
+      if (DummyPost.length > 6) {
+        let last_index = DummyPost.length;
+        if (DummyPost.length - 1 > (request_count + 1) * 6) {
+          last_index = (request_count + 1) * 6;
+        };
+        DummyPost = DummyPost.slice((request_count * 6), last_index);
+        FetchMorePostData({
+          variables: {
+            auth_token: context.userInfo?.auth_token,
+            id: context.userInfo?.userID,
+            uid: context.userInfo?.uid,
+            Posts: DummyPost,
+          },
+        });
       }
     }
   };

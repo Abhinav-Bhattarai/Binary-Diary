@@ -78,6 +78,7 @@ const UserSchema = new GraphQLObjectType({
             const response = await FollowingDataSearch(Following);
             return response;
           }
+          return [];
         },
       },
     };
@@ -98,7 +99,7 @@ const RootQuery = new GraphQLObjectType({
         const { id, uid, auth_token } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          const response = GetUserDataCacheCheck(cache, id, uid);
+          const response = await GetUserDataCacheCheck(cache, id, uid);
           return response;
         }
       },
@@ -108,19 +109,19 @@ const RootQuery = new GraphQLObjectType({
       type: PostSchema,
       args: {
         auth_token: { type: GraphQLString },
-        posts: { type: new GraphQLList(GraphQLString) },
+        Posts: { type: new GraphQLList(GraphQLString) },
         request_count: { type: GraphQLInt },
         id: { type: GraphQLString },
         uid: { type: GraphQLString },
       },
       resolve: async (_, args) => {
-        const { auth_token, posts, id, request_count, uid } = args;
+        const { auth_token, Posts, id, request_count, uid } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
           const response = await GetPostDataHandler(
             cache,
             id,
-            posts,
+            Posts,
             request_count
           );
           return response;
@@ -212,7 +213,7 @@ const Mutation = new GraphQLObjectType({
           const db_response = await AddPostToDatabase(args);
           const unserialized_data = await cache.get(`UserInfo/${args.id}/${args.uid}`);
           const serialized_data = JSON.parse(unserialized_data);
-          serialized_data.Posts.unshift(db_response._id);
+          serialized_data.Posts.push(db_response._id);
           await cache.set(
             `UserInfo/${args.id}/${args.uid}`,
             JSON.stringify(serialized_data)

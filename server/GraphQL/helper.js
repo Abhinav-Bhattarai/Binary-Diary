@@ -16,13 +16,17 @@ export const FollowingDataSearch = async (Following) => {
       _id: 0,
     }
   );
-  const posts = FlattenPost(response.Posts, true);
-  const SerializedData = {
-    Username: response.Username,
-    Posts: posts,
-    ProfilePicture: response.ProfilePicture,
+  const FollowingList = [];
+  for (let post of response) {
+    const posts = FlattenPost(post.Posts, true);
+    const SerializedData = {
+      Username: post.Username,
+      Posts: posts,
+      ProfilePicture: post.ProfilePicture,
+    };
+    FollowingList.push(SerializedData);
   };
-  return SerializedData;
+  return FollowingList;
 };
 
 export function FlattenPost(posts, sort) {
@@ -133,7 +137,7 @@ export const AddPostToDatabase = async ({ id, Username, Post, Caption }) => {
 export const AddPostID = async (user_id, post_id) => {
   const response = await RegisterModel.findOne({ _id: user_id });
   if (response) {
-    response.Posts.unshift({ PostID: post_id });
+    response.Posts.push({ PostID: post_id });
     await response.save();
     return;
   }

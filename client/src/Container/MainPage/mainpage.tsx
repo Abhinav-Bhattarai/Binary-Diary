@@ -13,7 +13,7 @@ import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
 import DefaultProfile from "../../assets/Images/profile-user.svg";
 import { Switch, Route, useHistory } from "react-router";
-import { FollowingListSerialization } from "./helper";
+import { Convert2Dto1D, FollowingListSerialization } from "./helper";
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
@@ -47,7 +47,6 @@ const MainPageWrapper: React.FC<PROPS> = (props) => {
 const MainPage: React.FC<PROPS> = (props) => {
   const [user_info, setUserinfo] = useState<UserInfo | null>(null);
   const [profile_data, setProfileData] = useState<null | UserData>(null);
-  // const [following, setFollowing] = useState<Array<FollowingData> | null>(null);
   const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [prepoststate, setPrePostState] = useState<boolean>(true);
@@ -68,27 +67,26 @@ const MainPage: React.FC<PROPS> = (props) => {
     onCompleted: (data) => {
       const { GetUserData }: { GetUserData: UserData | null } = data;
       if (GetUserData) {
-        const { FollowingList }: { FollowingList: Array<FollowingData> | null } = GetUserData;
+        const { FollowingList }: { FollowingList: Array<FollowingData> } = GetUserData;
         if (GetUserData.ProfilePicture.length > 0) setProfilePicture(GetUserData.ProfilePicture);
-        if (FollowingList) {
-          const sliced_post = FollowingListSerialization(FollowingList);
+        if (FollowingList.length > 0) {
+          const postIDs = Convert2Dto1D(FollowingList);
+          const SlicedPostIDs = FollowingListSerialization(postIDs, 1);
           const config = {
             id: localStorage.getItem("userID"),
             uid: localStorage.getItem("uid"),
             auth_token: localStorage.getItem("auth-token"),
-            Posts: sliced_post,
+            Posts: SlicedPostIDs,
             request_count,
           };
-          setPostIDList(data);
-          // setFollowing(FollowingList);
+          setPostIDList(postIDs);
           PostFetch({ variables: config });
         };
         setProfileData(GetUserData)
       }
     },
-
-    onError: (error) => console.log(error, "UserData")
   });
+  console.log(postid_list);
 
   const [PostFetch, PostFetchConfig] = useLazyQuery(PostsData, {
     onCompleted: ({ GetPostsData }) => {
@@ -99,13 +97,10 @@ const MainPage: React.FC<PROPS> = (props) => {
         } else {
           const dummy = [...posts];
           console.log(dummy);
-          console.log(postid_list);
           setReqestCount(request_count + 1);
         }
       }
     },
-
-    onError: (error) => console.log(error, "PostFetchConfig")
   });
 
   const PrePosts = useQuery(PrePostData, {
@@ -120,7 +115,6 @@ const MainPage: React.FC<PROPS> = (props) => {
       GetPrePostData && setPosts(GetPrePostData);
     },
 
-    onError: (error) => console.log(error, "PrePosts")
   });
 
   // RenderFunctions

@@ -29,8 +29,8 @@ export const MainPageContainer: React.FC<MainPageContainerProps> = React.memo(
   (props) => {
     const { children, popup, Exit } = props;
     const blur = popup === true ? "3px" : "0px";
-    const JSX = () => {
-      return (
+    return (
+      <React.Fragment>
         <main
           id="main-mainpage-container"
           style={{
@@ -40,11 +40,6 @@ export const MainPageContainer: React.FC<MainPageContainerProps> = React.memo(
         >
           {children}
         </main>
-      );
-    };
-    return (
-      <React.Fragment>
-        <JSX />
       </React.Fragment>
     );
   }
@@ -103,9 +98,9 @@ export const PopupImageContainer: React.FC<{
             flexDirection: "column",
           }}
         >
-          <div style={{marginBottom: '40px'}}>No Image Selected</div>
+          <div style={{ marginBottom: "40px" }}>No Image Selected</div>
           <Logo>
-            <AiOutlinePlus/>
+            <AiOutlinePlus />
           </Logo>
         </div>
       )}

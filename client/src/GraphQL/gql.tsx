@@ -86,3 +86,23 @@ export const ProfileData = gql`
     }
   }
 `;
+
+export const FetchMoreProfilePosts = gql`
+  query ($auth_token: String!, $id: String!, $uid: String!, $Posts: [String]) {
+    GetMoreProfilePosts(
+      auth_token: $auth_token
+      id: $id
+      uid: $uid
+      Posts: $Posts
+    ) {
+      PostData {
+        _id
+        Post
+        CreatorUsername
+        CreatorID
+        Caption
+        PostDate
+      }
+    }
+  }
+`;
