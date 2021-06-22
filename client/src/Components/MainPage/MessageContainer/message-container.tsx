@@ -11,4 +11,4 @@ const MessageContainer = () => {
     )
 };
 
-export default MessageContainer;
+export default React.memo(MessageContainer);

@@ -20,6 +20,7 @@ export interface UserData {
 }
 
 export interface POSTS {
+    _id: string;
     Post: string;
     Caption: string;
     PostDate: string;

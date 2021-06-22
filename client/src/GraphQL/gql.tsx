@@ -32,6 +32,7 @@ export const PostsData = gql`
       request_count: $request_count
       uid: $uid
     ) {
+      _id
       Post
       Caption
       PostDate
@@ -44,6 +45,7 @@ export const PostsData = gql`
 export const PrePostData = gql`
   query ($auth_token: String!, $id: String!, $uid: String!) {
     GetPrePostData(auth_token: $auth_token, id: $id, uid: $uid) {
+      _id
       Post
       Caption
       PostDate
