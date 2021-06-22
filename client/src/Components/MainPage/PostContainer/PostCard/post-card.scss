@@ -1,0 +1,30 @@
+#post-card-container {
+  width: 30%;
+  margin: 10px 0;
+
+  #post-card-header {
+    padding: 15px 0;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+
+    div {
+        margin-left: 3%;
+    }
+  }
+
+  #post-card-img-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    border-radius: 5px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+    }
+  }
+}

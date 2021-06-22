@@ -54,10 +54,12 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [prepoststate, setPrePostState] = useState<boolean>(true);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
+  const [isfetchlimitreached, setIsFetchLimitReached] = useState<boolean>(false);
   const [request_count, setReqestCount] = useState<number>(0);
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
-  const IsInteracting = useInteractionObserver(LastCardRef);
+  const isInteracting = useInteractionObserver(LastCardRef);
+
   // apollo-client queries;
   const { loading } = useQuery(FetchUserData, {
     variables: {
@@ -132,6 +134,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           const posts = AddPostsInPostState(GetPostsData);
           setPosts(posts);
         }
+        if (GetPostsData.length === 6) setIsFetchLimitReached(false);
         setReqestCount(request_count + 1);
       }
     },
@@ -184,11 +187,12 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   }, []);
 
   useEffect(() => {
-    if (IsInteracting === true) {
+    if (isInteracting === true && isfetchlimitreached === false) {
       FetchMorePosts();
+      setIsFetchLimitReached(true);
     }
   }, // eslint-disable-next-line 
-  [IsInteracting])
+  [isInteracting])
 
   if (loading === true || PrePosts.loading === true) {
     return <LoadingPage />;

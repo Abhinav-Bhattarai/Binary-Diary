@@ -106,7 +106,7 @@ const RootQuery = new GraphQLObjectType({
     },
 
     GetPostsData: {
-      type: PostSchema,
+      type: new GraphQLList(PostSchema),
       args: {
         auth_token: { type: GraphQLString },
         Posts: { type: new GraphQLList(GraphQLString) },
@@ -118,12 +118,7 @@ const RootQuery = new GraphQLObjectType({
         const { auth_token, Posts, id, request_count, uid } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          const response = await GetPostDataHandler(
-            cache,
-            id,
-            Posts,
-            request_count
-          );
+          const response = await GetPostDataHandler(cache, id, Posts, request_count);
           return response;
         }
       },

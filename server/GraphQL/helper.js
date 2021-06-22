@@ -113,7 +113,7 @@ export const GetPostDataHandler = async (cache, id, posts, request_count) => {
     for (let i = UnSortedSerializedDataContainer.length - 1; i >= 0; i--) {
       SortedSerializedDataContainer.push(UnSortedSerializedDataContainer[i]);
     };
-    if (request_count === 1 && cache && id) {
+    if (request_count === 0 && cache && id) {
       const PrePostData = await cache.get(`PrePostData/${id}`);
       if (!PrePostData)
         await cache.set(`PrePostData/${id}`, JSON.stringify(SortedSerializedDataContainer));

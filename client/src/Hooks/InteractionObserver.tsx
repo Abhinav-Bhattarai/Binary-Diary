@@ -8,24 +8,20 @@ export const useInteractionObserver = (
 
   useEffect(
     () => {
-      console.log('changed')
       setElement(refObject.current);
     }, // eslint-disable-next-line
     [refObject.current]
   );
 
   useEffect(() => {
-    console.log('element useEffect')
     if (element) {
       const observer = new IntersectionObserver(
         ([entered]) => {
-          console.log(entered.intersectionRatio)
           if (entered.isIntersecting) {
             setIsIntersecting(true);
           }
         },
-        // rootmargin postcard height
-        { threshold: 0 }
+        { threshold: 0, rootMargin: '100px' }
       );
       observer.observe(element);
 

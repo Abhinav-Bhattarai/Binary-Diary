@@ -1,7 +1,7 @@
 import React from "react";
 import { POSTS } from "../../../Container/MainPage/interfaces";
 import { MainPageContainer } from "../Reusables/reusables";
-import PostCard, { PostCardImageContainer } from "./PostCard/post-card";
+import PostCard, { PostCardHeader, PostCardImageContainer } from "./PostCard/post-card";
 
 interface PROPS {
   PostList: Array<POSTS> | null;
@@ -16,6 +16,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
         {PostList?.map((post) => {
           return (
             <PostCard key={post._id}>
+              <PostCardHeader Username={post.CreatorUsername} source=''/>
               <PostCardImageContainer source={post.Post} />
             </PostCard>
           );
