@@ -34,6 +34,7 @@ const PostSchema = new GraphQLObjectType({
       PostDate: { type: GraphQLString },
       CreatorID: { type: GraphQLString },
       CreatorUsername: { type: GraphQLString },
+      ProfilePicture: { type: GraphQLString },
       Mutated: { type: GraphQLBoolean },
     };
   },

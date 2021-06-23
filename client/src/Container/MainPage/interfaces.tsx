@@ -26,6 +26,7 @@ export interface POSTS {
     PostDate: string;
     CreatorID: string;
     CreatorUsername: string;
+    ProfilePicture: string;
 };
 
 export interface FollowingData {

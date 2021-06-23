@@ -100,6 +100,7 @@ export const GetPostDataHandler = async (cache, id, posts, request_count) => {
     const SortedSerializedDataContainer = [];
     const UnSortedSerializedDataContainer = [];
     for (let data of response) {
+      const ProfilePicture = await cache.get(`ProfilePicture/${data._CreatorID}`);
       const SerializedData = {
         _id: data._id,
         Post: data.Post,
@@ -107,6 +108,7 @@ export const GetPostDataHandler = async (cache, id, posts, request_count) => {
         PostDate: data.PostDate,
         CreatorID: data.CreatorID,
         CreatorUsername: data.CreatorUsername,
+        ProfilePicture: ProfilePicture ? ProfilePicture : ''
       };
       UnSortedSerializedDataContainer.push(SerializedData);
     };

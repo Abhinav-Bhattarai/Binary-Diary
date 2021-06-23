@@ -16,7 +16,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
         {PostList?.map((post) => {
           return (
             <PostCard key={post._id}>
-              <PostCardHeader Username={post.CreatorUsername} source=''/>
+              <PostCardHeader Username={post.CreatorUsername} source={post.ProfilePicture}/>
               <PostCardImageContainer source={post.Post} />
             </PostCard>
           );

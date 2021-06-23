@@ -38,6 +38,7 @@ export const PostsData = gql`
       PostDate
       CreatorID
       CreatorUsername
+      ProfilePicture
     }
   }
 `;

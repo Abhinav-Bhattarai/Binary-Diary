@@ -22,8 +22,11 @@
     border-radius: 5px;
 
     img {
-      width: 100%;
-      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      min-width: 50%;
+      height: auto;
       border-radius: 5px;
     }
   }
