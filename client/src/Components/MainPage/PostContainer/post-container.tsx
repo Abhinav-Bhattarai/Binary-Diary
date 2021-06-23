@@ -10,6 +10,9 @@ interface PROPS {
 
 const PostContainer: React.FC<PROPS> = (props) => {
   const { PostList, reference } = props;
+  if (PostList === null) {
+    return <React.Fragment></React.Fragment>
+  }
   return (
     <React.Fragment>
       <MainPageContainer>

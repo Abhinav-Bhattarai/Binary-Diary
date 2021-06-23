@@ -57,7 +57,7 @@ const ProfileContainer = () => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
-  const [fetch_limit_reached, setFetchLimit] = useState<boolean | null>(true);
+  const [isFetchLimitReached, setIsFetchlimitReached] = useState<boolean | null>(true);
   const [request_count, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string; owned: string }>();
@@ -78,6 +78,7 @@ const ProfileContainer = () => {
   const [GetProfileData] = useLazyQuery(ProfileData, {
     onCompleted: (data) => {
       const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
+      console.log(GetProfileData)
       if (GetProfileData) {
         const { PostData } = GetProfileData;
         if (
@@ -96,7 +97,7 @@ const ProfileContainer = () => {
           const serialized_post_list = SerializeNewPosts(PostData);
           setPostList(serialized_post_list);
         }
-        setFetchLimit(GetProfileData.Posts.length < 6);
+        setIsFetchlimitReached(GetProfileData.Posts.length < 6);
         setRequestCount(request_count + 1);
       }
     },
@@ -108,7 +109,7 @@ const ProfileContainer = () => {
       if (GetMoreProfilePosts) {
         const { PostData } = GetMoreProfilePosts;
         const serialized_post_list = SerializeNewPosts(PostData);
-        setFetchLimit(PostData.length < 6);
+        setIsFetchlimitReached(PostData.length < 6);
         setRequestCount(request_count + 1);
         setPostList(serialized_post_list)
       }
@@ -164,8 +165,8 @@ const ProfileContainer = () => {
   }, [post, MutatePost, context.userInfo]);
 
   const FetchMorePosts = () => {
-    if (profile_info.ProfileData?.Posts && fetch_limit_reached === false) {
-      setFetchLimit(null);
+    if (profile_info.ProfileData?.Posts && isFetchLimitReached === false) {
+      setIsFetchlimitReached(null);
       let DummyPost = [...profile_info.ProfileData?.Posts];
       if (DummyPost.length > 6) {
         let last_index = DummyPost.length;
@@ -366,9 +367,9 @@ const ProfileContainer = () => {
         </ProfileHeaderContainer>
         <Configuration />
         {PostArea}
-        {fetch_limit_reached === null ? (
+        {isFetchLimitReached === null ? (
           <Spinner />
-        ) : fetch_limit_reached === true ? null : (
+        ) : isFetchLimitReached === true ? null : (
           <div id='add-logo-container' onClick={FetchMorePosts}>
             <Logo>
               <AiOutlinePlus />

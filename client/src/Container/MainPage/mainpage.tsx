@@ -8,7 +8,7 @@ import {
 } from "@apollo/client";
 import { UserInfo, PROPS, POSTS, UserData, FollowingData } from "./interfaces";
 import { Context } from "./Context";
-import { FetchUserData, PostsData, PrePostData } from "../../GraphQL/gql";
+import { FetchUserData, PostsData } from "../../GraphQL/gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
 import DefaultProfile from "../../assets/Images/profile-user.svg";
@@ -51,7 +51,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [profile_data, setProfileData] = useState<null | UserData>(null);
   const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
-  const [prepoststate, setPrePostState] = useState<boolean>(true);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
   const [isfetchlimitreached, setIsFetchLimitReached] = useState<boolean>(false);
@@ -84,7 +83,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
             uid: localStorage.getItem("uid"),
             auth_token: localStorage.getItem("auth-token"),
             Posts: SlicedPostIDs,
-            request_count,
           };
           setPostIDList(postIDs);
           PostFetch({ variables: config });
@@ -102,7 +100,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       }
       return dummy;
     }
-    return [];
+    return PostList;
   };
 
   // eslint-disable-next-line
@@ -116,8 +114,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         id: localStorage.getItem("userID"),
         uid: localStorage.getItem("uid"),
         auth_token: localStorage.getItem("auth-token"),
-        Posts: SlicedPostIDs,
-        request_count,
+        Posts: SlicedPostIDs
       };
       PostFetch({ variables: config });
     }
@@ -126,30 +123,13 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [PostFetch, PostFetchConfig] = useLazyQuery(PostsData, {
     onCompleted: (data) => {
       const { GetPostsData }: { GetPostsData: Array<POSTS> | null } = data;
-      if (GetPostsData && posts) {
-        if (prepoststate) {
-          setPosts(GetPostsData);
-          setPrePostState(false);
-        } else {
-          const posts = AddPostsInPostState(GetPostsData);
-          setPosts(posts);
-        }
+      if (GetPostsData) {
+        const posts = AddPostsInPostState(GetPostsData);
+        console.table(posts);
         if (GetPostsData.length === 6) setIsFetchLimitReached(false);
+        setPosts(posts);
         setReqestCount(request_count + 1);
       }
-    },
-  });
-
-  const PrePosts = useQuery(PrePostData, {
-    variables: {
-      id: localStorage.getItem("userID"),
-      auth_token: localStorage.getItem("auth-token"),
-      uid: localStorage.getItem("uid"),
-    },
-
-    onCompleted: (data) => {
-      const { GetPrePostData } = data;
-      GetPrePostData && setPosts(GetPrePostData);
     },
   });
 
@@ -194,11 +174,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   }, // eslint-disable-next-line 
   [isInteracting])
 
-  if (loading === true || PrePosts.loading === true) {
+  if (loading === true || PostFetchConfig.loading === true) {
     return <LoadingPage />;
-  }
-
-  if (PostFetchConfig.loading) {
   }
 
   return (

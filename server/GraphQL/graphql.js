@@ -15,7 +15,6 @@ import {
   AddPostID,
   AddPostToDatabase,
   FetchUserData,
-  FlattenPost,
   FollowingDataSearch,
   GetPostDataHandler,
   GetUserDataCacheCheck,
@@ -53,7 +52,7 @@ const ProfileSchema = new GraphQLObjectType({
         type: new GraphQLList(PostSchema),
         resolve: async (parent, _) => {
           const { Posts } = parent;
-          const PostData = await ProfilePostCollector(Posts);
+          const PostData = await ProfilePostCollector(Posts, cache);
           return PostData;
         },
       },
@@ -111,35 +110,15 @@ const RootQuery = new GraphQLObjectType({
       args: {
         auth_token: { type: GraphQLString },
         Posts: { type: new GraphQLList(GraphQLString) },
-        request_count: { type: GraphQLInt },
         id: { type: GraphQLString },
         uid: { type: GraphQLString },
       },
       resolve: async (_, args) => {
-        const { auth_token, Posts, id, request_count, uid } = args;
+        const { auth_token, Posts, id, uid } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          const response = await GetPostDataHandler(cache, id, Posts, request_count);
+          const response = await GetPostDataHandler(cache, Posts);
           return response;
-        }
-      },
-    },
-
-    GetPrePostData: {
-      type: new GraphQLList(PostSchema),
-      args: {
-        auth_token: { type: GraphQLString },
-        id: { type: GraphQLString },
-        uid: { type: GraphQLString }
-      },
-      resolve: async (_, args) => {
-        const { auth_token, id, uid } = args;
-        const validity = ByPassChecking(auth_token, id, uid);
-        if (validity) {
-          const PostData = await cache.get(`PrePostData/${id}`);
-          if (PostData) {
-            return JSON.parse(PostData);
-          }
         }
       },
     },

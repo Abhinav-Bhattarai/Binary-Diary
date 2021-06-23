@@ -1,6 +1,11 @@
+$faint-white: rgb(250, 250, 249);
+
 #post-card-container {
   width: 30%;
   margin: 10px 0;
+  background-color: $faint-white;
+  border-radius: 5px;
+  padding: 0 0.5%;
 
   #post-card-header {
     padding: 15px 0;

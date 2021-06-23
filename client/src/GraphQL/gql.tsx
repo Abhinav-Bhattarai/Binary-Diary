@@ -22,14 +22,12 @@ export const PostsData = gql`
     $auth_token: String!
     $Posts: [String!]
     $id: String!
-    $request_count: Int!
     $uid: String!
   ) {
     GetPostsData(
       auth_token: $auth_token
       Posts: $Posts
       id: $id
-      request_count: $request_count
       uid: $uid
     ) {
       _id
@@ -39,19 +37,6 @@ export const PostsData = gql`
       CreatorID
       CreatorUsername
       ProfilePicture
-    }
-  }
-`;
-
-export const PrePostData = gql`
-  query ($auth_token: String!, $id: String!, $uid: String!) {
-    GetPrePostData(auth_token: $auth_token, id: $id, uid: $uid) {
-      _id
-      Post
-      Caption
-      PostDate
-      CreatorID
-      CreatorUsername
     }
   }
 `;

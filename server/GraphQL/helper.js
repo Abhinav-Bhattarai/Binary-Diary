@@ -51,7 +51,7 @@ export function FlattenPost(posts, sort) {
 
 export const GetUserDataCacheCheck = async (cache, id, uid) => {
   const UserData = await cache.get(`UserInfo/${id}/${uid}`);
-  if (UserData !== null) {
+  if (UserData) {
     return JSON.parse(UserData);
   }
   const response = await RegisterModel.findById(id, {
@@ -94,13 +94,13 @@ export const Encrypt = (Encryption) => {
   return bytes;
 }
 
-export const GetPostDataHandler = async (cache, id, posts, request_count) => {
+export const GetPostDataHandler = async (cache, posts) => {
   const response = await PostModel.find({ _id: { $in: posts } });
   if (response.length > 0) {
     const SortedSerializedDataContainer = [];
     const UnSortedSerializedDataContainer = [];
     for (let data of response) {
-      const ProfilePicture = await cache.get(`ProfilePicture/${data._CreatorID}`);
+      const ProfilePicture = await cache.get(`ProfilePicture/${data.CreatorID}`);
       const SerializedData = {
         _id: data._id,
         Post: data.Post,
@@ -115,11 +115,6 @@ export const GetPostDataHandler = async (cache, id, posts, request_count) => {
     for (let i = UnSortedSerializedDataContainer.length - 1; i >= 0; i--) {
       SortedSerializedDataContainer.push(UnSortedSerializedDataContainer[i]);
     };
-    if (request_count === 0 && cache && id) {
-      const PrePostData = await cache.get(`PrePostData/${id}`);
-      if (!PrePostData)
-        await cache.set(`PrePostData/${id}`, JSON.stringify(SortedSerializedDataContainer));
-    }
     return SortedSerializedDataContainer;
   }
   return [];
@@ -145,12 +140,12 @@ export const AddPostID = async (user_id, post_id) => {
   }
 };
 
-export const ProfilePostCollector = async(FlattenedPost) => {
+export const ProfilePostCollector = async(FlattenedPost, cache) => {
   let ReducedPosts = FlattenedPost;
   if (ReducedPosts.length > 6) {
     ReducedPosts = ReducedPosts.slice(0, 6);
   };
-  const PostData = await GetPostDataHandler(null, null, ReducedPosts, -1);
+  const PostData = await GetPostDataHandler(cache, ReducedPosts);
   return PostData;
 };
 
