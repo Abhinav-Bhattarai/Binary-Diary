@@ -18,6 +18,9 @@ import {
   GetPostDataHandler,
   GetUserDataCacheCheck,
   ProfilePostCollector,
+  RegisterLikeInPostSchema,
+  RegisterLikeInRegisterSchema,
+  UpdateCacheUserInfo,
 } from "./helper.js";
 
 const cache = redis.createClient();
@@ -55,6 +58,7 @@ const ProfileSchema = new GraphQLObjectType({
           return PostData;
         },
       },
+      Mutated: { type: GraphQLBoolean }
     };
   },
 });
@@ -81,6 +85,7 @@ const UserSchema = new GraphQLObjectType({
           return [];
         },
       },
+      Mutated: { type: GraphQLBoolean }
     };
   },
 });
@@ -186,20 +191,32 @@ const Mutation = new GraphQLObjectType({
         const validity = ByPassChecking(args.auth_token, args.id, args.uid);
         if (validity) {
           const db_response = await AddPostToDatabase(args);
-          const unserialized_data = await cache.get(
-            `UserInfo/${args.id}/${args.uid}`
-          );
-          const serialized_data = JSON.parse(unserialized_data);
-          serialized_data.Posts.push(db_response._id);
-          await cache.set(
-            `UserInfo/${args.id}/${args.uid}`,
-            JSON.stringify(serialized_data)
-          );
+          await UpdateCacheUserInfo(cache, db_response, args.id, args.uid);
           await AddPostID(args.id, db_response._id);
           return { Mutated: true };
         }
       },
     },
+
+    LikePost: {
+      type: PostSchema,
+      args: {
+        id: { type: GraphQLString },
+        Username: { type: GraphQLString },
+        PostID: { type: GraphQLString },
+        uid: { type: GraphQLString },
+        auth_token: { type: GraphQLString },
+      },
+      resolve: async (_, args) => {
+        const { id, uid, auth_token, Username, PostID } = args;
+        const validity = ByPassChecking(auth_token, id, uid);
+        if (validity) {
+          await RegisterLikeInPostSchema(Username, id, PostID);
+          await RegisterLikeInRegisterSchema(id, PostID);
+          return {Mutated: true};
+        }
+      }
+    }
   },
 });
 

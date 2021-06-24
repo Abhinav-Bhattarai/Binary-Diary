@@ -86,9 +86,8 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
 };
 
 export const Decrypt = (Encryption) => {
-  const bytes = Crypto.AES.decrypt(Encryption, process.env.ENCRYPT_TOKEN);
-  const data = bytes.toString(Crypto.enc.Utf8);
-  return JSON.parse(data);
+  const bytes = Crypto.AES.decrypt(Encryption, process.env.ENCRYPT_TOKEN).toString(Crypto.enc.Utf8);
+  return JSON.parse(bytes);
 };
 
 export const Encrypt = (Encryption) => {
@@ -178,3 +177,22 @@ export const FetchUserData = async (id) => {
   };
   return SerializedData;
 };
+
+export const UpdateCacheUserInfo = async(cache, db_response, id, uid) => {
+  const unserialized_data = await cache.get(`UserInfo/${id}/${uid}`);
+  const serialized_data = JSON.parse(unserialized_data);
+  serialized_data.Posts.push(db_response._id);
+  await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(serialized_data));
+}
+
+export const RegisterLikeInPostSchema = async(Username, userID, postID) => {
+
+};
+
+export const RegisterLikeInRegisterSchema = async(userID, PostID) => {
+
+};
+
+export const CreatePostCommentSchema = async() => {
+  
+}
