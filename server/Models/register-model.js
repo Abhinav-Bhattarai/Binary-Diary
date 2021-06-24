@@ -47,6 +47,11 @@ const Schema = new mongoose.Schema({
     default: [],
   },
 
+  LikedPosts: {
+    type: [String],
+    default: []
+  },
+
   Posts: {
     type: [{
       PostID: {type: String},
