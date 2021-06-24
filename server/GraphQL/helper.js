@@ -62,6 +62,7 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
     Posts: 1,
     ProfilePicture: 1,
     UniqueID: 1,
+    LikedPosts: 1,
     _id: 0,
   });
   if (response !== null) {
@@ -74,6 +75,7 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
         Bio: response.Bio,
         Posts: FlattendPost,
         ProfilePicture: response.ProfilePicture,
+        LikedPosts: response.LikedPosts
       };
       await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
       return SerializedData;

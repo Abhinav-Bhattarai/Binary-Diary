@@ -1,10 +1,10 @@
 import React from "react";
 import { POSTS } from "../../../Container/MainPage/interfaces";
 import { MainPageContainer } from "../Reusables/reusables";
-import InteractionContainer, { Interactants } from "./Interaction/interaction";
-import PostCard, { PostCardHeader, PostCardImageContainer } from "./PostCard/post-card";
-import { AiOutlineLike, AiOutlinePlusCircle } from 'react-icons/ai';
-import { MdComment } from 'react-icons/md';
+import PostCard, {
+  PostCardHeader,
+  PostCardImageContainer,
+} from "./PostCard/post-card";
 
 interface PROPS {
   PostList: Array<POSTS> | null;
@@ -14,7 +14,7 @@ interface PROPS {
 const PostContainer: React.FC<PROPS> = (props) => {
   const { PostList, reference } = props;
   if (PostList === null) {
-    return <React.Fragment></React.Fragment>
+    return <React.Fragment></React.Fragment>;
   }
   return (
     <React.Fragment>
@@ -22,21 +22,11 @@ const PostContainer: React.FC<PROPS> = (props) => {
         {PostList?.map((post) => {
           return (
             <PostCard key={post._id}>
-              <PostCardHeader Username={post.CreatorUsername} source={post.ProfilePicture}/>
+              <PostCardHeader
+                Username={post.CreatorUsername}
+                source={post.ProfilePicture}
+              />
               <PostCardImageContainer source={post.Post} />
-              <InteractionContainer>
-                <Interactants hoverColor='' Click={() => {}}>
-                  <AiOutlineLike/>
-                </Interactants>
-
-                <Interactants hoverColor='#333' Click={() => {}}>
-                  <AiOutlinePlusCircle/>
-                </Interactants>
-
-                <Interactants hoverColor='#333' Click={() => {}}>
-                  <MdComment/>
-                </Interactants>
-              </InteractionContainer>
             </PostCard>
           );
         })}

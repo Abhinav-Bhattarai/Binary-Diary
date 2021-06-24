@@ -12,6 +12,7 @@ export interface PROPS {
 export interface UserData {
     Following: Array<string>;
     Followers: Array<string>;
+    LikedPosts: Array<string>;
     ProfilePicture: string;
     Posts: Array<string>;
     Username: string;

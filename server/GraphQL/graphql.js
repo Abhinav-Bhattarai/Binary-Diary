@@ -7,7 +7,6 @@ const {
   GraphQLString,
   GraphQLSchema,
   GraphQLList,
-  GraphQLInt,
   GraphQLBoolean,
 } = require("graphql");
 
@@ -69,6 +68,7 @@ const UserSchema = new GraphQLObjectType({
       Bio: { type: GraphQLString },
       Followers: { type: new GraphQLList(GraphQLString) },
       Following: { type: new GraphQLList(GraphQLString) },
+      LikedPosts: { type: new GraphQLList(GraphQLString) },
       Posts: { type: new GraphQLList(GraphQLString) },
       FollowingList: {
         type: new GraphQLList(UserSchema),

@@ -1,5 +1,8 @@
 import React from "react";
 import DefaultProfile from "../../../../assets/Images/profile-user.svg";
+import InteractionContainer, { Interactants } from "../Interaction/interaction";
+import { AiOutlineLike, AiOutlinePlusCircle } from "react-icons/ai";
+import { MdComment } from "react-icons/md";
 import "./post-card.scss";
 
 export const PostCardImageContainer: React.FC<{ source: string }> = (props) => {
@@ -28,10 +31,29 @@ export const PostCardHeader: React.FC<{ source: string; Username: string }> = (
 };
 
 const PostCard: React.FC<{}> = (props) => {
+  // const [color, setColor] = useState<string>('');
   const { children } = props;
+  const LikeClickHandler = () => {};
+  const CommentClickHandler = () => {};
+
   return (
     <React.Fragment>
-      <main id="post-card-container">{children}</main>
+      <main id="post-card-container">
+        {children}
+        <InteractionContainer>
+          <Interactants hoverColor="" Click={LikeClickHandler}>
+            <AiOutlineLike />
+          </Interactants>
+
+          <Interactants hoverColor="#333" Click={() => {}}>
+            <AiOutlinePlusCircle />
+          </Interactants>
+
+          <Interactants hoverColor="#333" Click={CommentClickHandler}>
+            <MdComment />
+          </Interactants>
+        </InteractionContainer>
+      </main>
     </React.Fragment>
   );
 };
