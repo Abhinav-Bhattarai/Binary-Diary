@@ -1,7 +1,7 @@
 import { RegisterModel } from "../Models/register-model.js";
 import dotenv from "dotenv";
 import { PostModel } from "../Models/post-model.js";
-import Crypto from 'crypto-js';
+import Crypto from "crypto-js";
 dotenv.config();
 
 export const FollowingDataSearch = async (Following) => {
@@ -25,7 +25,7 @@ export const FollowingDataSearch = async (Following) => {
       ProfilePicture: post.ProfilePicture,
     };
     FollowingList.push(SerializedData);
-  };
+  }
   return FollowingList;
 };
 
@@ -75,7 +75,7 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
         Bio: response.Bio,
         Posts: FlattendPost,
         ProfilePicture: response.ProfilePicture,
-        LikedPosts: response.LikedPosts
+        LikedPosts: response.LikedPosts,
       };
       await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
       return SerializedData;
@@ -92,9 +92,12 @@ export const Decrypt = (Encryption) => {
 };
 
 export const Encrypt = (Encryption) => {
-  const bytes = Crypto.AES.encrypt(JSON.stringify(Encryption), process.env.ENCRYPT_TOKEN).toString();
+  const bytes = Crypto.AES.encrypt(
+    JSON.stringify(Encryption),
+    process.env.ENCRYPT_TOKEN
+  ).toString();
   return bytes;
-}
+};
 
 export const GetPostDataHandler = async (cache, posts) => {
   const response = await PostModel.find({ _id: { $in: posts } });
@@ -102,7 +105,9 @@ export const GetPostDataHandler = async (cache, posts) => {
     const SortedSerializedDataContainer = [];
     const UnSortedSerializedDataContainer = [];
     for (let data of response) {
-      const ProfilePicture = await cache.get(`ProfilePicture/${data.CreatorID}`);
+      const ProfilePicture = await cache.get(
+        `ProfilePicture/${data.CreatorID}`
+      );
       const SerializedData = {
         _id: data._id,
         Post: data.Post,
@@ -110,13 +115,13 @@ export const GetPostDataHandler = async (cache, posts) => {
         PostDate: data.PostDate,
         CreatorID: data.CreatorID,
         CreatorUsername: data.CreatorUsername,
-        ProfilePicture: ProfilePicture ? ProfilePicture : ''
+        ProfilePicture: ProfilePicture ? ProfilePicture : "",
       };
       UnSortedSerializedDataContainer.push(SerializedData);
-    };
+    }
     for (let i = UnSortedSerializedDataContainer.length - 1; i >= 0; i--) {
       SortedSerializedDataContainer.push(UnSortedSerializedDataContainer[i]);
-    };
+    }
     return SortedSerializedDataContainer;
   }
   return [];
@@ -142,16 +147,16 @@ export const AddPostID = async (user_id, post_id) => {
   }
 };
 
-export const ProfilePostCollector = async(FlattenedPost, cache) => {
+export const ProfilePostCollector = async (FlattenedPost, cache) => {
   let ReducedPosts = FlattenedPost;
   if (ReducedPosts.length > 6) {
     ReducedPosts = ReducedPosts.slice(0, 6);
-  };
+  }
   const PostData = await GetPostDataHandler(cache, ReducedPosts);
   return PostData;
 };
 
-export const FetchUserData = async(id) => {
+export const FetchUserData = async (id) => {
   const response = await RegisterModel.findById(id, {
     Username: 1,
     Followers: 1,
@@ -160,7 +165,7 @@ export const FetchUserData = async(id) => {
     ProfilePicture: 1,
     _id: 0,
   });
-  let FlattenedPost = []
+  let FlattenedPost = [];
   if (response.Posts.length > 0) {
     FlattenedPost = FlattenPost(response.Posts, false);
   }
@@ -169,7 +174,7 @@ export const FetchUserData = async(id) => {
     Followers: response.Followers,
     Following: response.Following,
     Posts: FlattenedPost,
-    ProfilePicture: response.ProfilePicture
-  }
+    ProfilePicture: response.ProfilePicture,
+  };
   return SerializedData;
 };

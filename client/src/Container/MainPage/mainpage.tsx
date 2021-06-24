@@ -106,15 +106,12 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   // eslint-disable-next-line
   const FetchMorePosts = () => {
     if (postid_list) {
-      const SlicedPostIDs = PostListSerialization(
-        postid_list,
-        request_count
-      );
+      const SlicedPostIDs = PostListSerialization(postid_list, request_count);
       const config = {
         id: localStorage.getItem("userID"),
         uid: localStorage.getItem("uid"),
         auth_token: localStorage.getItem("auth-token"),
-        Posts: SlicedPostIDs
+        Posts: SlicedPostIDs,
       };
       PostFetch({ variables: config });
     }
@@ -159,17 +156,22 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     const username = localStorage.getItem("username");
     const userID = localStorage.getItem("userID");
     const uid = localStorage.getItem("uid");
-    (auth_token && username && userID && uid) &&
+    auth_token &&
+      username &&
+      userID &&
+      uid &&
       setUserinfo({ auth_token, username, userID, uid });
   }, []);
 
-  useEffect(() => {
-    if (isInteracting === true && isfetchlimitreached === false) {
-      FetchMorePosts();
-      setIsFetchLimitReached(true);
-    }
-  }, // eslint-disable-next-line 
-  [isInteracting])
+  useEffect(
+    () => {
+      if (isInteracting === true && isfetchlimitreached === false) {
+        FetchMorePosts();
+        setIsFetchLimitReached(true);
+      }
+    }, // eslint-disable-next-line
+    [isInteracting]
+  );
 
   if (loading === true || PostFetchConfig.loading === true) {
     return <LoadingPage />;

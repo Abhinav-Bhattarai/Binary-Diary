@@ -1,6 +1,6 @@
 import React from "react";
 import GithubLogo from "../../../assets/Images/github.svg";
-import './LoadingPage.scss';
+import "./LoadingPage.scss";
 
 const Loader: React.FC<{}> = () => {
   return (

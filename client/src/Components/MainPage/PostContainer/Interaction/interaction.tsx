@@ -22,11 +22,11 @@ export function IconContainer({
         value={{
           style: {
             color,
-            fontSize: '30px',
-            transition: '0.3s',
-            cursor: 'pointer'
+            fontSize: "30px",
+            transition: "0.3s",
+            cursor: "pointer",
           },
-          className: (color === '') ? "interaction-icon" : "",
+          className: color === "" ? "interaction-icon" : "",
         }}
       >
         {children}

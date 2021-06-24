@@ -21,7 +21,7 @@ export const useInteractionObserver = (
             setIsIntersecting(true);
           }
         },
-        { threshold: 0, rootMargin: '100px' }
+        { threshold: 0, rootMargin: "100px" }
       );
       observer.observe(element);
 

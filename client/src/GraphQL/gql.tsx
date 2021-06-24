@@ -19,18 +19,8 @@ export const FetchUserData = gql`
 `;
 
 export const PostsData = gql`
-  query (
-    $auth_token: String!
-    $Posts: [String!]
-    $id: String!
-    $uid: String!
-  ) {
-    GetPostsData(
-      auth_token: $auth_token
-      Posts: $Posts
-      id: $id
-      uid: $uid
-    ) {
+  query ($auth_token: String!, $Posts: [String!], $id: String!, $uid: String!) {
+    GetPostsData(auth_token: $auth_token, Posts: $Posts, id: $id, uid: $uid) {
       _id
       Post
       Caption

@@ -2,7 +2,7 @@ import React, { Suspense, useRef, useState } from "react";
 import { Route, Switch } from "react-router";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import { usePostRequest } from "../../Hooks/LandingPage";
-import Crypto from 'crypto-js';
+import Crypto from "crypto-js";
 export interface POSTFETCH {
   auth_token: string;
   type: string;
@@ -59,9 +59,12 @@ export const Decrypt = (Encryption: string) => {
 };
 
 const Encrypt = (Encryption: object | string) => {
-  const bytes = Crypto.AES.encrypt(JSON.stringify(Encryption), "VJ02394JG0-0@!").toString();
+  const bytes = Crypto.AES.encrypt(
+    JSON.stringify(Encryption),
+    "VJ02394JG0-0@!"
+  ).toString();
   return bytes;
-}
+};
 
 const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   // states

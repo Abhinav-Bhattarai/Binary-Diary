@@ -10,7 +10,7 @@ import cors from "cors";
 import https from "https";
 import fs from "fs";
 dotenv.config();
- 
+
 import CheckJWTRoute from "./Routes/check-jwt.js";
 import LoginRoute from "./Routes/login.js";
 import RegisterRoute from "./Routes/register.js";
@@ -40,7 +40,9 @@ io.on("connection", (socket) => {
 });
 
 // graphql endpoint
-app.use("/graphql", ExpressGraphQL({
+app.use(
+  "/graphql",
+  ExpressGraphQL({
     schema: MainSchema,
     graphiql: true,
     // prevention from circular query overload

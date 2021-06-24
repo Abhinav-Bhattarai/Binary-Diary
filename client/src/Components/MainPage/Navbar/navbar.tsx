@@ -78,7 +78,14 @@ const LogoContainer: React.FC<{
 
 const Navbar: React.FC<NavbarProps> = (props) => {
   const context = useContext(Context);
-  const { change, value, HomePressHandler, SuggestionPressHandler, MessagesPressHandler, ProfilePressHandler } = props;
+  const {
+    change,
+    value,
+    HomePressHandler,
+    SuggestionPressHandler,
+    MessagesPressHandler,
+    ProfilePressHandler,
+  } = props;
 
   return (
     <React.Fragment>

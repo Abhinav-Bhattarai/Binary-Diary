@@ -49,17 +49,19 @@ const Schema = new mongoose.Schema({
 
   LikedPosts: {
     type: [String],
-    default: []
+    default: [],
   },
 
   Posts: {
-    type: [{
-      PostID: {type: String},
-      CreationDate: {
-        type: Date,
-        default: Date.now
-      }
-    }],
+    type: [
+      {
+        PostID: { type: String },
+        CreationDate: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     default: [],
   },
 

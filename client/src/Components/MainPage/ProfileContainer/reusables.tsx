@@ -91,10 +91,12 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
   );
 };
 
-export const ProfileConfigurationContainer: React.FC<{}> = React.memo(({ children }) => {
-  return (
-    <React.Fragment>
-      <main id="profile-config-container">{children}</main>
-    </React.Fragment>
-  );
-});
+export const ProfileConfigurationContainer: React.FC<{}> = React.memo(
+  ({ children }) => {
+    return (
+      <React.Fragment>
+        <main id="profile-config-container">{children}</main>
+      </React.Fragment>
+    );
+  }
+);
