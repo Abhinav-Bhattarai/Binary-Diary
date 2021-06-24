@@ -1,0 +1,16 @@
+#interaction-container {
+  display: flex;
+  margin-top: 10px;
+
+  #interactants-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 15px 0;
+
+    .interaction-icon:hover {
+      color: #00acee;
+    }
+  }
+}
