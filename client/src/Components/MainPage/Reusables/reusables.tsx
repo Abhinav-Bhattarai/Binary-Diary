@@ -86,24 +86,26 @@ export const PopupImageContainer: React.FC<{
 }> = ({ source, Click }) => {
   return (
     <main id="popup-img-container" onClick={Click}>
-      {source ? (
-        <img src={source} alt="popuplogo" />
-      ) : (
-        <div
-          style={{
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}
-        >
-          <div style={{ marginBottom: "40px" }}>No Image Selected</div>
-          <Logo>
-            <AiOutlinePlus />
-          </Logo>
-        </div>
-      )}
+      <div
+        style={{
+          fontWeight: "bold",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
+        {source ? (
+          <img src={source} alt="popuplogo" />
+        ) : (
+          <>
+            <div style={{ marginBottom: "40px" }}>No Image Selected</div>
+            <Logo>
+              <AiOutlinePlus />
+            </Logo>
+          </>
+        )}
+      </div>
     </main>
   );
 };

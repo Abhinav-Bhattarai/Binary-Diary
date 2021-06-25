@@ -100,3 +100,28 @@ export const ProfileConfigurationContainer: React.FC<{}> = React.memo(
     );
   }
 );
+
+export const SettingsOverViewPopup: React.FC<{ hoverOut: () => void }> = (
+  props
+) => {
+  const { children, hoverOut } = props;
+  return (
+    <React.Fragment>
+      <main id="settings-overview-container" onMouseLeave={hoverOut}>
+        {children}
+      </main>
+    </React.Fragment>
+  );
+};
+
+export const SettingsOverViewElement: React.FC<{
+  name: string;
+  press: () => void;
+}> = (props) => {
+  const { name, press } = props;
+  return (
+    <nav id="setting-overview-element" onClick={press}>
+      {name}
+    </nav>
+  );
+};

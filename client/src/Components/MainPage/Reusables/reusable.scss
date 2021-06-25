@@ -42,6 +42,7 @@
   #popup-img-container {
     width: 100%;
     min-height: 300px;
+    max-height: 310px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,6 +51,8 @@
 
     img {
       border-radius: 10px;
+      width: auto;
+      max-height: 280px;
     }
   }
 

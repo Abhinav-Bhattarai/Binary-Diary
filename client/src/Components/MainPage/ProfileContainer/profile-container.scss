@@ -27,7 +27,7 @@ $faint-white: rgb(250, 250, 249);
       border-radius: 5px;
 
       &:hover {
-        filter: grayscale(0.9);
+        filter: grayscale(0.78);
       }
     }
 
@@ -88,17 +88,55 @@ $faint-white: rgb(250, 250, 249);
   display: flex;
   align-items: center;
   justify-content: space-around;
+  position: relative;
+
+  #settings-overview-container {
+    z-index: 5;
+    position: absolute;
+    bottom: 0;
+    right: 0%;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    transform: translateY(58px) translateX(30px);
+    background-color: rgba(238, 238, 238, 0.999);
+    border-radius: 10px;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 44%;
+      width: 18px;
+      height: 18px;
+      border-radius: 2px;
+      background-color: rgba(238, 238, 238, 0.999);
+      transform: translateY(-8px) rotate(45deg);
+    }
+
+    #setting-overview-element {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 0;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  }
 }
 
 #config-logo-container {
   padding: 20px 20px;
   border-radius: 50%;
   transition: 0.3s;
+  cursor: pointer;
 
   &:hover {
     background-color: rgba(250, 250, 250, 1);
   }
-};
+}
 
 #add-logo-container {
   padding: 15px;

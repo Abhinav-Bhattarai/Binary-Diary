@@ -156,10 +156,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     const username = localStorage.getItem("username");
     const userID = localStorage.getItem("userID");
     const uid = localStorage.getItem("uid");
-    auth_token &&
-      username &&
-      userID &&
-      uid &&
+    (auth_token && username && userID && uid) &&
       setUserinfo({ auth_token, username, userID, uid });
   }, []);
 

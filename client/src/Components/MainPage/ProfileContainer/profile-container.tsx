@@ -8,10 +8,7 @@ import React, {
 } from "react";
 import { Transition } from "react-transition-group";
 import { useParams } from "react-router-dom";
-import {
-  AiOutlinePlus,
-  AiOutlineProfile,
-} from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineProfile } from "react-icons/ai";
 import { BiCog } from "react-icons/bi";
 import { useLazyQuery, useMutation } from "@apollo/client";
 
@@ -43,21 +40,27 @@ import {
   ProfileConfigurationContainer,
   Logo,
   ConfigLogoContainer,
+  SettingsOverViewPopup,
+  SettingsOverViewElement,
 } from "./reusables";
 import { AddPost } from "../../../GraphQL/mutations";
-// import crypto from 'crypto-js';
 
 const transition_duration: number = 500;
 
 const ProfileContainer = () => {
   const context = useContext(Context);
-  const [profile_info, setProfileInfo] =
-    useState<contextData | SerializedProfile>(context);
+  const [profile_info, setProfileInfo] = useState<
+    contextData | SerializedProfile
+  >(context);
   const [transitioning, setTransitioning] = useState<boolean | null>(null);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
-  const [isFetchLimitReached, setIsFetchlimitReached] = useState<boolean | null>(true);
+  const [isFetchLimitReached, setIsFetchlimitReached] = useState<
+    boolean | null
+  >(true);
+  const [settingOverviewPopup, setSettingsOverviewPopup] =
+    useState<boolean>(false);
   const [request_count, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string; owned: string }>();
@@ -105,16 +108,18 @@ const ProfileContainer = () => {
 
   const [FetchMorePostData] = useLazyQuery(FetchMoreProfilePosts, {
     onCompleted: (data) => {
-      const { GetMoreProfilePosts }: { GetMoreProfilePosts: GetProfileDataProps } = data;
+      const {
+        GetMoreProfilePosts,
+      }: { GetMoreProfilePosts: GetProfileDataProps } = data;
       if (GetMoreProfilePosts) {
         const { PostData } = GetMoreProfilePosts;
         const serialized_post_list = SerializeNewPosts(PostData);
         setIsFetchlimitReached(PostData.length < 6);
         setRequestCount(request_count + 1);
-        setPostList(serialized_post_list)
+        setPostList(serialized_post_list);
       }
-    }
-  })
+    },
+  });
 
   const [MutatePost] = useMutation(AddPost, {
     onCompleted: (_) => {
@@ -141,7 +146,9 @@ const ProfileContainer = () => {
     }
   };
 
-  const SettingsPressedHandler = () => {};
+  const SettingsPressedHandler = () => {
+    setSettingsOverviewPopup(!settingOverviewPopup);
+  };
 
   const ChangeProfileHandler = () => {};
 
@@ -172,8 +179,8 @@ const ProfileContainer = () => {
         let last_index = DummyPost.length;
         if (DummyPost.length - 1 > (request_count + 1) * 6) {
           last_index = (request_count + 1) * 6;
-        };
-        DummyPost = DummyPost.slice((request_count * 6), last_index);
+        }
+        DummyPost = DummyPost.slice(request_count * 6, last_index);
         FetchMorePostData({
           variables: {
             auth_token: context.userInfo?.auth_token,
@@ -269,6 +276,8 @@ const ProfileContainer = () => {
     [post_list]
   );
 
+  const LogoutHandler = () => {};
+
   const PostArea = useMemo(() => {
     if (post_list) {
       if (post_list.length > 0) {
@@ -338,6 +347,11 @@ const ProfileContainer = () => {
               <BiCog />
             </Logo>
           </ConfigLogoContainer>
+          {settingOverviewPopup && (
+            <SettingsOverViewPopup hoverOut={SettingsPressedHandler}>
+              <SettingsOverViewElement name="Logout" press={LogoutHandler} />
+            </SettingsOverViewPopup>
+          )}
         </ProfileConfigurationContainer>
       );
     };
@@ -370,7 +384,7 @@ const ProfileContainer = () => {
         {isFetchLimitReached === null ? (
           <Spinner />
         ) : isFetchLimitReached === true ? null : (
-          <div id='add-logo-container' onClick={FetchMorePosts}>
+          <div id="add-logo-container" onClick={FetchMorePosts}>
             <Logo>
               <AiOutlinePlus />
             </Logo>
