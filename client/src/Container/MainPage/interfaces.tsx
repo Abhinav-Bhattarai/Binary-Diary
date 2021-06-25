@@ -26,6 +26,7 @@ export interface POSTS {
   Caption: string;
   PostDate: string;
   CreatorID: string;
+  Likes: Array<string>;
   CreatorUsername: string;
   ProfilePicture: string;
 }

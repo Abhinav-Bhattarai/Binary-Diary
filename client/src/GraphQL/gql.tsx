@@ -28,6 +28,7 @@ export const PostsData = gql`
       CreatorID
       CreatorUsername
       ProfilePicture
+      Likers
     }
   }
 `;

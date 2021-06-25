@@ -114,6 +114,7 @@ export const GetPostDataHandler = async (cache, posts) => {
         PostDate: data.PostDate,
         CreatorID: data.CreatorID,
         CreatorUsername: data.CreatorUsername,
+        Likes: data.Likes,
         ProfilePicture: ProfilePicture ? ProfilePicture : "",
       };
       UnSortedSerializedDataContainer.push(SerializedData);
@@ -174,6 +175,7 @@ export const FetchUserData = async (id) => {
     Following: response.Following,
     Posts: FlattenedPost,
     ProfilePicture: response.ProfilePicture,
+    Verified: false
   };
   return SerializedData;
 };

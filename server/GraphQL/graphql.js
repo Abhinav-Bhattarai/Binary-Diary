@@ -35,6 +35,7 @@ const PostSchema = new GraphQLObjectType({
       PostDate: { type: GraphQLString },
       CreatorID: { type: GraphQLString },
       CreatorUsername: { type: GraphQLString },
+      Likes: { type: new GraphQLList(GraphQLString) },
       ProfilePicture: { type: GraphQLString },
       Mutated: { type: GraphQLBoolean },
     };
@@ -149,7 +150,11 @@ const RootQuery = new GraphQLObjectType({
             return response;
           }
         } else {
-          const response = FetchUserData(searchID);
+          const response = await FetchUserData(searchID);
+          const verification = ByPassChecking(auth_token, id, uid);
+          if (verification) {
+            return {...response, Verified: true};
+          }
           return response;
         }
       },

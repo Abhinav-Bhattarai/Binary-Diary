@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DefaultProfile from "../../../../assets/Images/profile-user.svg";
 import InteractionContainer, { Interactants } from "../Interaction/interaction";
 import { AiOutlineLike, AiOutlinePlusCircle } from "react-icons/ai";
@@ -30,18 +30,21 @@ export const PostCardHeader: React.FC<{ source: string; Username: string }> = (
   );
 };
 
-const PostCard: React.FC<{}> = (props) => {
-  // const [color, setColor] = useState<string>('');
+const PostCard: React.FC<{isPostLiked: boolean}> = (props) => {
+  const [likeStatus, setLikeStatus] = useState<string>(props.isPostLiked ? '#00acee' : '');
   const { children } = props;
-  const LikeClickHandler = () => {};
+  const LikeClickHandler = () => {
+    if (likeStatus === '') setLikeStatus('#00acee');
+    else setLikeStatus('');
+  };
   const CommentClickHandler = () => {};
-
+  console.log('rendered');
   return (
     <React.Fragment>
       <main id="post-card-container">
         {children}
         <InteractionContainer>
-          <Interactants hoverColor="" Click={LikeClickHandler}>
+          <Interactants hoverColor={likeStatus} Click={LikeClickHandler}>
             <AiOutlineLike />
           </Interactants>
 

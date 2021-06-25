@@ -78,7 +78,6 @@ const ProfileContainer = () => {
   const [GetProfileData] = useLazyQuery(ProfileData, {
     onCompleted: (data) => {
       const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
-      console.log(GetProfileData)
       if (GetProfileData) {
         const { PostData } = GetProfileData;
         if (
@@ -94,6 +93,7 @@ const ProfileContainer = () => {
           setProfileInfo(SerializedData);
           setPostList(serialized_post_list);
         } else {
+          if (GetProfileData.Verified === true) setOwnerStatus(true);
           const serialized_post_list = SerializeNewPosts(PostData);
           setPostList(serialized_post_list);
         }
@@ -117,7 +117,7 @@ const ProfileContainer = () => {
   })
 
   const [MutatePost] = useMutation(AddPost, {
-    onCompleted: (data) => {
+    onCompleted: (_) => {
       setTransitioning(false);
       setPost(null);
     },
