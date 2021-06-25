@@ -18,7 +18,7 @@ export const useInteractionObserver = (
       const observer = new IntersectionObserver(
         ([entered]) => {
           if (entered.isIntersecting) {
-            setIsIntersecting(true);
+            if (isIntersecting === false) setIsIntersecting(true);
           }
         },
         { threshold: 0, rootMargin: "100px" }
@@ -27,7 +27,8 @@ export const useInteractionObserver = (
 
       return () => observer.disconnect();
     }
-  }, [element]);
+  }, // eslint-disable-next-line 
+  [element]);
 
   return isIntersecting;
 };

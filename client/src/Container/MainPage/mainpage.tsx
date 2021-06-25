@@ -47,6 +47,7 @@ const MainPageWrapper: React.FC<PROPS> = (props) => {
 };
 
 const MainPage: React.FC<PROPS> = React.memo((props) => {
+  const { ChangeAuthentication } = props;
   const [user_info, setUserinfo] = useState<UserInfo | null>(null);
   const [profile_data, setProfileData] = useState<null | UserData>(null);
   const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
@@ -181,6 +182,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           userInfo: user_info,
           ProfileData: profile_data,
           ProfilePicture: profile_picture,
+          ChangeAuthentication: ChangeAuthentication
         }}
       >
         <Navbar

@@ -276,7 +276,9 @@ const ProfileContainer = () => {
     [post_list]
   );
 
-  const LogoutHandler = () => {};
+  const LogoutHandler = () => {
+    context.ChangeAuthentication(false);
+  };
 
   const PostArea = useMemo(() => {
     if (post_list) {
