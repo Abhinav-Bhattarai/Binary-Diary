@@ -2,6 +2,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import LoadingPage from "./Components/UI/LoadingPage/LoadingPage";
+import { useCallback } from "react";
 interface LPGuardProps {
   auth_status: boolean;
   ChangeAuthentication: (type: boolean) => void;
@@ -56,14 +57,13 @@ function App() {
         setAuthStatus(false);
       }
     };
-
     AuthenticationCheck();
   }, []);
 
-  const ChangeAuthentication = (type: boolean): void => {
+  const ChangeAuthentication = useCallback((type: boolean): void => {
     if (type === false) localStorage.clear();
     setAuthStatus(type);
-  };
+  }, []);
 
   if (auth_status !== null) {
     return (

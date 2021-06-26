@@ -7,7 +7,6 @@ import {
   useLazyQuery,
 } from "@apollo/client";
 import { UserInfo, PROPS, POSTS, UserData, FollowingData } from "./interfaces";
-import { Context } from "./Context";
 import { FetchUserData, PostsData } from "../../GraphQL/gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
@@ -54,7 +53,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
-  const [isfetchlimitreached, setIsFetchLimitReached] = useState<boolean>(false);
+  const [isfetchlimitreached, setIsFetchLimitReached] =
+    useState<boolean>(false);
   const [request_count, setReqestCount] = useState<number>(0);
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
@@ -86,6 +86,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
             Posts: SlicedPostIDs,
           };
           setPostIDList(postIDs);
+          console.table(config);
           PostFetch({ variables: config });
         }
         setProfileData(GetUserData);
@@ -157,7 +158,10 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     const username = localStorage.getItem("username");
     const userID = localStorage.getItem("userID");
     const uid = localStorage.getItem("uid");
-    (auth_token && username && userID && uid) &&
+    auth_token &&
+      username &&
+      userID &&
+      uid &&
       setUserinfo({ auth_token, username, userID, uid });
   }, []);
 
@@ -177,84 +181,85 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   return (
     <React.Fragment>
-      <Context.Provider
-        value={{
-          userInfo: user_info,
-          ProfileData: profile_data,
-          ProfilePicture: profile_picture,
-          ChangeAuthentication: ChangeAuthentication
-        }}
-      >
-        <Navbar
-          HomePressHandler={HomePressHandler}
-          MessagesPressHandler={MessagesPressHandler}
-          ProfilePressHandler={ProfilePressHandler}
-          SuggestionPressHandler={SuggestionPressHandler}
-          change={ChangeSearchValue}
-          value={search_value}
+      <Navbar
+        HomePressHandler={HomePressHandler}
+        MessagesPressHandler={MessagesPressHandler}
+        ProfilePressHandler={ProfilePressHandler}
+        SuggestionPressHandler={SuggestionPressHandler}
+        change={ChangeSearchValue}
+        value={search_value}
+        ProfilePicture={profile_picture}
+        Username={user_info?.username}
+      />
+
+      <Switch>
+        <Route
+          exact
+          path="/posts"
+          render={() => {
+            return (
+              <Suspense fallback={<LoadingPage />}>
+                <AsyncPostContainer
+                  ProfileData={profile_data}
+                  reference={LastCardRef}
+                  PostList={posts}
+                />
+              </Suspense>
+            );
+          }}
         />
-        <Switch>
-          <Route
-            exact
-            path="/posts"
-            render={() => {
-              return (
-                <Suspense fallback={<LoadingPage />}>
-                  <AsyncPostContainer
-                    reference={LastCardRef}
-                    PostList={posts}
-                  />
-                </Suspense>
-              );
-            }}
-          />
-          <Route
-            exact
-            path="/profile/:id/:owned"
-            render={() => {
-              return (
-                <Suspense fallback={<LoadingPage />}>
-                  <AsyncProfileContainer />
-                </Suspense>
-              );
-            }}
-          />
-          <Route
-            exact
-            path="/messages"
-            render={() => {
-              return (
-                <Suspense fallback={<LoadingPage />}>
-                  <AsyncMessageContainer />
-                </Suspense>
-              );
-            }}
-          />
-          <Route
-            exact
-            path="/suggestions"
-            render={() => {
-              return (
-                <Suspense fallback={<LoadingPage />}>
-                  <AsyncSuggestionContainer />
-                </Suspense>
-              );
-            }}
-          />
-          <Route
-            render={() => {
-              return (
-                <Suspense fallback={<LoadingPage />}>
-                  <AsyncPostContainer
-                    reference={LastCardRef}
-                    PostList={posts}
-                  />
-                </Suspense>
-              );
-            }}
-          />
-        </Switch>
-      </Context.Provider>
+        <Route
+          exact
+          path="/profile/:id/:owned"
+          render={() => {
+            return (
+              <Suspense fallback={<LoadingPage />}>
+                <AsyncProfileContainer
+                  userInfo={user_info}
+                  ProfilePicture={profile_picture}
+                  ProfileData={profile_data}
+                  ChangeAuthentication={ChangeAuthentication}
+                />
+              </Suspense>
+            );
+          }}
+        />
+        <Route
+          exact
+          path="/messages"
+          render={() => {
+            return (
+              <Suspense fallback={<LoadingPage />}>
+                <AsyncMessageContainer />
+              </Suspense>
+            );
+          }}
+        />
+        <Route
+          exact
+          path="/suggestions"
+          render={() => {
+            return (
+              <Suspense fallback={<LoadingPage />}>
+                <AsyncSuggestionContainer />
+              </Suspense>
+            );
+          }}
+        />
+        <Route
+          render={() => {
+            return (
+              <Suspense fallback={<LoadingPage />}>
+                <AsyncPostContainer
+                  ProfileData={profile_data}
+                  reference={LastCardRef}
+                  PostList={posts}
+                />
+              </Suspense>
+            );
+          }}
+        />
+      </Switch>
     </React.Fragment>
   );
 });

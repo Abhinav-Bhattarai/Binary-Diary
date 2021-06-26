@@ -2,7 +2,6 @@ import React, {
   useState,
   useMemo,
   useRef,
-  useContext,
   useEffect,
   useCallback,
 } from "react";
@@ -19,8 +18,8 @@ import {
   MainPageContainer,
 } from "../Reusables/reusables";
 import { PopupHeader, PopupImageContainer } from "../Reusables/reusables";
-import { Context, contextData } from "../../../Container/MainPage/Context";
-import { FetchMoreProfilePosts, ProfileData } from "../../../GraphQL/gql";
+import { contextData } from "../../../Container/MainPage/Context";
+import { FetchMoreProfilePosts, ProfileDataFetch } from "../../../GraphQL/gql";
 import {
   GetProfileDataProps,
   PostListType,
@@ -44,14 +43,26 @@ import {
   SettingsOverViewElement,
 } from "./reusables";
 import { AddPost } from "../../../GraphQL/mutations";
+import { UserData, UserInfo } from "../../../Container/MainPage/interfaces";
 
 const transition_duration: number = 500;
 
-const ProfileContainer = () => {
-  const context = useContext(Context);
+interface PROPS {
+  ChangeAuthentication: (type: boolean) => void;
+  userInfo: UserInfo | null;
+  ProfilePicture: string;
+  ProfileData: UserData | null;
+};
+
+const ProfileContainer: React.FC<PROPS> = (props) => {
+  const { ChangeAuthentication, userInfo, ProfilePicture, ProfileData } = props;
   const [profile_info, setProfileInfo] = useState<
     contextData | SerializedProfile
-  >(context);
+  >({
+    ProfilePicture,
+    ProfileData,
+    userInfo
+  });
   const [transitioning, setTransitioning] = useState<boolean | null>(null);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
@@ -78,7 +89,7 @@ const ProfileContainer = () => {
     return serialized_post_list;
   };
   // apollo-client;
-  const [GetProfileData] = useLazyQuery(ProfileData, {
+  const [GetProfileData] = useLazyQuery(ProfileDataFetch, {
     onCompleted: (data) => {
       const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
       if (GetProfileData) {
@@ -157,19 +168,19 @@ const ProfileContainer = () => {
       if (post.length > 0) {
         MutatePost({
           variables: {
-            auth_token: context.userInfo?.auth_token,
-            uid: context.userInfo?.uid,
-            id: context.userInfo?.userID,
+            auth_token: userInfo?.auth_token,
+            uid: userInfo?.uid,
+            id: userInfo?.userID,
             Caption: "",
             Post: post,
-            Username: context.userInfo?.username,
+            Username: userInfo?.username,
           },
         });
       }
     } else {
       alert("Please select a image to continue !!");
     }
-  }, [post, MutatePost, context.userInfo]);
+  }, [post, MutatePost, userInfo]);
 
   const FetchMorePosts = () => {
     if (profile_info.ProfileData?.Posts && isFetchLimitReached === false) {
@@ -183,9 +194,9 @@ const ProfileContainer = () => {
         DummyPost = DummyPost.slice(request_count * 6, last_index);
         FetchMorePostData({
           variables: {
-            auth_token: context.userInfo?.auth_token,
-            id: context.userInfo?.userID,
-            uid: context.userInfo?.uid,
+            auth_token: userInfo?.auth_token,
+            id: userInfo?.userID,
+            uid: userInfo?.uid,
             Posts: DummyPost,
           },
         });
@@ -198,18 +209,18 @@ const ProfileContainer = () => {
       const ProfileDataCaller = (type: boolean) => {
         GetProfileData({
           variables: {
-            auth_token: context.userInfo?.auth_token,
-            id: context.userInfo?.userID,
-            uid: context.userInfo?.uid,
+            auth_token: userInfo?.auth_token,
+            id: userInfo?.userID,
+            uid: userInfo?.uid,
             searchID: params.id,
             verify: type,
-            Posts: context.ProfileData?.Posts,
+            Posts: ProfileData?.Posts,
           },
         });
       };
       if (
         parseInt(params.owned) === 1 &&
-        params.id === context.userInfo?.userID
+        params.id === userInfo?.userID
       ) {
         setOwnerStatus(true);
         ProfileDataCaller(true);
@@ -277,7 +288,7 @@ const ProfileContainer = () => {
   );
 
   const LogoutHandler = () => {
-    context.ChangeAuthentication(false);
+    ChangeAuthentication(false);
   };
 
   const PostArea = useMemo(() => {

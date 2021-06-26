@@ -7,6 +7,8 @@ export interface NavbarProps {
   SuggestionPressHandler: (event: React.MouseEvent<HTMLDivElement>) => void;
   MessagesPressHandler: (event: React.MouseEvent<HTMLDivElement>) => void;
   ProfilePressHandler: (event: React.MouseEvent<HTMLDivElement>) => void;
+  ProfilePicture: string | undefined;
+  Username: string | undefined;
 }
 
 export interface ProfileAreaProps {

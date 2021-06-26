@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import NoPostImage from "../../../assets/Images/no-post.svg";
-import { Context } from "../../../Container/MainPage/Context";
-import { POSTS } from "../../../Container/MainPage/interfaces";
+import { POSTS, UserData } from "../../../Container/MainPage/interfaces";
 import { MainPageContainer } from "../Reusables/reusables";
 import PostCard, {
   PostCardHeader,
@@ -11,11 +10,11 @@ import PostCard, {
 interface PROPS {
   PostList: Array<POSTS> | null;
   reference: React.RefObject<HTMLDivElement>;
+  ProfileData: UserData | null;
 }
 
 const PostContainer: React.FC<PROPS> = (props) => {
-  const { PostList, reference } = props;
-  const context = useContext(Context);
+  const { PostList, reference, ProfileData } = props;
 
   if (PostList === null) {
     return (
@@ -42,9 +41,9 @@ const PostContainer: React.FC<PROPS> = (props) => {
       <MainPageContainer>
         {PostList?.map((post) => {
           let isPostLiked = false;
-          if (context.ProfileData) {
-            if (context.ProfileData.LikedPosts.length > 0) {
-              for (let id of context.ProfileData.LikedPosts) {
+          if (ProfileData) {
+            if (ProfileData.LikedPosts.length > 0) {
+              for (let id of ProfileData.LikedPosts) {
                 if (post._id === id) {
                   isPostLiked = true;
                   break;

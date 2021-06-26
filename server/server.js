@@ -72,5 +72,5 @@ mongoose
   });
 // main listener
 server.listen(PORT, () => {
-  console.log("connected to localhost:8000");
+  console.log(`connected to localhost:${PORT}`);
 });

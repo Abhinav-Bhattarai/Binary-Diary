@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React from "react";
 import AppLogo from "../../../assets/Images/github.svg";
-import { Context } from "../../../Container/MainPage/Context";
 import {
   LogoProps,
   NavbarProps,
@@ -77,7 +76,6 @@ const LogoContainer: React.FC<{
 };
 
 const Navbar: React.FC<NavbarProps> = (props) => {
-  const context = useContext(Context);
   const {
     change,
     value,
@@ -85,6 +83,8 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     SuggestionPressHandler,
     MessagesPressHandler,
     ProfilePressHandler,
+    ProfilePicture,
+    Username
   } = props;
 
   return (
@@ -116,8 +116,8 @@ const Navbar: React.FC<NavbarProps> = (props) => {
 
           <LogoContainer click={ProfilePressHandler}>
             <ProfileArea
-              source={context.ProfilePicture}
-              Username={context.userInfo?.username}
+              source={ProfilePicture}
+              Username={Username}
             />
           </LogoContainer>
         </SubContainer>

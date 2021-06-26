@@ -28,12 +28,12 @@ export const PostsData = gql`
       CreatorID
       CreatorUsername
       ProfilePicture
-      Likers
+      Likes
     }
   }
 `;
 
-export const ProfileData = gql`
+export const ProfileDataFetch = gql`
   query (
     $auth_token: String!
     $id: String!

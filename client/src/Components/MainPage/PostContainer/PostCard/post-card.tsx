@@ -38,7 +38,7 @@ const PostCard: React.FC<{isPostLiked: boolean}> = (props) => {
     else setLikeStatus('');
   };
   const CommentClickHandler = () => {};
-  console.log('rendered');
+  console.log('post-card-rendered')
   return (
     <React.Fragment>
       <main id="post-card-container">
