@@ -209,6 +209,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
                   ProfileData={profile_data}
                   reference={LastCardRef}
                   PostList={posts}
+                  UserInfo={user_info}
                 />
               </Suspense>
             );
@@ -260,6 +261,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
                   ProfileData={profile_data}
                   reference={LastCardRef}
                   PostList={posts}
+                  UserInfo={user_info}
                 />
               </Suspense>
             );

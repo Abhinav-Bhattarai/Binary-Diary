@@ -4,7 +4,8 @@ import "./interaction.scss";
 
 interface InteractantsProps {
   hoverColor: string;
-  Click: () => void;
+  Click: (id: string) => void;
+  id: string;
 }
 
 export function IconContainer({
@@ -36,10 +37,10 @@ export function IconContainer({
 }
 
 export const Interactants: React.FC<InteractantsProps> = (props) => {
-  const { Click, hoverColor, children } = props;
+  const { Click, hoverColor, children, id } = props;
   return (
     <main id="interactants-container">
-      <IconContainer color={hoverColor} Click={Click}>
+      <IconContainer color={hoverColor} Click={Click.bind(this, id)}>
         {children}
       </IconContainer>
     </main>

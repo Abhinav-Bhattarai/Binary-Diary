@@ -12,7 +12,6 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 
 import "./profile-container.scss";
 import {
-  BigPopupContainer,
   ImageSelector,
   MainPageContainer,
 } from "../Reusables/reusables";
@@ -54,6 +53,8 @@ interface PROPS {
   ProfileData: UserData | null;
 };
 
+const AsyncBigPopupContainer = React.lazy(() => import('../Reusables/reusables'))
+
 const ProfileContainer: React.FC<PROPS> = (props) => {
   const { ChangeAuthentication, userInfo, ProfilePicture, ProfileData } = props;
   const [profile_info, setProfileInfo] = useState<
@@ -76,7 +77,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const FileInputRef = useRef<HTMLInputElement>(null);
   // all the hooks in react-router-dom causes re-render so React.memo() won't work in this case scenario
   // intead use useMemo() for heavy render calculations;
-  // so this is my own custom hook
+  // so this is my own custom hook with window.location
   const params = useProfileParams();
 
   // apollo-client-helper
@@ -251,7 +252,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         >
           {(status) => {
             return (
-              <BigPopupContainer
+              <AsyncBigPopupContainer
                 ID={`popup-container-${status}`}
                 status={status}
               >
@@ -269,7 +270,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
                   name="Upload Image"
                   Click={UploadImage}
                 />
-              </BigPopupContainer>
+              </AsyncBigPopupContainer>
             );
           }}
         </Transition>

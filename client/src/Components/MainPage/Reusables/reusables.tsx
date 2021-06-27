@@ -27,7 +27,7 @@ interface MainPageContainerProps {
 
 export const MainPageContainer: React.FC<MainPageContainerProps> = React.memo(
   (props) => {
-    console.log('MainPage rendered');
+    console.log("MainPage rendered");
     const { children, popup, Exit } = props;
     const blur = popup === true ? "3px" : "0px";
     return (
@@ -46,7 +46,7 @@ export const MainPageContainer: React.FC<MainPageContainerProps> = React.memo(
   }
 );
 
-export const BigPopupContainer: React.FC<{ status: string; ID: string }> = ({
+const BigPopupContainer: React.FC<{ status: string; ID: string }> = ({
   children,
   status,
   ID,
@@ -59,6 +59,7 @@ export const BigPopupContainer: React.FC<{ status: string; ID: string }> = ({
     </React.Fragment>
   );
 };
+export default BigPopupContainer;
 
 export const PopupHeader: React.FC<{ name: string; Exit: () => void }> = ({
   name,

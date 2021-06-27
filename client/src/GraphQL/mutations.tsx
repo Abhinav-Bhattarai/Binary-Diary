@@ -22,7 +22,7 @@ export const AddPost = gql`
   }
 `;
 
-export const MutatePostLike = gql`
+export const PostLikeMutation = gql`
   mutation(
     $id: String!
     $Username: String!

@@ -4,6 +4,9 @@ import InteractionContainer, { Interactants } from "../Interaction/interaction";
 import { AiOutlineLike, AiOutlinePlusCircle } from "react-icons/ai";
 import { MdComment } from "react-icons/md";
 import "./post-card.scss";
+import { useMutation } from "@apollo/client";
+import { PostLikeMutation } from "../../../../GraphQL/mutations";
+import { UserInfo } from "../../../../Container/MainPage/interfaces";
 
 export const PostCardImageContainer: React.FC<{ source: string }> = (props) => {
   return (
@@ -30,29 +33,69 @@ export const PostCardHeader: React.FC<{ source: string; Username: string }> = (
   );
 };
 
-const PostCard: React.FC<{isPostLiked: boolean}> = (props) => {
-  const [likeStatus, setLikeStatus] = useState<string>(props.isPostLiked ? '#00acee' : '');
+interface POSTCARDPROPS {
+  isPostLiked: boolean;
+  id: string;
+  UserInfo: UserInfo | null;
+}
+
+const PostCard: React.FC<POSTCARDPROPS> = (props) => {
+  const [likeStatus, setLikeStatus] = useState<string>(
+    props.isPostLiked ? "#00acee" : ""
+  );
+  const [MutatePostLike] = useMutation(PostLikeMutation);
   const { children } = props;
-  const LikeClickHandler = () => {
-    if (likeStatus === '') setLikeStatus('#00acee');
-    else setLikeStatus('');
+  const LikeClickHandler = (id: string) => {
+    if (likeStatus === "") {
+      setLikeStatus("#00acee");
+      MutatePostLike({
+        variables: {
+          type: "like",
+          id: props.UserInfo?.userID,
+          Username: props.UserInfo?.username,
+          auth_token: props.UserInfo?.auth_token,
+          uid: props.UserInfo?.uid,
+          PostID: id,
+        },
+      });
+    } else {
+      MutatePostLike({
+        variables: {
+          type: "like",
+          id: props.UserInfo?.userID,
+          Username: props.UserInfo?.username,
+          auth_token: props.UserInfo?.auth_token,
+          uid: props.UserInfo?.uid,
+          PostID: id,
+        },
+      });
+      setLikeStatus("");
+    }
   };
+
   const CommentClickHandler = () => {};
-  console.log('post-card-rendered')
   return (
     <React.Fragment>
       <main id="post-card-container">
         {children}
         <InteractionContainer>
-          <Interactants hoverColor={likeStatus} Click={LikeClickHandler}>
+          <Interactants
+            id={props.id}
+            hoverColor={likeStatus}
+            Click={LikeClickHandler}
+          >
             <AiOutlineLike />
           </Interactants>
 
-          <Interactants hoverColor="#333" Click={() => {}}>
+          <Interactants id={props.id} hoverColor="#333" Click={() => {}}>
             <AiOutlinePlusCircle />
           </Interactants>
 
-          <Interactants hoverColor="#333" Click={CommentClickHandler}>
+          <Interactants
+            id={props.id}
+            hoverColor="#333"
+            Click={CommentClickHandler}
+          >
             <MdComment />
           </Interactants>
         </InteractionContainer>

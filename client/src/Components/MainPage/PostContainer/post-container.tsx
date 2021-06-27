@@ -1,6 +1,10 @@
 import React from "react";
 import NoPostImage from "../../../assets/Images/no-post.svg";
-import { POSTS, UserData } from "../../../Container/MainPage/interfaces";
+import {
+  POSTS,
+  UserData,
+  UserInfo,
+} from "../../../Container/MainPage/interfaces";
 import { MainPageContainer } from "../Reusables/reusables";
 import PostCard, {
   PostCardHeader,
@@ -11,10 +15,11 @@ interface PROPS {
   PostList: Array<POSTS> | null;
   reference: React.RefObject<HTMLDivElement>;
   ProfileData: UserData | null;
+  UserInfo: UserInfo | null;
 }
 
 const PostContainer: React.FC<PROPS> = (props) => {
-  const { PostList, reference, ProfileData } = props;
+  const { PostList, reference, ProfileData, UserInfo } = props;
   if (PostList === null) {
     return (
       <React.Fragment>
@@ -51,7 +56,12 @@ const PostContainer: React.FC<PROPS> = (props) => {
             }
           }
           return (
-            <PostCard key={post._id} isPostLiked={isPostLiked}>
+            <PostCard
+              key={post._id}
+              id={post._id}
+              UserInfo={UserInfo}
+              isPostLiked={isPostLiked}
+            >
               <PostCardHeader
                 Username={post.CreatorUsername}
                 source={post.ProfilePicture}
