@@ -27,6 +27,7 @@ interface MainPageContainerProps {
 
 export const MainPageContainer: React.FC<MainPageContainerProps> = React.memo(
   (props) => {
+    console.log('MainPage rendered');
     const { children, popup, Exit } = props;
     const blur = popup === true ? "3px" : "0px";
     return (

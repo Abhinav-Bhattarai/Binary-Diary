@@ -6,7 +6,6 @@ import React, {
   useCallback,
 } from "react";
 import { Transition } from "react-transition-group";
-import { useParams } from "react-router-dom";
 import { AiOutlinePlus, AiOutlineProfile } from "react-icons/ai";
 import { BiCog } from "react-icons/bi";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -44,6 +43,7 @@ import {
 } from "./reusables";
 import { AddPost } from "../../../GraphQL/mutations";
 import { UserData, UserInfo } from "../../../Container/MainPage/interfaces";
+import useProfileParams from "../../../Hooks/profileHook";
 
 const transition_duration: number = 500;
 
@@ -74,7 +74,10 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     useState<boolean>(false);
   const [request_count, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
-  const params = useParams<{ id: string; owned: string }>();
+  // all the hooks in react-router-dom causes re-render so React.memo() won't work in this case scenario
+  // intead use useMemo() for heavy render calculations;
+  // so this is my own custom hook
+  const params = useProfileParams();
 
   // apollo-client-helper
   const SerializeNewPosts = (PostData: Array<PostListType>) => {
@@ -88,6 +91,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     }
     return serialized_post_list;
   };
+
   // apollo-client;
   const [GetProfileData] = useLazyQuery(ProfileDataFetch, {
     onCompleted: (data) => {
@@ -206,6 +210,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
 
   useEffect(
     () => {
+      if (params) {
       const ProfileDataCaller = (type: boolean) => {
         GetProfileData({
           variables: {
@@ -227,8 +232,9 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       } else {
         ProfileDataCaller(false);
       }
+    }
     }, // eslint-disable-next-line
-    []
+    [params]
   );
 
   const POPUP = useMemo(() => {

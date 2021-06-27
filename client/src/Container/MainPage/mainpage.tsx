@@ -236,7 +236,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           render={() => {
             return (
               <Suspense fallback={<LoadingPage />}>
-                <AsyncMessageContainer />
+                <AsyncMessageContainer/>
               </Suspense>
             );
           }}

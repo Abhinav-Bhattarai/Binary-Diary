@@ -1,7 +1,10 @@
 import React from "react";
 import { MainPageContainer } from "../Reusables/reusables";
 
-const MessageContainer = () => {
+interface PROPS {};
+
+const MessageContainer: React.FC<PROPS> = () => {
+  console.log('rendered');
   return (
     <React.Fragment>
       <MainPageContainer>

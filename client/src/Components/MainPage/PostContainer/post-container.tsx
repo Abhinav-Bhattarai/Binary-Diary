@@ -15,7 +15,6 @@ interface PROPS {
 
 const PostContainer: React.FC<PROPS> = (props) => {
   const { PostList, reference, ProfileData } = props;
-
   if (PostList === null) {
     return (
       <React.Fragment>
