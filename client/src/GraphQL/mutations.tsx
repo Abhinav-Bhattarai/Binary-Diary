@@ -21,3 +21,25 @@ export const AddPost = gql`
     }
   }
 `;
+
+export const MutatePostLike = gql`
+  mutation(
+    $id: String!
+    $Username: String!
+    $uid: String!
+    $auth_token: String!
+    $type: String!
+    $PostID: String!
+  ) {
+    MutatePostLike (
+      id: $id
+      uid: $uid
+      Username: $Username
+      PostID: $PostID
+      auth_token: $auth_token
+      type: $type
+    ) {
+      Mutated
+    }
+  }
+`;

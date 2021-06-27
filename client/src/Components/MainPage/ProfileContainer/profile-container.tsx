@@ -111,7 +111,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
           const serialized_post_list = SerializeNewPosts(PostData);
           setPostList(serialized_post_list);
         }
-        setIsFetchlimitReached(GetProfileData.Posts.length < 6);
+        setIsFetchlimitReached(GetProfileData.Posts.length < 7);
         setRequestCount(request_count + 1);
       }
     },
@@ -125,7 +125,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       if (GetMoreProfilePosts) {
         const { PostData } = GetMoreProfilePosts;
         const serialized_post_list = SerializeNewPosts(PostData);
-        setIsFetchlimitReached(PostData.length < 6);
+        setIsFetchlimitReached(PostData.length < 7);
         setRequestCount(request_count + 1);
         setPostList(serialized_post_list);
       }

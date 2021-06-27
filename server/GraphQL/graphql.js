@@ -203,7 +203,7 @@ const Mutation = new GraphQLObjectType({
       },
     },
 
-    LikePost: {
+    MutatePostLike: {
       type: PostSchema,
       args: {
         id: { type: GraphQLString },
@@ -211,6 +211,7 @@ const Mutation = new GraphQLObjectType({
         PostID: { type: GraphQLString },
         uid: { type: GraphQLString },
         auth_token: { type: GraphQLString },
+        type: { type: GraphQLString }
       },
       resolve: async (_, args) => {
         const { id, uid, auth_token, Username, PostID } = args;

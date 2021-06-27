@@ -167,9 +167,15 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   useEffect(
     () => {
-      if (isInteracting === true && isfetchlimitreached === false) {
-        FetchMorePosts();
-        setIsFetchLimitReached(true);
+      if (postid_list) {
+        if (
+          isInteracting === true &&
+          isfetchlimitreached === false &&
+          postid_list.length > 6
+        ) {
+          FetchMorePosts();
+          setIsFetchLimitReached(true);
+        }
       }
     }, // eslint-disable-next-line
     [isInteracting]
