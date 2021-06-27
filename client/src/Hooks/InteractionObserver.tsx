@@ -19,6 +19,8 @@ export const useInteractionObserver = (
         ([entered]) => {
           if (entered.isIntersecting) {
             if (isIntersecting === false) setIsIntersecting(true);
+          } else {
+            if (isIntersecting === true) setIsIntersecting(false);
           }
         },
         { threshold: 0, rootMargin: "100px" }

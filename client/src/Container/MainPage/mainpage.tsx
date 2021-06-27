@@ -76,6 +76,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         if (GetUserData.ProfilePicture.length > 0) {
           setProfilePicture(GetUserData.ProfilePicture);
         }
+        console.log(FollowingList);
         if (FollowingList.length > 0) {
           const postIDs = Convert2Dto1D(FollowingList);
           const SlicedPostIDs = PostListSerialization(postIDs, 0);
@@ -86,7 +87,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
             Posts: SlicedPostIDs,
           };
           setPostIDList(postIDs);
-          console.table(config);
           PostFetch({ variables: config });
         }
         setProfileData(GetUserData);
@@ -124,7 +124,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       const { GetPostsData }: { GetPostsData: Array<POSTS> | null } = data;
       if (GetPostsData) {
         const posts = AddPostsInPostState(GetPostsData);
-        console.table(posts);
         if (GetPostsData.length === 6) setIsFetchLimitReached(false);
         setPosts(posts);
         setReqestCount(request_count + 1);
