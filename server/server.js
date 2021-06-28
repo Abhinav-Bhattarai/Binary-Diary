@@ -14,8 +14,9 @@ dotenv.config();
 import CheckJWTRoute from "./Routes/check-jwt.js";
 import LoginRoute from "./Routes/login.js";
 import RegisterRoute from "./Routes/register.js";
-import DeleteRouter from "./Routes/deleter.js";
+import DeleteRoute from "./Routes/deleter.js";
 import MainSchema from "./GraphQL/graphql.js";
+import SearchSuggestionRoute from './Routes/search-suggestion.js';
 
 const app = express();
 const options = {
@@ -54,7 +55,8 @@ app.use(
 app.use("/check-auth", CheckJWTRoute);
 app.use("/login", LoginRoute);
 app.use("/signup", RegisterRoute);
-app.use("/delete", DeleteRouter);
+app.use("/delete", DeleteRoute);
+app.use("/search-profile", SearchSuggestionRoute)
 
 // DB connection
 mongoose

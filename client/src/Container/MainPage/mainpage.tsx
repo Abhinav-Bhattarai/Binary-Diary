@@ -14,6 +14,7 @@ import DefaultProfile from "../../assets/Images/profile-user.svg";
 import { Switch, Route, useHistory } from "react-router";
 import { Convert2Dto1D, PostListSerialization } from "./helper";
 import { useRef } from "react";
+import axios, { CancelTokenSource } from 'axios';
 import { useInteractionObserver } from "../../Hooks/InteractionObserver";
 
 const client = new ApolloClient({
@@ -56,8 +57,10 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [isfetchlimitreached, setIsFetchLimitReached] =
     useState<boolean>(false);
   const [request_count, setReqestCount] = useState<number>(0);
+  const [search_suggestion_loading, setSearchSuggestionLoading] = useState<boolean>(false);
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
+  const cancelToken = useRef<CancelTokenSource>();
   const isInteracting = useInteractionObserver(LastCardRef);
 
   // apollo-client queries;
@@ -76,7 +79,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         if (GetUserData.ProfilePicture.length > 0) {
           setProfilePicture(GetUserData.ProfilePicture);
         }
-        console.log(FollowingList);
         if (FollowingList.length > 0) {
           const postIDs = Convert2Dto1D(FollowingList);
           const SlicedPostIDs = PostListSerialization(postIDs, 0);
@@ -131,11 +133,23 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
   });
 
-  // RenderFunctions
+  const GetSuggestionFromBackend = async() => {
+    setSearchSuggestionLoading(true);
+    const { data } = await axios.get('/test', {cancelToken: cancelToken.current?.token});
+    return data;
+  } 
 
-  const ChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // RenderFunctions
+  const ChangeSearchValue = async(event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchValue(value);
+    if (search_suggestion_loading && value.length > 3) {
+      cancelToken.current?.cancel();
+    }
+    if (value.length > 2) {
+      const data = await GetSuggestionFromBackend();
+      console.log(data);
+    }
   };
 
   const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
@@ -157,6 +171,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     const username = localStorage.getItem("username");
     const userID = localStorage.getItem("userID");
     const uid = localStorage.getItem("uid");
+    const token = axios.CancelToken.source();
+    cancelToken.current = token;
     auth_token &&
       username &&
       userID &&
