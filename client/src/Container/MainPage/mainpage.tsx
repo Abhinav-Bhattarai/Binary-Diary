@@ -43,8 +43,7 @@ const AsyncProfileContainer = React.lazy(
   () => import("../../Components/MainPage/ProfileContainer/profile-container")
 );
 const AsyncRequestContainer = React.lazy(
-  () =>
-    import("../../Components/MainPage/RequestContainer/requests-container")
+  () => import("../../Components/MainPage/RequestContainer/requests-container")
 );
 
 const MainPageWrapper: React.FC<PROPS> = (props) => {
@@ -164,27 +163,30 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       const token = axios.CancelToken.source();
       cancelToken.current = token;
       setSearchSuggestionLoading(true);
-      setTimeout(() => axios
-        .get(`/search-profile/${value}`, {
-          cancelToken: token.token,
-        })
-        .then(({ data }) => {
-          setSearchSuggestionLoading(false);
-          setSearchSuggestion(data);
-        })
-        .catch(() => {
-          console.log("cancelled");
-        }), 200
-      )
+      setTimeout(
+        () =>
+          axios
+            .get(`/search-profile/${value}`, {
+              cancelToken: token.token,
+            })
+            .then(({ data }) => {
+              setSearchSuggestionLoading(false);
+              setSearchSuggestion(data);
+            })
+            .catch(() => {
+              console.log("cancelled");
+            }),
+        200
+      );
     }
   };
 
   const BlurSearchFocus = () => {
     if (search_suggestion) {
       setSearchSuggestion(null);
-      setSearchValue('');
+      setSearchValue("");
     }
-  }
+  };
 
   const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
     history.push("/posts");
@@ -198,6 +200,10 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const ProfilePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
     history.push(`/profile/${user_info?.userID}/1`);
 
+  const SearchProfilePressHandler = (id: string) => {
+    setSearchSuggestion(null);
+    history.push(`/profile/${id}/0`);
+  };
   // SideEffects and Effects;
 
   useEffect(() => {
@@ -228,32 +234,37 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     [isInteracting]
   );
 
-  const Suggestions = useMemo(() => {
-    if (search_suggestion) {
-      if (search_suggestion.length > 0) {
-        const dummy = [...search_suggestion];
-        return (
-          <>
-            <SuggestionContainer>
-              {dummy.map((data) => {
-                return (
-                  <SuggestedUserCard
-                    key={data.id}
-                    Username={data.Username}
-                    source={
-                      data.ProfilePicture.length > 0
-                        ? data.ProfilePicture
-                        : DefaultProfile
-                    }
-                  />
-                );
-              })}
-            </SuggestionContainer>
-          </>
-        );
+  const Suggestions = useMemo(
+    () => {
+      if (search_suggestion) {
+        if (search_suggestion.length > 0) {
+          const dummy = [...search_suggestion];
+          return (
+            <>
+              <SuggestionContainer>
+                {dummy.map((data) => {
+                  return (
+                    <SuggestedUserCard
+                      id={data.id}
+                      Click={SearchProfilePressHandler}
+                      key={data.id}
+                      Username={data.Username}
+                      source={
+                        data.ProfilePicture.length > 0
+                          ? data.ProfilePicture
+                          : DefaultProfile
+                      }
+                    />
+                  );
+                })}
+              </SuggestionContainer>
+            </>
+          );
+        }
       }
-    }
-  }, [search_suggestion]);
+    }, // eslint-disable-next-line
+    [search_suggestion]
+  );
 
   if (loading === true || PostFetchConfig.loading === true) {
     return <LoadingPage />;
@@ -272,7 +283,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         Username={user_info?.username}
         Blur={BlurSearchFocus}
       />
-      { Suggestions }
+      {Suggestions}
       <Switch>
         <Route
           exact

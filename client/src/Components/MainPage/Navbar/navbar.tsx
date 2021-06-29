@@ -45,8 +45,8 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
       placeholder={placeholder}
       name={name}
       type={type}
-      onBlur={Blur}
       autoComplete='off'
+      onBlur={Blur}
     />
   );
 };
