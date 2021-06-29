@@ -6,7 +6,7 @@ import {
   ProfileAreaProps,
   SearchBarProps,
 } from "../interfaces";
-import { HomeIcon, MessageIcon, SuggesstionIcon } from "./logo";
+import { HomeIcon, MessageIcon, RequestIcon } from "./logo";
 import "./navbar.scss";
 
 const SubContainer: React.FC<{ id: string }> = (props) => {
@@ -111,7 +111,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           </LogoContainer>
 
           <LogoContainer click={SuggestionPressHandler}>
-            <SuggesstionIcon />
+            <RequestIcon />
           </LogoContainer>
 
           <LogoContainer click={MessagesPressHandler}>

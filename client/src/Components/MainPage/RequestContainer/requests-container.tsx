@@ -1,14 +1,14 @@
 import React from "react";
 import { MainPageContainer } from "../Reusables/reusables";
 
-const SuggestionContainer = () => {
+const RequestContainer = () => {
   return (
     <React.Fragment>
       <MainPageContainer>
-        <h1>SuggestionContainer</h1>
+        <h1>RequestContainer</h1>
       </MainPageContainer>
     </React.Fragment>
   );
 };
 
-export default React.memo(SuggestionContainer);
+export default React.memo(RequestContainer);

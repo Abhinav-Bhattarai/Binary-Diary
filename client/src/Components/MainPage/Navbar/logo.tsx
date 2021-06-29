@@ -1,4 +1,4 @@
-import { BiHome, BiNews } from "react-icons/bi";
+import { BiHome, BiUser } from "react-icons/bi";
 import { RiMessengerLine } from "react-icons/ri";
 import { IconContext } from "react-icons";
 import "./navbar.scss";
@@ -11,10 +11,10 @@ export const HomeIcon = () => {
   );
 };
 
-export const SuggesstionIcon = () => {
+export const RequestIcon = () => {
   return (
     <IconContext.Provider value={{ className: "icon suggestion-icon" }}>
-      <BiNews />
+      <BiUser />
     </IconContext.Provider>
   );
 };

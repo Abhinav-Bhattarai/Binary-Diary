@@ -42,9 +42,9 @@ const AsyncMessageContainer = React.lazy(
 const AsyncProfileContainer = React.lazy(
   () => import("../../Components/MainPage/ProfileContainer/profile-container")
 );
-const AsyncSuggestionContainer = React.lazy(
+const AsyncRequestContainer = React.lazy(
   () =>
-    import("../../Components/MainPage/SuggestionContainer/suggestion-container")
+    import("../../Components/MainPage/RequestContainer/requests-container")
 );
 
 const MainPageWrapper: React.FC<PROPS> = (props) => {
@@ -156,11 +156,15 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       cancelToken.current?.cancel();
     }
 
+    if (value.length < 3) {
+      search_suggestion && setSearchSuggestion(null);
+    }
+
     if (value.length > 2) {
       const token = axios.CancelToken.source();
       cancelToken.current = token;
       setSearchSuggestionLoading(true);
-      axios
+      setTimeout(() => axios
         .get(`/search-profile/${value}`, {
           cancelToken: token.token,
         })
@@ -170,13 +174,15 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         })
         .catch(() => {
           console.log("cancelled");
-        });
+        }), 200
+      )
     }
   };
 
-  const ChangeSearchFocus = () => {
+  const BlurSearchFocus = () => {
     if (search_suggestion) {
       setSearchSuggestion(null);
+      setSearchValue('');
     }
   }
 
@@ -264,7 +270,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         value={search_value}
         ProfilePicture={profile_picture}
         Username={user_info?.username}
-        Blur={ChangeSearchFocus}
+        Blur={BlurSearchFocus}
       />
       { Suggestions }
       <Switch>
@@ -317,7 +323,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           render={() => {
             return (
               <Suspense fallback={<LoadingPage />}>
-                <AsyncSuggestionContainer />
+                <AsyncRequestContainer />
               </Suspense>
             );
           }}
