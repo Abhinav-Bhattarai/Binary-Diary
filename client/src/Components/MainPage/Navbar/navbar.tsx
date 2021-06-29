@@ -36,7 +36,7 @@ const Logo: React.FC<LogoProps> = (props) => {
 };
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
-  const { value, change, placeholder, name, type } = props;
+  const { value, change, placeholder, name, type, Blur } = props;
   return (
     <input
       className="search-bar"
@@ -45,6 +45,8 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
       placeholder={placeholder}
       name={name}
       type={type}
+      onBlur={Blur}
+      autoComplete='off'
     />
   );
 };
@@ -84,7 +86,8 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     MessagesPressHandler,
     ProfilePressHandler,
     ProfilePicture,
-    Username
+    Username,
+    Blur
   } = props;
 
   return (
@@ -98,6 +101,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             placeholder="Search ...."
             name="search-bar"
             type="text"
+            Blur={Blur}
           />
         </SubContainer>
         <SubContainer id="sub-container-2"></SubContainer>

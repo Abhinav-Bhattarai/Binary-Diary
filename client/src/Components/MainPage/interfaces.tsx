@@ -9,6 +9,7 @@ export interface NavbarProps {
   ProfilePressHandler: (event: React.MouseEvent<HTMLDivElement>) => void;
   ProfilePicture: string | undefined;
   Username: string | undefined;
+  Blur: () => void;
 }
 
 export interface ProfileAreaProps {
@@ -21,6 +22,7 @@ export interface SearchBarProps {
   placeholder: string;
   name: string;
   type: "text" | "password" | "email";
+  Blur: () => void;
 }
 
 export interface LogoProps {

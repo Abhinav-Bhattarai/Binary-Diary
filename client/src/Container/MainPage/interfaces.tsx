@@ -35,4 +35,11 @@ export interface FollowingData {
   Posts: Array<string>;
   Username: string;
   ProfilePicture: string;
+};
+
+export interface Suggestion {
+  ProfilePicture: string;
+  Username: string;
+  error: boolean;
+  id: string;
 }

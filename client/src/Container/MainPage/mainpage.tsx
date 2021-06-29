@@ -6,7 +6,14 @@ import {
   useQuery,
   useLazyQuery,
 } from "@apollo/client";
-import { UserInfo, PROPS, POSTS, UserData, FollowingData } from "./interfaces";
+import {
+  UserInfo,
+  PROPS,
+  POSTS,
+  UserData,
+  FollowingData,
+  Suggestion,
+} from "./interfaces";
 import { FetchUserData, PostsData } from "../../GraphQL/gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
@@ -14,8 +21,12 @@ import DefaultProfile from "../../assets/Images/profile-user.svg";
 import { Switch, Route, useHistory } from "react-router";
 import { Convert2Dto1D, PostListSerialization } from "./helper";
 import { useRef } from "react";
-import axios, { CancelTokenSource } from 'axios';
+import axios, { CancelTokenSource } from "axios";
 import { useInteractionObserver } from "../../Hooks/InteractionObserver";
+import { useMemo } from "react";
+import SuggestionContainer, {
+  SuggestedUserCard,
+} from "../../Components/MainPage/SearchSuggestion/suggestion";
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
@@ -57,7 +68,10 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [isfetchlimitreached, setIsFetchLimitReached] =
     useState<boolean>(false);
   const [request_count, setReqestCount] = useState<number>(0);
-  const [search_suggestion_loading, setSearchSuggestionLoading] = useState<boolean>(false);
+  const [search_suggestion, setSearchSuggestion] =
+    useState<Array<Suggestion> | null>(null);
+  const [search_suggestion_loading, setSearchSuggestionLoading] =
+    useState<boolean>(false);
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const cancelToken = useRef<CancelTokenSource>();
@@ -133,24 +147,38 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
   });
 
-  const GetSuggestionFromBackend = async() => {
-    setSearchSuggestionLoading(true);
-    const { data } = await axios.get('/test', {cancelToken: cancelToken.current?.token});
-    return data;
-  } 
-
   // RenderFunctions
-  const ChangeSearchValue = async(event: React.ChangeEvent<HTMLInputElement>) => {
+  const ChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchValue(value);
-    if (search_suggestion_loading && value.length > 3) {
+
+    if (value.length > 3 && search_suggestion_loading) {
       cancelToken.current?.cancel();
     }
+
     if (value.length > 2) {
-      const data = await GetSuggestionFromBackend();
-      console.log(data);
+      const token = axios.CancelToken.source();
+      cancelToken.current = token;
+      setSearchSuggestionLoading(true);
+      axios
+        .get(`/search-profile/${value}`, {
+          cancelToken: token.token,
+        })
+        .then(({ data }) => {
+          setSearchSuggestionLoading(false);
+          setSearchSuggestion(data);
+        })
+        .catch(() => {
+          console.log("cancelled");
+        });
     }
   };
+
+  const ChangeSearchFocus = () => {
+    if (search_suggestion) {
+      setSearchSuggestion(null);
+    }
+  }
 
   const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
     history.push("/posts");
@@ -171,8 +199,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     const username = localStorage.getItem("username");
     const userID = localStorage.getItem("userID");
     const uid = localStorage.getItem("uid");
-    const token = axios.CancelToken.source();
-    cancelToken.current = token;
     auth_token &&
       username &&
       userID &&
@@ -196,6 +222,33 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     [isInteracting]
   );
 
+  const Suggestions = useMemo(() => {
+    if (search_suggestion) {
+      if (search_suggestion.length > 0) {
+        const dummy = [...search_suggestion];
+        return (
+          <>
+            <SuggestionContainer>
+              {dummy.map((data) => {
+                return (
+                  <SuggestedUserCard
+                    key={data.id}
+                    Username={data.Username}
+                    source={
+                      data.ProfilePicture.length > 0
+                        ? data.ProfilePicture
+                        : DefaultProfile
+                    }
+                  />
+                );
+              })}
+            </SuggestionContainer>
+          </>
+        );
+      }
+    }
+  }, [search_suggestion]);
+
   if (loading === true || PostFetchConfig.loading === true) {
     return <LoadingPage />;
   }
@@ -211,8 +264,9 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         value={search_value}
         ProfilePicture={profile_picture}
         Username={user_info?.username}
+        Blur={ChangeSearchFocus}
       />
-
+      { Suggestions }
       <Switch>
         <Route
           exact
@@ -252,7 +306,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           render={() => {
             return (
               <Suspense fallback={<LoadingPage />}>
-                <AsyncMessageContainer/>
+                <AsyncMessageContainer />
               </Suspense>
             );
           }}
