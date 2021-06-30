@@ -164,7 +164,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       cancelToken.current = token;
       setSearchSuggestionLoading(true);
       setTimeout(
-        () =>
+        () =>  {
+          console.log('setTimeout called')
           axios
             .get(`/search-profile/${value}`, {
               cancelToken: token.token,
@@ -175,7 +176,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
             })
             .catch(() => {
               console.log("cancelled");
-            }),
+            })
+        },
         200
       );
     }

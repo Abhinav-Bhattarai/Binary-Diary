@@ -5,16 +5,6 @@
   "proxy": "https://localhost:8000",
   "dependencies": {
     "@apollo/client": "^3.3.19",
-    "@testing-library/jest-dom": "^5.12.0",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^12.20.13",
-    "@types/react": "^17.0.8",
-    "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.14",
-    "@types/react-router-dom": "^5.1.7",
-    "@types/react-transition-group": "^4.4.1",
     "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
     "graphql": "^15.5.0",
@@ -62,6 +52,16 @@
     "@types/crypto-js": "^4.0.1",
     "@types/simple-peer": "^9.6.3",
     "@types/socket.io-client": "^3.0.0",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^12.20.13",
+    "@types/react": "^17.0.8",
+    "@types/react-dom": "^17.0.5",
+    "@types/react-router": "^5.1.14",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/react-transition-group": "^4.4.1",
     "dotenv": "^10.0.0"
   }
 }
