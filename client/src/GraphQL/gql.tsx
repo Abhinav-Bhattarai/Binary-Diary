@@ -86,3 +86,19 @@ export const FetchMoreProfilePosts = gql`
     }
   }
 `;
+
+export const FetchProfileRequests = gql`
+  query ($auth_token: String!, $id: String!, $uid: String!) {
+    GetProfileRequests(
+      auth_token: $auth_token
+      id: $id
+      uid: $uid
+    ) {
+      Requests {
+        Username
+        extenderID
+        ProfilePicture
+      }
+    }
+  }
+`;

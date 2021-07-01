@@ -15,7 +15,11 @@ import {
   Suggestion,
   RequestConfig,
 } from "./interfaces";
-import { FetchUserData, PostsData } from "../../GraphQL/gql";
+import {
+  FetchProfileRequests,
+  FetchUserData,
+  PostsData,
+} from "../../GraphQL/gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
 import DefaultProfile from "../../assets/Images/profile-user.svg";
@@ -148,6 +152,17 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
   });
 
+  const RequestsQuery = useQuery(FetchProfileRequests, {
+    variables: {
+      id: localStorage.getItem("userID"),
+      uid: localStorage.getItem("uid"),
+      auth_token: localStorage.getItem("auth-token"),
+    },
+    onCompleted: (data) => {
+      console.log(data);
+    },
+  });
+
   // RenderFunctions
   const ChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -184,6 +199,27 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       setSearchSuggestion(null);
       setSearchValue("");
     }
+  };
+
+  const AddRequests = (config: RequestConfig) => {
+    if (requests) {
+      const SerializedConfig = {
+        Username: config.Username,
+        extenderID: config.extenderID,
+        ProfilePicture:
+          config.ProfilePicture.length > 0
+            ? config.ProfilePicture
+            : DefaultProfile,
+      };
+      if (requests.length > 0) {
+        const dummy = [...requests];
+        dummy.push(SerializedConfig);
+        setRequests(dummy);
+      } else {
+        setRequests([SerializedConfig]);
+      }
+    }
+    setRequests([]);
   };
 
   const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
@@ -225,21 +261,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   useEffect(() => {
     if (socket) {
       socket.on("real-time-request-receiver", (config: RequestConfig) => {
-        if (requests) {
-          const SerializedConfig = {
-            Username: config.Username,
-            extenderID: config.extenderID,
-            ProfilePicture: config.ProfilePicture.length > 0 ? config.ProfilePicture : DefaultProfile 
-          }
-          if (requests.length > 0) {
-            const dummy = [...requests];
-            dummy.push(SerializedConfig);
-            setRequests(dummy);
-          } else {
-            setRequests([SerializedConfig])
-          }
-        }
-        setRequests([]);
+        AddRequests(config);
       });
     }
     return () => {
