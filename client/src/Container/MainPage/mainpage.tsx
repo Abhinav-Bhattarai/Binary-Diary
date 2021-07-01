@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, useRef, useMemo } from "react";
 import {
   ApolloProvider,
   ApolloClient,
@@ -20,10 +20,9 @@ import Navbar from "../../Components/MainPage/Navbar/navbar";
 import DefaultProfile from "../../assets/Images/profile-user.svg";
 import { Switch, Route, useHistory } from "react-router";
 import { Convert2Dto1D, PostListSerialization } from "./helper";
-import { useRef } from "react";
 import axios, { CancelTokenSource } from "axios";
 import { useInteractionObserver } from "../../Hooks/InteractionObserver";
-import { useMemo } from "react";
+import SocketIOClient from 'socket.io-client';
 import SuggestionContainer, {
   SuggestedUserCard,
 } from "../../Components/MainPage/SearchSuggestion/suggestion";
@@ -71,6 +70,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     useState<Array<Suggestion> | null>(null);
   const [search_suggestion_loading, setSearchSuggestionLoading] =
     useState<boolean>(false);
+  const [socket, setSocket] = useState<null | SocketIOClient.Socket>(null);
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const cancelToken = useRef<CancelTokenSource>();
@@ -165,7 +165,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       setSearchSuggestionLoading(true);
       setTimeout(
         () =>  {
-          console.log('setTimeout called')
           axios
             .get(`/search-profile/${value}`, {
               cancelToken: token.token,
@@ -175,7 +174,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
               setSearchSuggestion(data);
             })
             .catch(() => {
-              console.log("cancelled");
             })
         },
         200
@@ -219,6 +217,23 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       uid &&
       setUserinfo({ auth_token, username, userID, uid });
   }, []);
+
+  useEffect(() => {
+    const io = SocketIOClient("https://localhost:8000").connect();
+    io.emit("join-primary-room", localStorage.getItem('userID'));
+    setSocket(io);
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("real-time-request-receiver", () => {
+        console.log('received')
+      });
+    }
+    return () => {
+      socket?.disconnect();
+    }
+  })
 
   useEffect(
     () => {

@@ -13,7 +13,6 @@
   "author": "Abhinav Bhattarai",
   "license": "MIT",
   "dependencies": {
-    "@types/socket.io": "^3.0.2",
     "async-redis": "^1.1.7",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
@@ -30,6 +29,7 @@
   "devDependencies": {
     "@types/async-redis": "^1.1.2",
     "@types/cors": "^2.8.10",
+    "@types/socket.io": "^2.1.4",
     "concurrently": "^6.2.0",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.7"
