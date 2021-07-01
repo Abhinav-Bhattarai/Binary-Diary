@@ -1,6 +1,7 @@
 import redis from "async-redis";
 import { createRequire } from "module";
 import { ByPassChecking } from "../Middleware/mutation-checker.js";
+import RequestModel from "../Models/RequestModel.js";
 const require = createRequire(import.meta.url);
 const {
   GraphQLObjectType,
@@ -59,7 +60,7 @@ const ProfileSchema = new GraphQLObjectType({
           return PostData;
         },
       },
-      Mutated: { type: GraphQLBoolean }
+      Mutated: { type: GraphQLBoolean },
     };
   },
 });
@@ -75,6 +76,7 @@ const UserSchema = new GraphQLObjectType({
       Following: { type: new GraphQLList(GraphQLString) },
       LikedPosts: { type: new GraphQLList(GraphQLString) },
       Posts: { type: new GraphQLList(GraphQLString) },
+      Mutated: { type: GraphQLBoolean },
       FollowingList: {
         type: new GraphQLList(UserSchema),
         resolve: async (parent, _) => {
@@ -86,7 +88,42 @@ const UserSchema = new GraphQLObjectType({
           return [];
         },
       },
-      Mutated: { type: GraphQLBoolean }
+    };
+  },
+});
+
+const RequestSchemaRequests = new GraphQLObjectType({
+  name: "RequestSchemaRequest",
+  fields: () => {
+    return {
+      extenderID: { type: GraphQLString },
+      ProfilePicture: { type: GraphQLString },
+      Username: { type: GraphQLString },
+    };
+  },
+});
+
+const RequestSchema = new GraphQLObjectType({
+  name: "RequestSchema",
+  fields: () => {
+    return {
+      UserID: { type: GraphQLString },
+      Requests: {
+        type: new GraphQLList(RequestSchemaRequests),
+        resolve: async (parent, _) => {
+          const { Requests } = parent;
+          if (Requests.length > 0) {
+            for (let request of Requests) {
+              const ProfilePicture = await cache.get(
+                `ProfilePicture/${parent.UserID}`
+              );
+              request.ProfilePicture = ProfilePicture ? ProfilePicture : ''
+            }
+            return Requests;
+          }
+          return Requests;
+        },
+      },
     };
   },
 });
@@ -153,7 +190,7 @@ const RootQuery = new GraphQLObjectType({
           const response = await FetchUserData(searchID);
           const verification = ByPassChecking(auth_token, id, uid);
           if (verification) {
-            return {...response, Verified: true};
+            return { ...response, Verified: true };
           }
           return response;
         }
@@ -173,6 +210,25 @@ const RootQuery = new GraphQLObjectType({
         const verification = ByPassChecking(auth_token, id, uid);
         if (verification) {
           return { Posts };
+        }
+      },
+    },
+
+    GetProfileRequests: {
+      type: RequestSchema,
+      args: {
+        auth_token: { type: GraphQLString },
+        id: { type: GraphQLString },
+        uid: { type: GraphQLString },
+      },
+      resolve: async (_, args) => {
+        const { id, auth_token, uid } = args;
+        const verification = ByPassChecking(auth_token, id, uid);
+        if (verification) {
+          const response = await RequestModel.findOne({ UserID: id });
+          if (response) {
+            return { Requests: response.Requests, UserID: response.UserID };
+          }
         }
       },
     },
@@ -211,7 +267,7 @@ const Mutation = new GraphQLObjectType({
         PostID: { type: GraphQLString },
         uid: { type: GraphQLString },
         auth_token: { type: GraphQLString },
-        type: { type: GraphQLString }
+        type: { type: GraphQLString },
       },
       resolve: async (_, args) => {
         const { id, uid, auth_token, Username, PostID } = args;
@@ -219,10 +275,10 @@ const Mutation = new GraphQLObjectType({
         if (validity) {
           await RegisterLikeInPostSchema(Username, id, PostID);
           await RegisterLikeInRegisterSchema(id, PostID);
-          return {Mutated: true};
+          return { Mutated: true };
         }
-      }
-    }
+      },
+    },
   },
 });
 

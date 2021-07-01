@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = new mongoose.Schema({
   UserID: {
-    type: String,
-    required: true,
+    type: String
   },
 
   Requests: {
@@ -17,4 +16,6 @@ const Schema = new mongoose.Schema({
   },
 });
 
-export default Schema;
+const RequestModel = mongoose.model('RequestModel', Schema)
+
+export default RequestModel;
