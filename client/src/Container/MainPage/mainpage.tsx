@@ -152,14 +152,16 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
   });
 
-  const RequestsQuery = useQuery(FetchProfileRequests, {
+  useQuery(FetchProfileRequests, {
     variables: {
       id: localStorage.getItem("userID"),
       uid: localStorage.getItem("uid"),
       auth_token: localStorage.getItem("auth-token"),
     },
     onCompleted: (data) => {
-      console.log(data);
+      const { GetProfileRequest } = data;
+      const Requests : Array<RequestConfig> = GetProfileRequest.Requests;
+      setRequests(Requests);
     },
   });
 
@@ -385,7 +387,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           render={() => {
             return (
               <Suspense fallback={<LoadingPage />}>
-                <AsyncRequestContainer />
+                <AsyncRequestContainer requestList={requests}/>
               </Suspense>
             );
           }}
