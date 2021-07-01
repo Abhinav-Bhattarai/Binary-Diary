@@ -65,6 +65,11 @@ const Schema = new mongoose.Schema({
     default: [],
   },
 
+  Requests: {
+    type: String,
+    required: true
+  },
+
   UniqueID: {
     type: String,
     required: true,

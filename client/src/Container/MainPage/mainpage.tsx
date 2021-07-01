@@ -13,6 +13,7 @@ import {
   UserData,
   FollowingData,
   Suggestion,
+  RequestConfig,
 } from "./interfaces";
 import { FetchUserData, PostsData } from "../../GraphQL/gql";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
@@ -22,7 +23,7 @@ import { Switch, Route, useHistory } from "react-router";
 import { Convert2Dto1D, PostListSerialization } from "./helper";
 import axios, { CancelTokenSource } from "axios";
 import { useInteractionObserver } from "../../Hooks/InteractionObserver";
-import SocketIOClient from 'socket.io-client';
+import SocketIOClient from "socket.io-client";
 import SuggestionContainer, {
   SuggestedUserCard,
 } from "../../Components/MainPage/SearchSuggestion/suggestion";
@@ -70,6 +71,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     useState<Array<Suggestion> | null>(null);
   const [search_suggestion_loading, setSearchSuggestionLoading] =
     useState<boolean>(false);
+  const [requests, setRequests] = useState<null | Array<RequestConfig>>(null);
   const [socket, setSocket] = useState<null | SocketIOClient.Socket>(null);
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
@@ -163,21 +165,17 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       const token = axios.CancelToken.source();
       cancelToken.current = token;
       setSearchSuggestionLoading(true);
-      setTimeout(
-        () =>  {
-          axios
-            .get(`/search-profile/${value}`, {
-              cancelToken: token.token,
-            })
-            .then(({ data }) => {
-              setSearchSuggestionLoading(false);
-              setSearchSuggestion(data);
-            })
-            .catch(() => {
-            })
-        },
-        200
-      );
+      setTimeout(() => {
+        axios
+          .get(`/search-profile/${value}`, {
+            cancelToken: token.token,
+          })
+          .then(({ data }) => {
+            setSearchSuggestionLoading(false);
+            setSearchSuggestion(data);
+          })
+          .catch(() => {});
+      }, 200);
     }
   };
 
@@ -220,20 +218,34 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   useEffect(() => {
     const io = SocketIOClient("https://localhost:8000").connect();
-    io.emit("join-primary-room", localStorage.getItem('userID'));
+    io.emit("join-primary-room", localStorage.getItem("userID"));
     setSocket(io);
   }, []);
 
   useEffect(() => {
     if (socket) {
-      socket.on("real-time-request-receiver", () => {
-        console.log('received')
+      socket.on("real-time-request-receiver", (config: RequestConfig) => {
+        if (requests) {
+          const SerializedConfig = {
+            Username: config.Username,
+            extenderID: config.extenderID,
+            ProfilePicture: config.ProfilePicture.length > 0 ? config.ProfilePicture : DefaultProfile 
+          }
+          if (requests.length > 0) {
+            const dummy = [...requests];
+            dummy.push(SerializedConfig);
+            setRequests(dummy);
+          } else {
+            setRequests([SerializedConfig])
+          }
+        }
+        setRequests([]);
       });
     }
     return () => {
       socket?.disconnect();
-    }
-  })
+    };
+  });
 
   useEffect(
     () => {

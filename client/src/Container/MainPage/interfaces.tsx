@@ -43,3 +43,9 @@ export interface Suggestion {
   error: boolean;
   id: string;
 }
+
+export interface RequestConfig {
+  Username: string;
+  ProfilePicture: string;
+  extenderID: string;
+}

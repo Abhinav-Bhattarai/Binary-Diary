@@ -40,8 +40,6 @@ app.use(express.json({ limit: "50mb" }));
 // socket
 io.on("connection", (socket) => {
   socket.on("join-primary-room", userID => {
-    console.log(userID);
-    socket.emit("real-time-request-receiver");
     socket.join(userID);
   });
 
@@ -51,7 +49,7 @@ io.on("connection", (socket) => {
       .to(extendedTo)
       .emit("real-time-request-receiver", {
         Username,
-        extenedFrom,
+        extenderID: extenedFrom,
         ProfilePicture: ProfilePicture ? ProfilePicture : "",
       });
   });
