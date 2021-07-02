@@ -86,7 +86,10 @@ export const GetUserDataCacheCheck = async (cache, id, uid) => {
 };
 
 export const Decrypt = (Encryption) => {
-  const bytes = Crypto.AES.decrypt(Encryption, process.env.ENCRYPT_TOKEN).toString(Crypto.enc.Utf8);
+  const bytes = Crypto.AES.decrypt(
+    Encryption,
+    process.env.ENCRYPT_TOKEN
+  ).toString(Crypto.enc.Utf8);
   return JSON.parse(bytes);
 };
 
@@ -175,26 +178,47 @@ export const FetchUserData = async (id) => {
     Following: response.Following,
     Posts: FlattenedPost,
     ProfilePicture: response.ProfilePicture,
-    Verified: false
+    Verified: false,
   };
   return SerializedData;
 };
 
-export const UpdateCacheUserInfo = async(cache, db_response, id, uid) => {
+export const UpdateCacheUserInfo = async (cache, db_response, id, uid) => {
   const unserialized_data = await cache.get(`UserInfo/${id}/${uid}`);
   const serialized_data = JSON.parse(unserialized_data);
   serialized_data.Posts.push(db_response._id);
   await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(serialized_data));
-}
-
-export const RegisterLikeInPostSchema = async(Username, userID, postID) => {
-
 };
 
-export const RegisterLikeInRegisterSchema = async(userID, PostID) => {
+export const RegisterLikeInPostSchema = async (Username, userID, postID) => {};
 
+export const RegisterLikeInRegisterSchema = async (userID, PostID) => {};
+
+export const CreatePostCommentSchema = async () => {};
+
+export const UpdateRequestList = async (id, RequesterID) => {
+  const response = await RequestModel.findOne({ UserID: id });
+  if (response) {
+    const dummy = [...response.Requests];
+    for (let request in dummy) {
+      if (dummy[request].extenderID === RequesterID) {
+        dummy.splice(request, 1);
+        break;
+      }
+    }
+  }
+  response.Requests = dummy;
+  await response.save();
 };
 
-export const CreatePostCommentSchema = async() => {
-  
-}
+export const AddToMyFollowersList = async (id, RequesterID) => {
+  const response = await RegisterModel.findOne({ _id: id });
+  response.Followers.push(RequesterID);
+  await response.save();
+};
+
+export const AddToRequesterFollowingList = async (RequesterID, myID) => {
+  const response = await RegisterModel.findOne({ _id: RequesterID });
+  response.Following.push(myID);
+  await response.save();
+};

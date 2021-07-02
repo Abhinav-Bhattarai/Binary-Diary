@@ -43,6 +43,10 @@ io.on("connection", (socket) => {
     socket.join(userID);
   });
 
+  socket.on("accept-follow-request", config => {
+
+  }); 
+
   socket.on("real-time-request", async (extenedFrom, extendedTo, Username) => {
     const ProfilePicture = await cache.get(`ProfilePicture/${extenedFrom}`);
     socket.broadcast

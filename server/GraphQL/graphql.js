@@ -14,6 +14,7 @@ const {
 import {
   AddPostID,
   AddPostToDatabase,
+  AddToRequesterFollowingList,
   FetchUserData,
   FollowingDataSearch,
   GetPostDataHandler,
@@ -22,6 +23,7 @@ import {
   RegisterLikeInPostSchema,
   RegisterLikeInRegisterSchema,
   UpdateCacheUserInfo,
+  UpdateRequestList,
 } from "./helper.js";
 
 const cache = redis.createClient();
@@ -108,6 +110,7 @@ const RequestSchema = new GraphQLObjectType({
   fields: () => {
     return {
       UserID: { type: GraphQLString },
+      Mutated: { type: GraphQLBoolean },
       Requests: {
         type: new GraphQLList(RequestSchemaRequests),
         resolve: async (parent, _) => {
@@ -117,13 +120,12 @@ const RequestSchema = new GraphQLObjectType({
               const ProfilePicture = await cache.get(
                 `ProfilePicture/${parent.UserID}`
               );
-              request.ProfilePicture = ProfilePicture ? ProfilePicture : ''
+              request.ProfilePicture = ProfilePicture ? ProfilePicture : "";
             }
             return Requests;
           }
           return Requests;
         },
-        
       },
     };
   },
@@ -278,6 +280,30 @@ const Mutation = new GraphQLObjectType({
           await RegisterLikeInRegisterSchema(id, PostID);
           return { Mutated: true };
         }
+      },
+    },
+
+    MutateFollowRequests: {
+      type: RequestSchema,
+      args: {
+        id: { type: GraphQLString },
+        uid: { type: GraphQLString },
+        auth_token: { type: GraphQLString },
+        type: { type: GraphQLString },
+        RequesterID: { type: GraphQLString },
+      },
+      resolve: async (_, args) => {
+        const { id, uid, auth_token, type, RequesterID } = args;
+        const validity = ByPassChecking(auth_token, id, uid);
+        if (validity) {
+          UpdateRequestList(id, RequesterID);
+          if (type === "Add") {
+            AddToMyFollowersList(id, RequesterID);
+            AddToRequesterFollowingList(RequesterID, id);
+          }
+          return { Mutated: true };
+        }
+        return { Mutated: false };
       },
     },
   },
