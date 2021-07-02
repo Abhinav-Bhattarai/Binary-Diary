@@ -5,6 +5,7 @@ import {
   InMemoryCache,
   useQuery,
   useLazyQuery,
+  useMutation,
 } from "@apollo/client";
 import {
   UserInfo,
@@ -31,6 +32,7 @@ import SocketIOClient from "socket.io-client";
 import SuggestionContainer, {
   SuggestedUserCard,
 } from "../../Components/MainPage/SearchSuggestion/suggestion";
+import { FollowRequestMutations } from "../../GraphQL/mutations";
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
@@ -165,6 +167,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
   });
 
+  const [FollowRequestMutationCall] = useMutation(FollowRequestMutations);
+
   // RenderFunctions
   const ChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -205,9 +209,18 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   const AcceptFollowRequest = (index: number) => {
     if (requests) {
+      FollowRequestMutationCall({
+        variables: {
+          id: user_info?.userID,
+          auth_token: user_info?.auth_token,
+          uid: user_info?.uid,
+          RequesterID: requests[index].extenderID,
+          type: 'Add'
+        }
+      });
       const new_array = SpliceArray(requests, index);
       setRequests(new_array);
-      socket?.emit("follow-request-accept", {
+      socket?.emit("accept-follow-request", {
         id: user_info?.userID,
         username: user_info?.username,
       });
@@ -216,6 +229,15 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   const DeleteFollowRequest = (index: number) => {
     if (requests) {
+      FollowRequestMutationCall({
+        variables: {
+          id: user_info?.userID,
+          auth_token: user_info?.auth_token,
+          uid: user_info?.uid,
+          RequesterID: requests[index].extenderID,
+          type: 'Delete'
+        }
+      });
       const new_array = SpliceArray(requests, index);
       setRequests(new_array);
     }

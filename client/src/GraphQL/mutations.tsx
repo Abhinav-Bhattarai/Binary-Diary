@@ -23,7 +23,7 @@ export const AddPost = gql`
 `;
 
 export const PostLikeMutation = gql`
-  mutation(
+  mutation (
     $id: String!
     $Username: String!
     $uid: String!
@@ -31,13 +31,33 @@ export const PostLikeMutation = gql`
     $type: String!
     $PostID: String!
   ) {
-    MutatePostLike (
+    MutatePostLike(
       id: $id
       uid: $uid
       Username: $Username
       PostID: $PostID
       auth_token: $auth_token
       type: $type
+    ) {
+      Mutated
+    }
+  }
+`;
+
+export const FollowRequestMutations = gql`
+  mutation(
+    $id: String!
+    $uid: String!
+    $auth_token: String!
+    $type: String!
+    $RequesterID: String!
+  ) {
+    MutateFollowRequests (
+      id: $id
+      uid: $uid
+      auth_token: $auth_token
+      type: $type
+      RequesterID: $RequesterID
     ) {
       Mutated
     }
