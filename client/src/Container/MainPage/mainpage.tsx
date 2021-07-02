@@ -24,7 +24,7 @@ import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import Navbar from "../../Components/MainPage/Navbar/navbar";
 import DefaultProfile from "../../assets/Images/profile-user.svg";
 import { Switch, Route, useHistory } from "react-router";
-import { Convert2Dto1D, PostListSerialization } from "./helper";
+import { Convert2Dto1D, PostListSerialization, SpliceArray } from "./helper";
 import axios, { CancelTokenSource } from "axios";
 import { useInteractionObserver } from "../../Hooks/InteractionObserver";
 import SocketIOClient from "socket.io-client";
@@ -159,8 +159,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       auth_token: localStorage.getItem("auth-token"),
     },
     onCompleted: (data) => {
-      const { GetProfileRequest } = data;
-      const Requests : Array<RequestConfig> = GetProfileRequest.Requests;
+      const { GetProfileRequests } = data;
+      const Requests: Array<RequestConfig> = GetProfileRequests.Requests;
       setRequests(Requests);
     },
   });
@@ -200,6 +200,24 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     if (search_suggestion) {
       setSearchSuggestion(null);
       setSearchValue("");
+    }
+  };
+
+  const AcceptFollowRequest = (index: number) => {
+    if (requests) {
+      const new_array = SpliceArray(requests, index);
+      setRequests(new_array);
+      socket?.emit("follow-request-accept", {
+        id: user_info?.userID,
+        username: user_info?.username,
+      });
+    }
+  };
+
+  const DeleteFollowRequest = (index: number) => {
+    if (requests) {
+      const new_array = SpliceArray(requests, index);
+      setRequests(new_array);
     }
   };
 
@@ -387,7 +405,11 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           render={() => {
             return (
               <Suspense fallback={<LoadingPage />}>
-                <AsyncRequestContainer requestList={requests}/>
+                <AsyncRequestContainer
+                  AcceptRequest={AcceptFollowRequest}
+                  DeleteRequest={DeleteFollowRequest}
+                  requestList={requests}
+                />
               </Suspense>
             );
           }}

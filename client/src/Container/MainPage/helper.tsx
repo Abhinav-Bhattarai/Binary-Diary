@@ -17,3 +17,8 @@ export const PostListSerialization = (
 ) => {
   return FollowingList.slice(request_count * 6, (request_count + 1) * 6);
 };
+
+export const SpliceArray = (arr: Array<any>, index: number) => {
+  arr.splice(index, 1);
+  return arr;
+}

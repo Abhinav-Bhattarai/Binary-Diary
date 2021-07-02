@@ -1,0 +1,46 @@
+#request-container-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  font-weight: bolder;
+  font-size: 24px;
+  margin: 15px 0;
+  margin-bottom: 50px;
+}
+
+#request-card-container {
+  display: flex;
+  width: 30%;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  padding: 15px 2%;
+  align-items: center;
+
+  #requester-username {
+    font-weight: bold;
+    flex: 1.2;
+    margin-left: 3%;
+    font-size: 18px;
+    overflow: hidden;
+  }
+
+  #react-btn-container {
+    display: flex;
+    align-items: center;
+    flex: 1.2;
+    justify-content: center;
+
+    #request-react-btn {
+      width: 40%;
+      border-radius: 5px;
+      color: #fff;
+      background-color: #bdbdbd;
+      font-weight: bold;
+      padding: 10px 3%;
+      border: none;
+      margin: 0 1%;
+      cursor: pointer;
+    }
+  }
+}
