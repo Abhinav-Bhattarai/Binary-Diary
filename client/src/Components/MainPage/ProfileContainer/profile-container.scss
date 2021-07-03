@@ -156,6 +156,18 @@ $faint-white: rgb(250, 250, 249);
   cursor: pointer;
 }
 
+#detailed-post-container {
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(24, 24, 24);
+}
+
 @media all and (max-width: 1200px) {
   #profile-config-container {
     width: 50%;

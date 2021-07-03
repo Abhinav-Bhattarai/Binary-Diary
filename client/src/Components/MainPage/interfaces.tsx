@@ -1,4 +1,5 @@
 import React from "react";
+import { UserInfo } from "../../Container/MainPage/interfaces";
 
 export interface NavbarProps {
   value: string;
@@ -38,6 +39,19 @@ export interface PostListType {
   CreatorID: string;
   Caption: string;
   Likes: Array<string>;
+}
+
+export interface ProfilePostDetailsType {
+  Post: string;
+  id: string;
+  CreatorUsername: string;
+  CreatorID: string;
+  Caption: string;
+  Likes: Array<string>;
+  LikeStatus: boolean;
+  UserInfo: UserInfo | null;
+  ProfilePicture: string;
+  RevertPopup?: () => void;
 }
 
 export interface GetProfileDataProps {

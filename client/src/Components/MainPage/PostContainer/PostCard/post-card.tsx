@@ -37,6 +37,7 @@ interface POSTCARDPROPS {
   isPostLiked: boolean;
   id: string;
   UserInfo: UserInfo | null;
+  Click?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const PostCard: React.FC<POSTCARDPROPS> = (props) => {
@@ -61,7 +62,7 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
     } else {
       MutatePostLike({
         variables: {
-          type: "like",
+          type: "unlike",
           id: props.UserInfo?.userID,
           Username: props.UserInfo?.username,
           auth_token: props.UserInfo?.auth_token,
@@ -76,7 +77,7 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   const CommentClickHandler = () => {};
   return (
     <React.Fragment>
-      <main id="post-card-container">
+      <main id="post-card-container" onClick={props.Click ? props.Click : undefined}>
         {children}
         <InteractionContainer>
           <Interactants

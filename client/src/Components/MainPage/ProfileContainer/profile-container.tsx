@@ -18,6 +18,7 @@ import { FetchMoreProfilePosts, ProfileDataFetch } from "../../../GraphQL/gql";
 import {
   GetProfileDataProps,
   PostListType,
+  ProfilePostDetailsType,
   SerializedProfile,
 } from "../interfaces";
 import Spinner from "../../UI/Spinner/spinner";
@@ -60,6 +61,8 @@ const AsyncBigPopupContainer = React.lazy(
   () => import("../Reusables/reusables")
 );
 
+const AsyncDetailedPostContainer = React.lazy(() => import('./reusables'))
+
 const ProfileContainer: React.FC<PROPS> = (props) => {
   const {
     ChangeAuthentication,
@@ -78,6 +81,8 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const [transitioning, setTransitioning] = useState<boolean | null>(null);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
+  const [isPostShown, setIsPostShown] = useState<boolean>(false);
+  const [currentPostDetails, setCurrentPostDetails] = useState<ProfilePostDetailsType | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
   const [isFetchLimitReached, setIsFetchlimitReached] = useState<
     boolean | null
@@ -177,6 +182,10 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     setSettingsOverviewPopup(!settingOverviewPopup);
   };
 
+  const GetMorePostInfo = (config: ProfilePostDetailsType) => {
+    setCurrentPostDetails(config);
+    setIsPostShown(true);
+  }
   const ChangeProfileHandler = () => {};
 
   const UploadImage = useCallback(() => {
@@ -286,25 +295,14 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     }
   }, [transitioning, UploadImage, post]);
 
-  // const GetMoreInformationAboutPostData = useCallback(
-  //   (id: string) => {
-  //     if (post_list) {
-  //       if (post_list.length > 0) {
-  //         const Required_index = post_list.findIndex(
-  //           (value) => value._id === id
-  //         );
-  //         if (Required_index !== -1) {
-  //           // add the required post object in a more_post_info state;
-  //         }
-  //       }
-  //     }
-  //   },
-  //   [post_list]
-  // );
-
   const LogoutHandler = () => {
     ChangeAuthentication(false);
   };
+
+  const RevertProfilePostDetails = () => {
+    setCurrentPostDetails(null);
+    setIsPostShown(false);
+  }
 
   const type = useMemo(() => {
     if (ProfileData?.Following) {
@@ -341,7 +339,6 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
             <ProfilePostAreaContainer>
               <ProfilePostArea>
                 {post_list.map((posts) => {
-                  console.log(posts);
                   let isPostLiked = false;
                   if (ProfileData?.LikedPosts) {
                     if (ProfileData.LikedPosts.length > 0) {
@@ -355,6 +352,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
                   }
                   return (
                     <ProfilePostOverview
+                      Click={GetMorePostInfo}
                       key={posts._id}
                       source={posts.Post}
                       id={posts._id}
@@ -363,6 +361,8 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
                       CreatorUsername={posts.CreatorUsername}
                       Caption={posts.Caption}
                       Likes={posts.Likes}
+                      UserInfo={userInfo}
+                      ProfilePicture={profile_info.ProfilePicture}
                     />
                   );
                 })}
@@ -386,7 +386,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         </ProfilePostAreaContainer>
       </React.Fragment>
     );
-  }, [post_list, ProfileData?.LikedPosts]);
+  }, [post_list, ProfileData?.LikedPosts, profile_info.ProfilePicture, userInfo]);
 
   if (owner_status === null) {
     return (
@@ -397,7 +397,6 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       </React.Fragment>
     );
   }
-
 
   let Configuration = () => <React.Fragment></React.Fragment>;
   if (owner_status === true) {
@@ -427,6 +426,23 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         </ProfileConfigurationContainer>
       );
     };
+  }
+
+  if (isPostShown && currentPostDetails) {
+    return (
+      <AsyncDetailedPostContainer
+        CreatorID={currentPostDetails.CreatorID}
+        Caption={currentPostDetails.Caption}
+        CreatorUsername={currentPostDetails.CreatorUsername}
+        Likes={currentPostDetails.Likes}
+        id={currentPostDetails.id}
+        Post={currentPostDetails.Post}
+        LikeStatus={currentPostDetails.LikeStatus}
+        ProfilePicture={profile_info.ProfilePicture}
+        UserInfo={userInfo}
+        RevertPopup={RevertProfilePostDetails}
+      />
+    )
   }
 
   return (

@@ -1,5 +1,11 @@
 import React from "react";
 import { IconContext } from "react-icons";
+import { UserInfo } from "../../../Container/MainPage/interfaces";
+import { ProfilePostDetailsType } from "../interfaces";
+import PostCard, {
+  PostCardHeader,
+  PostCardImageContainer
+} from '../PostContainer/PostCard/post-card';
 import "./profile-container.scss";
 
 export const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
@@ -80,15 +86,40 @@ interface ProfilePostOverviewProps {
   Caption: string;
   CreatorID: string;
   CreatorUsername: string;
+  Click: (config: ProfilePostDetailsType) => void;
+  ProfilePicture: string;
+  UserInfo: UserInfo | null
 }
 
 export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
   props
 ) => {
-  const { source } = props;
+  const {
+    source,
+    Click,
+    Likes,
+    CreatorID,
+    CreatorUsername,
+    Caption,
+    LikeStatus,
+    id,
+    ProfilePicture,
+    UserInfo
+  } = props;
+  const config = {
+    Likes,
+    CreatorID,
+    CreatorUsername,
+    Caption,
+    LikeStatus,
+    id,
+    Post: source,
+    UserInfo,
+    ProfilePicture
+  };
   return (
     <React.Fragment>
-      <div id="profile-post-overview">
+      <div id="profile-post-overview" onClick={Click.bind(this, config)}>
         <img draggable={false} src={source} alt="profile-overview" />
       </div>
     </React.Fragment>
@@ -138,3 +169,28 @@ export const ProfileStateButton: React.FC<{ name: string }> = (props) => {
     </button>
   );
 };
+
+const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
+  const { LikeStatus, id, CreatorUsername, Post, UserInfo, ProfilePicture, RevertPopup } = props;
+  const PostCardClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+  }
+  return (
+    <main id="detailed-post-container" onClick={RevertPopup}>
+      <PostCard
+        id={id}
+        UserInfo={UserInfo}
+        isPostLiked={LikeStatus}
+        Click={PostCardClick}
+      >
+        <PostCardHeader
+          Username={CreatorUsername}
+          source={ProfilePicture}
+        />
+        <PostCardImageContainer source={Post} />
+      </PostCard>
+    </main>
+  );
+};
+
+export default DetailedPostContainer;
