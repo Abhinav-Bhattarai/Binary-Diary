@@ -11,10 +11,7 @@ import { BiCog } from "react-icons/bi";
 import { useLazyQuery, useMutation } from "@apollo/client";
 
 import "./profile-container.scss";
-import {
-  ImageSelector,
-  MainPageContainer,
-} from "../Reusables/reusables";
+import { ImageSelector, MainPageContainer } from "../Reusables/reusables";
 import { PopupHeader, PopupImageContainer } from "../Reusables/reusables";
 import { contextData } from "../../../Container/MainPage/Context";
 import { FetchMoreProfilePosts, ProfileDataFetch } from "../../../GraphQL/gql";
@@ -39,9 +36,14 @@ import {
   ConfigLogoContainer,
   SettingsOverViewPopup,
   SettingsOverViewElement,
+  ProfileStateButton,
 } from "./reusables";
 import { AddPost } from "../../../GraphQL/mutations";
-import { UserData, UserInfo } from "../../../Container/MainPage/interfaces";
+import {
+  RequestConfig,
+  UserData,
+  UserInfo,
+} from "../../../Container/MainPage/interfaces";
 import useProfileParams from "../../../Hooks/profileHook";
 
 const transition_duration: number = 500;
@@ -51,18 +53,27 @@ interface PROPS {
   userInfo: UserInfo | null;
   ProfilePicture: string;
   ProfileData: UserData | null;
-};
+  Requests: Array<RequestConfig> | null;
+}
 
-const AsyncBigPopupContainer = React.lazy(() => import('../Reusables/reusables'))
+const AsyncBigPopupContainer = React.lazy(
+  () => import("../Reusables/reusables")
+);
 
 const ProfileContainer: React.FC<PROPS> = (props) => {
-  const { ChangeAuthentication, userInfo, ProfilePicture, ProfileData } = props;
+  const {
+    ChangeAuthentication,
+    userInfo,
+    ProfilePicture,
+    ProfileData,
+    Requests,
+  } = props;
   const [profile_info, setProfileInfo] = useState<
     contextData | SerializedProfile
   >({
     ProfilePicture,
     ProfileData,
-    userInfo
+    userInfo,
   });
   const [transitioning, setTransitioning] = useState<boolean | null>(null);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
@@ -212,28 +223,25 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   useEffect(
     () => {
       if (params) {
-      const ProfileDataCaller = (type: boolean) => {
-        GetProfileData({
-          variables: {
-            auth_token: userInfo?.auth_token,
-            id: userInfo?.userID,
-            uid: userInfo?.uid,
-            searchID: params.id,
-            verify: type,
-            Posts: ProfileData?.Posts,
-          },
-        });
-      };
-      if (
-        parseInt(params.owned) === 1 &&
-        params.id === userInfo?.userID
-      ) {
-        setOwnerStatus(true);
-        ProfileDataCaller(true);
-      } else {
-        ProfileDataCaller(false);
+        const ProfileDataCaller = (type: boolean) => {
+          GetProfileData({
+            variables: {
+              auth_token: userInfo?.auth_token,
+              id: userInfo?.userID,
+              uid: userInfo?.uid,
+              searchID: params.id,
+              verify: type,
+              Posts: ProfileData?.Posts,
+            },
+          });
+        };
+        if (parseInt(params.owned) === 1 && params.id === userInfo?.userID) {
+          setOwnerStatus(true);
+          ProfileDataCaller(true);
+        } else {
+          ProfileDataCaller(false);
+        }
       }
-    }
     }, // eslint-disable-next-line
     [params]
   );
@@ -297,6 +305,33 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const LogoutHandler = () => {
     ChangeAuthentication(false);
   };
+
+  const type = useMemo(() => {
+    if (ProfileData?.Following) {
+      if (ProfileData.Following.length > 0) {
+        const requiredData = ProfileData.Following.filter((data) => {
+          return data === params?.id;
+        });
+        if (requiredData.length > 0) {
+          return "Following";
+        }
+        return "Follow";
+      }
+      return "Follow";
+    } else if (Requests) {
+      if (Requests.length > 0) {
+        const requiredData = Requests.filter((data) => {
+          return data.extenderID === params?.id;
+        });
+        if (requiredData.length > 0) {
+          return "Requested";
+        }
+        return "Follow";
+      }
+      return "Follow";
+    }
+    return "Loading";
+  }, [ProfileData?.Following, params?.id, Requests]);
 
   const PostArea = useMemo(() => {
     if (post_list) {
@@ -398,6 +433,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
               value={profile_info.ProfileData?.Posts.length}
             />
           </ProfileInformationOverView>
+          {owner_status === false && <ProfileStateButton name={type} />}
         </ProfileHeaderContainer>
         <Configuration />
         {PostArea}

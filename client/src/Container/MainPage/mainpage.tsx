@@ -215,8 +215,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           auth_token: user_info?.auth_token,
           uid: user_info?.uid,
           RequesterID: requests[index].extenderID,
-          type: 'Add'
-        }
+          type: "Add",
+        },
       });
       const new_array = SpliceArray(requests, index);
       setRequests(new_array);
@@ -235,8 +235,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           auth_token: user_info?.auth_token,
           uid: user_info?.uid,
           RequesterID: requests[index].extenderID,
-          type: 'Delete'
-        }
+          type: "Delete",
+        },
       });
       const new_array = SpliceArray(requests, index);
       setRequests(new_array);
@@ -401,6 +401,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
             return (
               <Suspense fallback={<LoadingPage />}>
                 <AsyncProfileContainer
+                  Requests={requests}
                   userInfo={user_info}
                   ProfilePicture={profile_picture}
                   ProfileData={profile_data}

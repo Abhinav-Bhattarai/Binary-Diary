@@ -125,3 +125,12 @@ export const SettingsOverViewElement: React.FC<{
     </nav>
   );
 };
+
+export const ProfileStateButton: React.FC<{ name: string }> = (props) => {
+  const { name } = props;
+  return (
+    <button type="button" id="profile-state-btn">
+      {name}
+    </button>
+  );
+};
