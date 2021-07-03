@@ -37,6 +37,7 @@ export interface PostListType {
   CreatorUsername: string;
   CreatorID: string;
   Caption: string;
+  Likes: Array<string>;
 }
 
 export interface GetProfileDataProps {

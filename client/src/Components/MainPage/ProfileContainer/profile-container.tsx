@@ -286,21 +286,21 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     }
   }, [transitioning, UploadImage, post]);
 
-  const GetMoreInformationAboutPostData = useCallback(
-    (id: string) => {
-      if (post_list) {
-        if (post_list.length > 0) {
-          const Required_index = post_list.findIndex(
-            (value) => value._id === id
-          );
-          if (Required_index !== -1) {
-            // add the required post object in a more_post_info state;
-          }
-        }
-      }
-    },
-    [post_list]
-  );
+  // const GetMoreInformationAboutPostData = useCallback(
+  //   (id: string) => {
+  //     if (post_list) {
+  //       if (post_list.length > 0) {
+  //         const Required_index = post_list.findIndex(
+  //           (value) => value._id === id
+  //         );
+  //         if (Required_index !== -1) {
+  //           // add the required post object in a more_post_info state;
+  //         }
+  //       }
+  //     }
+  //   },
+  //   [post_list]
+  // );
 
   const LogoutHandler = () => {
     ChangeAuthentication(false);
@@ -341,12 +341,28 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
             <ProfilePostAreaContainer>
               <ProfilePostArea>
                 {post_list.map((posts) => {
+                  console.log(posts);
+                  let isPostLiked = false;
+                  if (ProfileData?.LikedPosts) {
+                    if (ProfileData.LikedPosts.length > 0) {
+                      for (let id of ProfileData.LikedPosts) {
+                        if (posts._id === id) {
+                          isPostLiked = true;
+                          break;
+                        }
+                      }
+                    }
+                  }
                   return (
                     <ProfilePostOverview
                       key={posts._id}
                       source={posts.Post}
-                      Click={GetMoreInformationAboutPostData}
                       id={posts._id}
+                      LikeStatus={isPostLiked}
+                      CreatorID={posts.CreatorID}
+                      CreatorUsername={posts.CreatorUsername}
+                      Caption={posts.Caption}
+                      Likes={posts.Likes}
                     />
                   );
                 })}
@@ -370,7 +386,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         </ProfilePostAreaContainer>
       </React.Fragment>
     );
-  }, [post_list, GetMoreInformationAboutPostData]);
+  }, [post_list, ProfileData?.LikedPosts]);
 
   if (owner_status === null) {
     return (
@@ -381,6 +397,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       </React.Fragment>
     );
   }
+
 
   let Configuration = () => <React.Fragment></React.Fragment>;
   if (owner_status === true) {

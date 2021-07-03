@@ -145,6 +145,17 @@ $faint-white: rgb(250, 250, 249);
   background-color: rgb(242, 242, 242);
 }
 
+#profile-state-btn {
+  width: 20%;
+  border-radius: 5px;
+  margin: 5px auto;
+  margin-bottom: 9px;
+  padding: 12px 0;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
 @media all and (max-width: 1200px) {
   #profile-config-container {
     width: 50%;
@@ -164,12 +175,20 @@ $faint-white: rgb(250, 250, 249);
 
   #profile-header-container #profile-information-overview {
     width: 70%;
+  };
+
+  #profile-state-btn {
+    width: 30%;
   }
 }
 
 @media screen and (max-width: 950px) {
   #profile-header-container #profile-information-overview {
     width: 80%;
+  }
+
+  #profile-state-btn {
+    width: 35%;
   }
 }
 
@@ -195,6 +214,11 @@ $faint-white: rgb(250, 250, 249);
     #profile-post-area {
       width: 90%;
     }
+  };
+
+  #profile-state-btn {
+    width: 45%;
+    color: #13a0fd;
   }
 }
 
@@ -206,5 +230,9 @@ $faint-white: rgb(250, 250, 249);
     #profile-post-area {
       width: 98%;
     }
+  }
+
+  #profile-state-btn {
+    width: 85%;
   }
 }

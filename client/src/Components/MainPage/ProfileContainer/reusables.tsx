@@ -74,17 +74,21 @@ export const ProfilePostArea: React.FC<{}> = ({ children }) => {
 
 interface ProfilePostOverviewProps {
   source: string;
-  Click: (id: string) => void;
   id: string;
+  LikeStatus: boolean;
+  Likes: Array<string>;
+  Caption: string;
+  CreatorID: string;
+  CreatorUsername: string;
 }
 
 export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
   props
 ) => {
-  const { source, Click, id } = props;
+  const { source } = props;
   return (
     <React.Fragment>
-      <div id="profile-post-overview" onClick={Click.bind(this, id)}>
+      <div id="profile-post-overview">
         <img draggable={false} src={source} alt="profile-overview" />
       </div>
     </React.Fragment>

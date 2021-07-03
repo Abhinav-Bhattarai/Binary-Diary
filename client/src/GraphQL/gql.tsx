@@ -62,6 +62,7 @@ export const ProfileDataFetch = gql`
         CreatorID
         Caption
         PostDate
+        Likes
       }
     }
   }
