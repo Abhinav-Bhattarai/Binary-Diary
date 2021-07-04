@@ -222,3 +222,29 @@ export const AddToRequesterFollowingList = async (RequesterID, myID) => {
   response.Following.push(myID);
   await response.save();
 };
+
+export const RemoveFromMyFollowersList = (id, RequesterID) => {
+  const response = await RegisterModel.findOne({ _id: id });
+  const dummy = [...response.Followers];
+  for (let follower in dummy) {
+    if (dummy[follower] === RequesterID) {
+      dummy.splice(follower, 1);
+      break;
+    }
+  }
+  response.Followers = dummy;
+  await response.save();  
+};
+
+export const RemoveFromRequesterFollowingList = (RequesterID, myID) => {
+  const response = await RegisterModel.findOne({ _id: RequesterID });
+  const dummy = [...response.Following];
+  for (let follower in dummy) {
+    if (dummy[follower] === myID) {
+      dummy.splice(follower, 1);
+      break;
+    }
+  }
+  response.Following = dummy;
+  await response.save();
+}

@@ -297,9 +297,13 @@ const Mutation = new GraphQLObjectType({
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
           UpdateRequestList(id, RequesterID);
-          if (type === "Add") {
+          if (type === "Follow") {
             AddToMyFollowersList(id, RequesterID);
             AddToRequesterFollowingList(RequesterID, id);
+          } 
+          else if (type === "Unfollow") {
+            RemoveFromMyFollowersList(id, RequesterID);
+            RemoveFromRequesterFollowingList(RequesterID, id);
           }
           return { Mutated: true };
         }
