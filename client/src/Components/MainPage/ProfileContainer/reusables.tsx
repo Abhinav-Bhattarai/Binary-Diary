@@ -164,7 +164,7 @@ export const SettingsOverViewElement: React.FC<{
 };
 
 export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
-  const { name, userInfo, RequesterID } = props;
+  const { name, userInfo, RequesterID, RequesterUsername } = props;
   const [type, setType] = useState<'Follow' | 'Following' | 'Requested' | 'Loading'>(name);
   const [MutateFollowRequests] = useMutation(FollowRequestMutations);
 
@@ -174,7 +174,8 @@ export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
       id: userInfo?.userID,
       uid: userInfo?.uid,
       auth_token: userInfo?.auth_token,
-      RequesterID
+      RequesterID,
+      RequesterUsername
     }});
     if (type === 'Follow') setType('Requested')
     else if (type === 'Following') setType('Follow')

@@ -27,11 +27,12 @@ const RequestContainerHeader = () => {
 
 const RequestContainer: React.FC<PROPS> = (props) => {
   const { requestList, AcceptRequest, DeleteRequest } = props;
+  console.log(requestList);
   const RequestLists = useMemo(
     () => {
       if (requestList) {
         if (requestList.length > 0) {
-          requestList.map((request, index) => {
+          return requestList.map((request) => {
             return (
               <RequestCard key={request.extenderID}>
                 <RequesterImage source={request.ProfilePicture} />

@@ -235,18 +235,19 @@ export const RemoveFromFollowingList = async(RequesterID, myID) => {
   await response.save();
 };
 
-export const AddToRequestsList = async(id, ReceiverID) => {
-  const response = await RequestModel.findOne({_id: ReceiverID});
-  const dummy = [...response.Requests].push(id);
+export const AddToRequestsList = async(id, ReceiverID, ReceiverUsername) => {
+  const response = await RequestModel.findOne({UserID: ReceiverID});
+  const dummy = [...response.Requests];
+  dummy.push({extenderID: id, Username: ReceiverUsername});
   response.Requests = dummy;
   await response.save();
 };
 
 export const RemoveFromRequestsList = async(id, ReceiverID) => {
-  const response = await RequestModel.findOne({_id: ReceiverID});
+  const response = await RequestModel.findOne({UserID: ReceiverID});
   const dummy = [...response.Requests];
   for (let id_ in dummy) {
-    if (dummy[id_] === id) {
+    if (dummy[id_].extenderID === id) {
       dummy.splice(id_, 1);
       break;
     }
@@ -257,7 +258,8 @@ export const RemoveFromRequestsList = async(id, ReceiverID) => {
 
 export const AddToRequestedList = async(ReceiverID, id) => {
   const response = await RegisterModel.findOne({_id: id});
-  const dummy = [...response.Requested].push(ReceiverID);
+  const dummy = [...response.Requested];
+  dummy.push(ReceiverID);
   response.Requested = dummy;
   await response.save();
 };

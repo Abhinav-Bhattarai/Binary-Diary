@@ -62,7 +62,7 @@ const ProfileArea: React.FC<ProfileAreaProps> = (props) => {
         id="profile-area-img"
         alt="profile-img"
       />
-      <div id="profile-area-username">{Username}</div>
+      <article id="profile-area-username">{Username}</article>
     </React.Fragment>
   );
 };

@@ -54,6 +54,7 @@ const ProfileSchema = new GraphQLObjectType({
   name: "ProfileObject",
   fields: () => {
     return {
+      Username: { type: GraphQLString },
       Posts: { type: new GraphQLList(GraphQLString) },
       Followers: { type: new GraphQLList(GraphQLString) },
       Following: { type: new GraphQLList(GraphQLString) },
@@ -187,16 +188,16 @@ const RootQuery = new GraphQLObjectType({
       resolve: async (_, args) => {
         const { auth_token, id, uid, searchID, verify, Posts } = args;
         if (verify) {
-          const verification = ByPassChecking(auth_token, id, uid);
+          const verification = ByPassChecking(auth_token, searchID, uid);
           if (verification) {
             return { Posts, Verified: true };
           } else {
-            const response = FetchUserData(searchID);
+            const response = await FetchUserData(searchID);
             return response;
           }
         } else {
           const response = await FetchUserData(searchID);
-          const verification = ByPassChecking(auth_token, id, uid);
+          const verification = ByPassChecking(auth_token, searchID, uid);
           if (verification) {
             return { ...response, Verified: true };
           }
@@ -296,13 +297,14 @@ const Mutation = new GraphQLObjectType({
         auth_token: { type: GraphQLString },
         type: { type: GraphQLString },
         RequesterID: { type: GraphQLString },
+        RequesterUsername: { type: GraphQLString }
       },
       resolve: async (_, args) => {
-        const { id, uid, auth_token, type, RequesterID } = args;
+        const { id, uid, auth_token, type, RequesterID, RequesterUsername } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
           if (type === 'Follow') {
-            AddToRequestsList(id, RequesterID);
+            AddToRequestsList(id, RequesterID, RequesterUsername);
             AddToRequestedList(RequesterID, id);
           }
           else if (type === "Following") {

@@ -29,7 +29,8 @@ export const SerializeProfileData = (GetProfileData: GetProfileDataProps, Defaul
     ProfileData: {
       Following: GetProfileData.Following,
       Followers: GetProfileData.Followers,
-      Posts: GetProfileData.Posts
+      Posts: GetProfileData.Posts,
+      Username: GetProfileData.Username
     }
   }; 
   return SerializedData;

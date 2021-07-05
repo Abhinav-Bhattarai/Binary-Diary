@@ -50,6 +50,7 @@ export const ProfileDataFetch = gql`
       verify: $verify
       Posts: $Posts
     ) {
+      Username
       Followers
       Following
       Posts

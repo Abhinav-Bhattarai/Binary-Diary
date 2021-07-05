@@ -202,8 +202,10 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   const BlurSearchFocus = () => {
     if (search_suggestion) {
-      setSearchSuggestion(null);
-      setSearchValue("");
+      setTimeout(() => {
+        setSearchSuggestion(null);
+        setSearchValue("");
+      }, 150);
     }
   };
 

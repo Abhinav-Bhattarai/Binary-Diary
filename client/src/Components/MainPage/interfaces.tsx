@@ -55,6 +55,7 @@ export interface ProfilePostDetailsType {
 }
 
 export interface GetProfileDataProps {
+  Username: string;
   Followers: Array<string> | null;
   Following: Array<string> | null;
   PostData: Array<PostListType>;
@@ -70,6 +71,7 @@ export interface SerializedProfile {
     Following: string[] | null;
     Followers: string[] | null;
     Posts: string[];
+    Username: string;
   };
 }
 
@@ -77,4 +79,5 @@ export interface PROFILESTATEBTN {
   name: 'Follow' | 'Following' | 'Requested' | 'Loading';
   RequesterID: string | undefined;
   userInfo: UserInfo | null  
+  RequesterUsername: string | undefined;
 }

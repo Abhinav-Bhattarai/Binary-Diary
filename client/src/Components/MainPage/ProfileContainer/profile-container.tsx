@@ -61,7 +61,7 @@ const AsyncBigPopupContainer = React.lazy(
   () => import("../Reusables/reusables")
 );
 
-const AsyncDetailedPostContainer = React.lazy(() => import('./reusables'))
+const AsyncDetailedPostContainer = React.lazy(() => import("./reusables"));
 
 const ProfileContainer: React.FC<PROPS> = (props) => {
   const {
@@ -82,7 +82,8 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [isPostShown, setIsPostShown] = useState<boolean>(false);
-  const [currentPostDetails, setCurrentPostDetails] = useState<ProfilePostDetailsType | null>(null);
+  const [currentPostDetails, setCurrentPostDetails] =
+    useState<ProfilePostDetailsType | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
   const [isFetchLimitReached, setIsFetchlimitReached] = useState<
     boolean | null
@@ -185,7 +186,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const GetMorePostInfo = (config: ProfilePostDetailsType) => {
     setCurrentPostDetails(config);
     setIsPostShown(true);
-  }
+  };
   const ChangeProfileHandler = () => {};
 
   const UploadImage = useCallback(() => {
@@ -302,7 +303,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const RevertProfilePostDetails = () => {
     setCurrentPostDetails(null);
     setIsPostShown(false);
-  }
+  };
 
   const type = useMemo(() => {
     if (ProfileData?.Following) {
@@ -386,7 +387,12 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         </ProfilePostAreaContainer>
       </React.Fragment>
     );
-  }, [post_list, ProfileData?.LikedPosts, profile_info.ProfilePicture, userInfo]);
+  }, [
+    post_list,
+    ProfileData?.LikedPosts,
+    profile_info.ProfilePicture,
+    userInfo,
+  ]);
 
   if (owner_status === null) {
     return (
@@ -442,7 +448,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         UserInfo={userInfo}
         RevertPopup={RevertProfilePostDetails}
       />
-    )
+    );
   }
 
   return (
@@ -466,7 +472,14 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
               value={profile_info.ProfileData?.Posts.length}
             />
           </ProfileInformationOverView>
-          {owner_status === false && <ProfileStateButton userInfo={userInfo} RequesterID={params?.id} name={type} />}
+          {owner_status === false && (
+            <ProfileStateButton
+              userInfo={userInfo}
+              RequesterUsername={profile_info.ProfileData?.Username}
+              RequesterID={params?.id}
+              name={type}
+            />
+          )}
         </ProfileHeaderContainer>
         <Configuration />
         {PostArea}
