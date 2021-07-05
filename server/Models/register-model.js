@@ -52,6 +52,11 @@ const Schema = new mongoose.Schema({
     default: [],
   },
 
+  Requested: {
+    type: [String],
+    default: []
+  },
+
   Posts: {
     type: [
       {

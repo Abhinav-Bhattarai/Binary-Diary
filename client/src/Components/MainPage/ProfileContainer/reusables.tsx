@@ -1,7 +1,9 @@
-import React from "react";
+import { useMutation } from "@apollo/client";
+import React, { useState } from "react";
 import { IconContext } from "react-icons";
 import { UserInfo } from "../../../Container/MainPage/interfaces";
-import { ProfilePostDetailsType } from "../interfaces";
+import { FollowRequestMutations } from "../../../GraphQL/mutations";
+import { ProfilePostDetailsType, PROFILESTATEBTN } from "../interfaces";
 import PostCard, {
   PostCardHeader,
   PostCardImageContainer
@@ -22,7 +24,7 @@ export const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
       />
     </div>
   );
-};
+}
 
 export const ProfileHeaderContainer: React.FC<{}> = ({ children }) => {
   return <header id="profile-header-container">{children}</header>;
@@ -161,11 +163,26 @@ export const SettingsOverViewElement: React.FC<{
   );
 };
 
-export const ProfileStateButton: React.FC<{ name: string }> = (props) => {
-  const { name } = props;
+export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
+  const { name, userInfo, RequesterID } = props;
+  const [type, setType] = useState<'Follow' | 'Following' | 'Requested' | 'Loading'>(name);
+  const [MutateFollowRequests] = useMutation(FollowRequestMutations);
+
+  const ClickHandler = () => {
+    MutateFollowRequests({variables: {
+      type: name,
+      id: userInfo?.userID,
+      uid: userInfo?.uid,
+      auth_token: userInfo?.auth_token,
+      RequesterID
+    }});
+    if (type === 'Follow') setType('Requested')
+    else if (type === 'Following') setType('Follow')
+  };
+
   return (
-    <button type="button" id="profile-state-btn">
-      {name}
+    <button type="button" id="profile-state-btn" onClick={ClickHandler}>
+      {type}
     </button>
   );
 };

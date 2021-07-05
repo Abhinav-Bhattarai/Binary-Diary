@@ -14,7 +14,10 @@ const {
 import {
   AddPostID,
   AddPostToDatabase,
-  AddToRequesterFollowingList,
+  AddToFollowersList,
+  AddToFollowingList,
+  AddToRequestedList,
+  AddToRequestsList,
   FetchUserData,
   FollowingDataSearch,
   GetPostDataHandler,
@@ -22,6 +25,8 @@ import {
   ProfilePostCollector,
   RegisterLikeInPostSchema,
   RegisterLikeInRegisterSchema,
+  RemoveFromFollowersList,
+  RemoveFromFollowingList,
   UpdateCacheUserInfo,
   UpdateRequestList,
 } from "./helper.js";
@@ -296,15 +301,39 @@ const Mutation = new GraphQLObjectType({
         const { id, uid, auth_token, type, RequesterID } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          UpdateRequestList(id, RequesterID);
-          if (type === "Follow") {
-            AddToMyFollowersList(id, RequesterID);
-            AddToRequesterFollowingList(RequesterID, id);
-          } 
-          else if (type === "Unfollow") {
-            RemoveFromMyFollowersList(id, RequesterID);
-            RemoveFromRequesterFollowingList(RequesterID, id);
+          if (type === 'Follow') {
+            AddToRequestsList(id, RequesterID);
+            AddToRequestedList(RequesterID, id);
           }
+          else if (type === "Following") {
+            RemoveFromFollowersList(id, RequesterID);
+            RemoveFromFollowingList(RequesterID, id);
+          } 
+          
+          return { Mutated: true };
+        }
+        return { Mutated: false };
+      },
+    },
+
+    MutateRequestsResponse: {
+      type: RequestSchema,
+      args: {
+        id: { type: GraphQLString },
+        uid: { type: GraphQLString },
+        auth_token: { type: GraphQLString },
+        type: { type: GraphQLString },
+        RequesterID: { type: GraphQLString },
+      },
+      resolve: async (_, args) => {
+        const { id, uid, auth_token, type, RequesterID } = args;
+        const validity = ByPassChecking(auth_token, id, uid);
+        if (validity) {
+          UpdateRequestList(id, RequesterID);
+          if (type === "Add") {
+            AddToFollowersList(RequesterID, id);
+            AddToFollowingList(RequesterID, id);
+          } 
           return { Mutated: true };
         }
         return { Mutated: false };

@@ -466,7 +466,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
               value={profile_info.ProfileData?.Posts.length}
             />
           </ProfileInformationOverView>
-          {owner_status === false && <ProfileStateButton name={type} />}
+          {owner_status === false && <ProfileStateButton userInfo={userInfo} RequesterID={params?.id} name={type} />}
         </ProfileHeaderContainer>
         <Configuration />
         {PostArea}

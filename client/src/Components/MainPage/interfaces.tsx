@@ -72,3 +72,9 @@ export interface SerializedProfile {
     Posts: string[];
   };
 }
+
+export interface PROFILESTATEBTN { 
+  name: 'Follow' | 'Following' | 'Requested' | 'Loading';
+  RequesterID: string | undefined;
+  userInfo: UserInfo | null  
+}

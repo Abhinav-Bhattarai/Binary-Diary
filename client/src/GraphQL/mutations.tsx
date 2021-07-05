@@ -63,3 +63,23 @@ export const FollowRequestMutations = gql`
     }
   }
 `;
+
+export const RespondToRequest = gql`
+  mutation(
+    $id: String!
+    $uid: String!
+    $auth_token: String!
+    $type: String!
+    $RequesterID: String!
+  ) {
+    MutateRequestsResponse (
+      id: $id
+      uid: $uid
+      auth_token: $auth_token
+      type: $type
+      RequesterID: $RequesterID
+    ) {
+      Mutated
+    }
+  }
+`;

@@ -2,6 +2,7 @@ import { RegisterModel } from "../Models/register-model.js";
 import dotenv from "dotenv";
 import { PostModel } from "../Models/post-model.js";
 import Crypto from "crypto-js";
+import RequestModel from "../Models/RequestModel.js";
 dotenv.config();
 
 export const FollowingDataSearch = async (Following) => {
@@ -196,34 +197,19 @@ export const RegisterLikeInRegisterSchema = async (userID, PostID) => {};
 
 export const CreatePostCommentSchema = async () => {};
 
-export const UpdateRequestList = async (id, RequesterID) => {
-  const response = await RequestModel.findOne({ UserID: id });
-  if (response) {
-    const dummy = [...response.Requests];
-    for (let request in dummy) {
-      if (dummy[request].extenderID === RequesterID) {
-        dummy.splice(request, 1);
-        break;
-      }
-    }
-  }
-  response.Requests = dummy;
-  await response.save();
-};
-
-export const AddToMyFollowersList = async (id, RequesterID) => {
+export const AddToFollowersList = async (RequesterID, id) => {
   const response = await RegisterModel.findOne({ _id: id });
   response.Followers.push(RequesterID);
   await response.save();
 };
 
-export const AddToRequesterFollowingList = async (RequesterID, myID) => {
+export const AddToFollowingList = async (RequesterID, myID) => {
   const response = await RegisterModel.findOne({ _id: RequesterID });
   response.Following.push(myID);
   await response.save();
 };
 
-export const RemoveFromMyFollowersList = (id, RequesterID) => {
+export const RemoveFromFollowersList = async(id, RequesterID) => {
   const response = await RegisterModel.findOne({ _id: id });
   const dummy = [...response.Followers];
   for (let follower in dummy) {
@@ -236,7 +222,7 @@ export const RemoveFromMyFollowersList = (id, RequesterID) => {
   await response.save();  
 };
 
-export const RemoveFromRequesterFollowingList = (RequesterID, myID) => {
+export const RemoveFromFollowingList = async(RequesterID, myID) => {
   const response = await RegisterModel.findOne({ _id: RequesterID });
   const dummy = [...response.Following];
   for (let follower in dummy) {
@@ -247,4 +233,49 @@ export const RemoveFromRequesterFollowingList = (RequesterID, myID) => {
   }
   response.Following = dummy;
   await response.save();
-}
+};
+
+export const AddToRequestsList = async(id, ReceiverID) => {
+  const response = await RequestModel.findOne({_id: ReceiverID});
+  const dummy = [...response.Requests].push(id);
+  response.Requests = dummy;
+  await response.save();
+};
+
+export const RemoveFromRequestsList = async(id, ReceiverID) => {
+  const response = await RequestModel.findOne({_id: ReceiverID});
+  const dummy = [...response.Requests];
+  for (let id_ in dummy) {
+    if (dummy[id_] === id) {
+      dummy.splice(id_, 1);
+      break;
+    }
+  };
+  response.Requests = dummy;
+  await response.save();
+};
+
+export const AddToRequestedList = async(ReceiverID, id) => {
+  const response = await RegisterModel.findOne({_id: id});
+  const dummy = [...response.Requested].push(ReceiverID);
+  response.Requested = dummy;
+  await response.save();
+};
+
+export const RemoveFromRequestedList = async(ReceiverID, id) => {
+  const response = await RegisterModel.findOne({_id: id});
+  const dummy = [...response.Requested];
+  for (let id_ in dummy) {
+    if (dummy[id_] === ReceiverID) {
+      dummy.splice(id_, 1);
+      break;
+    }
+  };
+  response.Requested = dummy;
+  await response.save();
+};
+
+export const UpdateRequestList = async (id, RequesterID) => {
+  RemoveFromRequestedList(id, RequesterID);
+  RemoveFromRequestsList(RequesterID, id);
+};

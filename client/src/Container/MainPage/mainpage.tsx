@@ -32,7 +32,7 @@ import SocketIOClient from "socket.io-client";
 import SuggestionContainer, {
   SuggestedUserCard,
 } from "../../Components/MainPage/SearchSuggestion/suggestion";
-import { FollowRequestMutations } from "../../GraphQL/mutations";
+import { RespondToRequest } from "../../GraphQL/mutations";
 
 const client = new ApolloClient({
   uri: "https://localhost:8000/graphql",
@@ -167,7 +167,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
   });
 
-  const [FollowRequestMutationCall] = useMutation(FollowRequestMutations);
+  const [FollowRequestMutationCall] = useMutation(RespondToRequest);
 
   // RenderFunctions
   const ChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {

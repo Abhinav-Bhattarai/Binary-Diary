@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("accept-follow-request", config => {
-
+    console.log(config);
   }); 
 
   socket.on("real-time-request", async (extenedFrom, extendedTo, Username) => {

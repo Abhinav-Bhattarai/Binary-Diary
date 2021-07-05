@@ -8,7 +8,6 @@ import RequestCard, {
   RequesterImage,
   RequesterUsername,
 } from "./request-card";
-import DefaultImage from "../../../assets/Images/profile-user.svg";
 import "./style.scss";
 
 interface PROPS {
@@ -63,22 +62,6 @@ const RequestContainer: React.FC<PROPS> = (props) => {
       <MainPageContainer>
         <RequestContainerHeader />
         {RequestLists}
-        <RequestCard>
-          <RequesterImage source={DefaultImage} />
-          <RequesterUsername username={"Abhinav.Bhattarai.1"} />
-          <ReactButtonContainer>
-            <ReactButton
-              Click={AcceptRequest.bind(this, 1)}
-              name="Confirm"
-              color="#ff385c"
-            />
-            <ReactButton
-              Click={DeleteRequest.bind(this, 1)}
-              name="Delete"
-              color="#bdbdbd"
-            />
-          </ReactButtonContainer>
-        </RequestCard>
       </MainPageContainer>
     </React.Fragment>
   );
