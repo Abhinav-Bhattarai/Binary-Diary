@@ -1,5 +1,5 @@
 import React, { Suspense, useRef, useState } from "react";
-import { Route, Switch } from "react-router";
+import { Route, Switch, useHistory } from "react-router";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import { usePostRequest } from "../../Hooks/LandingPage";
 import Crypto from "crypto-js";
@@ -85,6 +85,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   const SignupPasswordRef = useRef<HTMLInputElement>(null);
   const SignupConfirmRef = useRef<HTMLInputElement>(null);
   const SignupPhoneRef = useRef<HTMLInputElement>(null);
+  const history = useHistory();
 
   const { SendPOSTRequest } = usePostRequest({
     onComplete: (data: POSTFETCH) => {
@@ -94,6 +95,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       localStorage.setItem("username", username);
       localStorage.setItem("userID", id);
       localStorage.setItem("uid", UniqueID);
+      history.replace('/post');
       ChangeAuthentication(true);
     },
 

@@ -13,7 +13,6 @@ router.get("/:search", async (req, res) => {
       Username: 1,
     }
   ).limit(10);
-  console.log(response);
   if (response.length > 0) {
     const SerializedData = [];
     for (let data of response) {

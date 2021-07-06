@@ -10,11 +10,12 @@ const SplitProfilePath = (path: string) => {
 
 const useProfileParams = () => {
   const [params, setParams] = useState<{id: string, owned: string} | null>(null);
+
   useEffect(() => {
     const param = SplitProfilePath(window.location.pathname);
     setParams(param);
   }, // eslint-disable-next-line 
-  [window.location.pathname]);
+  []);
 
   return params;
 };

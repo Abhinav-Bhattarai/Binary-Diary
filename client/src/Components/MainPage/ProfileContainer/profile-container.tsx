@@ -232,6 +232,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
 
   useEffect(
     () => {
+      console.log('hello');
       if (params) {
         const ProfileDataCaller = (type: boolean) => {
           GetProfileData({

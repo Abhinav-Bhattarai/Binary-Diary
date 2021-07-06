@@ -27,24 +27,23 @@ const RequestContainerHeader = () => {
 
 const RequestContainer: React.FC<PROPS> = (props) => {
   const { requestList, AcceptRequest, DeleteRequest } = props;
-  console.log(requestList);
   const RequestLists = useMemo(
     () => {
       if (requestList) {
         if (requestList.length > 0) {
-          return requestList.map((request) => {
+          return requestList.map((request, index) => {
             return (
               <RequestCard key={request.extenderID}>
                 <RequesterImage source={request.ProfilePicture} />
                 <RequesterUsername username={request.Username} />
                 <ReactButtonContainer>
                   <ReactButton
-                    Click={AcceptRequest.bind(this, 1)}
+                    Click={AcceptRequest.bind(this, index)}
                     name="Confirm"
                     color="#ff385c"
                   />
                   <ReactButton
-                    Click={DeleteRequest.bind(this, 1)}
+                    Click={DeleteRequest.bind(this, index)}
                     name="Delete"
                     color="#bdbdbd"
                   />

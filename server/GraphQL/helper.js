@@ -197,14 +197,30 @@ export const RegisterLikeInRegisterSchema = async (userID, PostID) => {};
 
 export const CreatePostCommentSchema = async () => {};
 
-export const AddToFollowersList = async (RequesterID, id) => {
+export const AddToFollowersListInCacheLayer = async(cache, myID, uid, newFollowerID) => {
+  const UnserializedData = await cache.get(`UserInfo/${myID}/${uid}`);
+  const SerializedData = JSON.parse(UnserializedData);
+  SerializedData.Followers.push(newFollowerID);
+  await cache.set(`UserInfo/${myID}/${uid}`, JSON.stringify(SerializedData));
+};
+
+export const AddToFollowingListInCacheLayer = async(cache, myID, uid, newFollowingID) => {
+  const UnserializedData = await cache.get(`UserInfo/${myID}/${uid}`);
+  const SerializedData = JSON.parse(UnserializedData);
+  SerializedData.Following.push(newFollowingID);
+  await cache.set(`UserInfo/${myID}/${uid}`, JSON.stringify(SerializedData));
+}
+
+export const AddToFollowersList = async (cache, RequesterID, id) => {
   const response = await RegisterModel.findOne({ _id: id });
+  AddToFollowersListInCacheLayer(cache, id, response.UniqueID, RequesterID)
   response.Followers.push(RequesterID);
   await response.save();
 };
 
-export const AddToFollowingList = async (RequesterID, myID) => {
+export const AddToFollowingList = async (cache, RequesterID, myID) => {
   const response = await RegisterModel.findOne({ _id: RequesterID });
+  AddToFollowingListInCacheLayer(cache, RequesterID, response.UniqueID, myID);
   response.Following.push(myID);
   await response.save();
 };

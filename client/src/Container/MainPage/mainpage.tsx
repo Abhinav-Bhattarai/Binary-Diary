@@ -211,6 +211,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   const AcceptFollowRequest = (index: number) => {
     if (requests) {
+      console.log(requests[index]);
       FollowRequestMutationCall({
         variables: {
           id: user_info?.userID,

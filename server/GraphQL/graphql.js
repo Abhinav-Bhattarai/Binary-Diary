@@ -333,8 +333,8 @@ const Mutation = new GraphQLObjectType({
         if (validity) {
           UpdateRequestList(id, RequesterID);
           if (type === "Add") {
-            AddToFollowersList(RequesterID, id);
-            AddToFollowingList(RequesterID, id);
+            AddToFollowersList(cache, RequesterID, id);
+            AddToFollowingList(cache, RequesterID, id);
           } 
           return { Mutated: true };
         }

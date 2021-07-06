@@ -1,4 +1,5 @@
 import React from "react";
+import DefaultProfile from "../../../assets/Images/profile-user.svg";
 import "./style.scss";
 
 interface ReactButtonProps {
@@ -28,7 +29,13 @@ export const ReactButton: React.FC<ReactButtonProps> = (props) => {
 };
 
 export const RequesterImage: React.FC<{ source: string }> = ({ source }) => {
-  return <img src={source} alt="requester-i" />;
+  return (
+    <img
+      draggable={false}
+      src={source.length > 0 ? source : DefaultProfile}
+      alt="requester-i"
+    />
+  );
 };
 
 export const RequesterUsername: React.FC<{ username: string }> = ({
