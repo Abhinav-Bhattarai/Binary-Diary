@@ -40,11 +40,7 @@ import {
   ProfileStateButton,
 } from "./reusables";
 import { AddPost } from "../../../GraphQL/mutations";
-import {
-  RequestConfig,
-  UserData,
-  UserInfo,
-} from "../../../Container/MainPage/interfaces";
+import { UserData, UserInfo } from "../../../Container/MainPage/interfaces";
 import useProfileParams from "../../../Hooks/profileHook";
 
 const transition_duration: number = 500;
@@ -54,7 +50,7 @@ interface PROPS {
   userInfo: UserInfo | null;
   ProfilePicture: string;
   ProfileData: UserData | null;
-  Requests: Array<RequestConfig> | null;
+  Requested: Array<string> | null;
 }
 
 const AsyncBigPopupContainer = React.lazy(
@@ -69,7 +65,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     userInfo,
     ProfilePicture,
     ProfileData,
-    Requests,
+    Requested,
   } = props;
   const [profile_info, setProfileInfo] = useState<
     contextData | SerializedProfile
@@ -232,7 +228,6 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
 
   useEffect(
     () => {
-      console.log('hello');
       if (params) {
         const ProfileDataCaller = (type: boolean) => {
           GetProfileData({
@@ -317,11 +312,11 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         }
         return "Follow";
       }
-      return "Follow";
-    } else if (Requests) {
-      if (Requests.length > 0) {
-        const requiredData = Requests.filter((data) => {
-          return data.extenderID === params?.id;
+    }
+    if (Requested) {
+      if (Requested.length > 0) {
+        const requiredData = Requested.filter((data) => {
+          return data === params?.id;
         });
         if (requiredData.length > 0) {
           return "Requested";
@@ -331,7 +326,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       return "Follow";
     }
     return "Loading";
-  }, [ProfileData?.Following, params?.id, Requests]);
+  }, [ProfileData?.Following, params?.id, Requested]);
 
   const PostArea = useMemo(() => {
     if (post_list) {

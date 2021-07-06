@@ -45,3 +45,18 @@
     }
   }
 }
+
+#default-request-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+  width: 100%;
+  flex-direction: column;
+
+  div {
+    font-weight: bold;
+    margin-top: 20px;
+    font-size: 20px;
+  }
+}

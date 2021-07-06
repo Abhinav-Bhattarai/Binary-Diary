@@ -78,6 +78,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [search_suggestion_loading, setSearchSuggestionLoading] =
     useState<boolean>(false);
   const [requests, setRequests] = useState<null | Array<RequestConfig>>(null);
+  const [requested, setRequested] = useState<Array<string> | null>(null);
   const [socket, setSocket] = useState<null | SocketIOClient.Socket>(null);
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
@@ -100,6 +101,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         if (GetUserData.ProfilePicture.length > 0) {
           setProfilePicture(GetUserData.ProfilePicture);
         }
+        setRequested(GetUserData.Requested);
         if (FollowingList.length > 0) {
           const postIDs = Convert2Dto1D(FollowingList);
           const SlicedPostIDs = PostListSerialization(postIDs, 0);
@@ -271,7 +273,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     history.push("/posts");
 
   const SuggestionPressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
-    history.push("/suggestions");
+    history.push("/follow-requests");
 
   const MessagesPressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
     history.push("/messages");
@@ -404,7 +406,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
             return (
               <Suspense fallback={<LoadingPage />}>
                 <AsyncProfileContainer
-                  Requests={requests}
+                  Requested={requested}
                   userInfo={user_info}
                   ProfilePicture={profile_picture}
                   ProfileData={profile_data}
@@ -427,7 +429,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         />
         <Route
           exact
-          path="/suggestions"
+          path="/follow-requests"
           render={() => {
             return (
               <Suspense fallback={<LoadingPage />}>

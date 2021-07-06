@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { RequestConfig } from "../../../Container/MainPage/interfaces";
 import { RequestIcon } from "../Navbar/logo";
 import { MainPageContainer } from "../Reusables/reusables";
+import Default from '../../../assets/Images/no-requests.svg';
 import RequestCard, {
   ReactButton,
   ReactButtonContainer,
@@ -14,6 +15,18 @@ interface PROPS {
   requestList: Array<RequestConfig> | null;
   AcceptRequest: (index: number) => void;
   DeleteRequest: (index: number) => void;
+};
+
+const DefaultRequestContainer: React.FC<{source: string}> = (props) => {
+  const { source } = props;
+  return (
+    <React.Fragment>
+      <main id='default-request-container'>
+        <img src={source} width='30%' height='30%' alt='default'/>
+        <div>No Requests &#128057;</div>
+      </main>
+    </React.Fragment>
+  )
 }
 
 const RequestContainerHeader = () => {
@@ -52,6 +65,7 @@ const RequestContainer: React.FC<PROPS> = (props) => {
             );
           });
         }
+        return <DefaultRequestContainer source={Default}/>
       }
     }, // eslint-disable-next-line
     [requestList]

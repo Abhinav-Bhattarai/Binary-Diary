@@ -85,6 +85,7 @@ const UserSchema = new GraphQLObjectType({
       LikedPosts: { type: new GraphQLList(GraphQLString) },
       Posts: { type: new GraphQLList(GraphQLString) },
       Mutated: { type: GraphQLBoolean },
+      Requested: { type: new GraphQLList(GraphQLString) },
       FollowingList: {
         type: new GraphQLList(UserSchema),
         resolve: async (parent, _) => {

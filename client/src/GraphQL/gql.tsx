@@ -9,6 +9,7 @@ export const FetchUserData = gql`
       ProfilePicture
       Posts
       LikedPosts
+      Requested
       FollowingList {
         Username
         ProfilePicture

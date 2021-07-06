@@ -17,6 +17,7 @@ export interface UserData {
   Posts: Array<string>;
   Username: string;
   FollowingList: Array<FollowingData>;
+  Requested: Array<string>;
   __typename: string;
 }
 
