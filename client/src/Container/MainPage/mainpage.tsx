@@ -27,7 +27,7 @@ import DefaultProfile from "../../assets/Images/profile-user.svg";
 import { Switch, Route, useHistory } from "react-router";
 import { Convert2Dto1D, PostListSerialization, SpliceArray } from "./helper";
 import axios, { CancelTokenSource } from "axios";
-import { useInteractionObserver } from "../../Hooks/InteractionObserver";
+import { useInteractionObserver } from "../../Hooks/IntersectionObserver";
 import SocketIOClient from "socket.io-client";
 import SuggestionContainer, {
   SuggestedUserCard,
@@ -52,6 +52,14 @@ const AsyncRequestContainer = React.lazy(
   () => import("../../Components/MainPage/RequestContainer/requests-container")
 );
 
+const FooterRef: React.FC<{ Reference: React.RefObject<HTMLDivElement> }> = ({
+  Reference,
+}) => {
+  return (
+    <footer ref={Reference} style={{ width: "100%", height: "20px" }}></footer>
+  );
+};
+
 const MainPageWrapper: React.FC<PROPS> = (props) => {
   return (
     <React.Fragment>
@@ -64,22 +72,24 @@ const MainPageWrapper: React.FC<PROPS> = (props) => {
 
 const MainPage: React.FC<PROPS> = React.memo((props) => {
   const { ChangeAuthentication } = props;
+
+  // states
   const [user_info, setUserinfo] = useState<UserInfo | null>(null);
   const [profile_data, setProfileData] = useState<null | UserData>(null);
   const [postid_list, setPostIDList] = useState<null | Array<string>>(null);
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
-  const [isfetchlimitreached, setIsFetchLimitReached] =
-    useState<boolean>(false);
+  const [isfetchlimitreached, setIsFetchLimitReached] = useState<boolean>(false);
   const [request_count, setReqestCount] = useState<number>(0);
-  const [search_suggestion, setSearchSuggestion] =
-    useState<Array<Suggestion> | null>(null);
-  const [search_suggestion_loading, setSearchSuggestionLoading] =
-    useState<boolean>(false);
+  const [search_suggestion, setSearchSuggestion] = useState<Array<Suggestion> | null>(null);
+  const [search_suggestion_loading, setSearchSuggestionLoading] = useState<boolean>(false);
   const [requests, setRequests] = useState<null | Array<RequestConfig>>(null);
   const [requested, setRequested] = useState<Array<string> | null>(null);
   const [socket, setSocket] = useState<null | SocketIOClient.Socket>(null);
+  const [initialRequest, setInitialRequest] = useState<boolean>(true);
+
+  // hooks and refs
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const cancelToken = useRef<CancelTokenSource>();
@@ -127,6 +137,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       }
       return dummy;
     }
+    setInitialRequest(false);
     return PostList;
   };
 
@@ -213,7 +224,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   const AcceptFollowRequest = (index: number) => {
     if (requests) {
-      console.log(requests[index]);
       FollowRequestMutationCall({
         variables: {
           id: user_info?.userID,
@@ -364,7 +374,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     [search_suggestion]
   );
 
-  if (loading === true || PostFetchConfig.loading === true) {
+  if (loading === true) {
     return <LoadingPage />;
   }
 
@@ -391,9 +401,10 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
               <Suspense fallback={<LoadingPage />}>
                 <AsyncPostContainer
                   ProfileData={profile_data}
-                  reference={LastCardRef}
                   PostList={posts}
                   UserInfo={user_info}
+                  spinner={PostFetchConfig.loading}
+                  initialRequest={initialRequest}
                 />
               </Suspense>
             );
@@ -448,15 +459,17 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
               <Suspense fallback={<LoadingPage />}>
                 <AsyncPostContainer
                   ProfileData={profile_data}
-                  reference={LastCardRef}
                   PostList={posts}
                   UserInfo={user_info}
+                  spinner={PostFetchConfig.loading}
+                  initialRequest={initialRequest}
                 />
               </Suspense>
             );
           }}
         />
       </Switch>
+      <FooterRef Reference={LastCardRef} />
     </React.Fragment>
   );
 });

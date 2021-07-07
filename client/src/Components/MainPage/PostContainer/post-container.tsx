@@ -5,6 +5,7 @@ import {
   UserData,
   UserInfo,
 } from "../../../Container/MainPage/interfaces";
+import Spinner from "../../UI/Spinner/spinner";
 import { MainPageContainer } from "../Reusables/reusables";
 import PostCard, {
   PostCardHeader,
@@ -13,13 +14,30 @@ import PostCard, {
 
 interface PROPS {
   PostList: Array<POSTS> | null;
-  reference: React.RefObject<HTMLDivElement>;
   ProfileData: UserData | null;
   UserInfo: UserInfo | null;
+  spinner: boolean;
+  initialRequest: boolean;
 }
 
 const PostContainer: React.FC<PROPS> = (props) => {
-  const { PostList, reference, ProfileData, UserInfo } = props;
+  const { PostList, ProfileData, UserInfo, spinner, initialRequest } = props;
+
+  if (initialRequest) {
+    return (
+      <div
+        style={{
+          minHeight: "300px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Spinner />
+      </div>
+    );
+  }
+
   if (PostList === null) {
     return (
       <React.Fragment>
@@ -39,7 +57,6 @@ const PostContainer: React.FC<PROPS> = (props) => {
       </React.Fragment>
     );
   }
-
   return (
     <React.Fragment>
       <MainPageContainer>
@@ -70,7 +87,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
             </PostCard>
           );
         })}
-        <footer ref={reference}></footer>
+        {spinner && <Spinner />}
       </MainPageContainer>
     </React.Fragment>
   );
