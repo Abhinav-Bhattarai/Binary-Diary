@@ -56,7 +56,7 @@ const FooterRef: React.FC<{ Reference: React.RefObject<HTMLDivElement> }> = ({
   Reference,
 }) => {
   return (
-    <footer ref={Reference} style={{ width: "100%", height: "20px" }}></footer>
+    <footer ref={Reference} style={{ width: "100%", height: "2px" }}></footer>
   );
 };
 
