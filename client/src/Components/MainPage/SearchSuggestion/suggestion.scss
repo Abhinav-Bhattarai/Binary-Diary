@@ -1,10 +1,13 @@
+$faint-white: rgb(243, 243, 243);
+
 #suggestion-container {
   display: flex;
   flex-direction: column;
-  position: absolute;
+  position: fixed;
   left: 0.5%;
   width: 30%;
-  background-color: #e7e6e6;
+  z-index: 10;
+  background-color: $faint-white;
   border-radius: 8px;
   cursor: pointer;
 
@@ -16,8 +19,8 @@
     width: 18px;
     height: 18px;
     border-radius: 2px;
-    background-color: #e7e6e6;
-    transform: translateY(-8px) rotate(45deg);
+    background-color: $faint-white;
+    transform: translateY(-11px) rotate(45deg);
   }
 
   #suggested-user-card {
@@ -44,4 +47,46 @@
       margin-left: 3%;
     }
   }
+};
+
+@media screen and (max-width: 1180px) {
+  #suggestion-container {
+    border: 2px solid grey;
+    width: 35%;
+
+    &::after {
+      border-top: 2px solid grey;
+      border-left: 2px solid grey;
+    }
+  }
 }
+
+@media screen and (max-width: 900px) {
+  #suggestion-container {
+    width: 42%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  #suggestion-container {
+    width: 48%;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  #suggestion-container {
+    width: 55%;
+  }
+};
+
+@media screen and (max-width: 650px) {
+  #suggestion-container {
+    width: 61%;
+  }
+};
+
+@media screen and (max-width: 600px) {
+  #suggestion-container {
+    opacity: 0;
+  }
+};

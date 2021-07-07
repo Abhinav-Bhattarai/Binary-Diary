@@ -36,7 +36,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
         <Spinner />
       </div>
     );
-  }
+  };
 
   if (PostList === null) {
     return (
