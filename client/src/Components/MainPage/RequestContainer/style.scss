@@ -4,18 +4,19 @@
   align-items: center;
   justify-content: center;
   font-weight: bolder;
-  font-size: 24px;
+  font-size: 21px;
   margin: 15px 0;
   margin-bottom: 50px;
 }
 
 #request-card-container {
   display: flex;
-  width: 30%;
+  width: 35%;
   border-radius: 10px;
   background-color: #f0f0f0;
-  padding: 15px 2%;
+  padding: 20px 2%;
   align-items: center;
+  margin-bottom: 5px;
 
   #requester-username {
     font-weight: bold;
@@ -32,7 +33,7 @@
     justify-content: center;
 
     #request-react-btn {
-      width: 40%;
+      width: 49%;
       border-radius: 5px;
       color: #fff;
       background-color: #bdbdbd;
@@ -58,5 +59,66 @@
     font-weight: bold;
     margin-top: 20px;
     font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  #request-card-container {
+    width: 40%;
+  }
+}
+
+@media screen and (max-width: 1020px) {
+  #request-card-container {
+    width: 45%;
+  }
+}
+
+@media screen and (max-width: 920px) {
+  #request-card-container {
+    width: 60%;
+  }
+};
+
+@media screen and (max-width: 750px) {
+  #request-card-container {
+    width: 65%;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  #request-card-container {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 580px) {
+  #request-card-container {
+    width: 90%; 
+    #requester-username {
+      flex: 0.9;
+      font-size: 16px;
+    }
+    #request-card-img {
+      width: 35px;
+      height: 35px;
+    }
+  }
+}
+
+@media screen and (max-width: 380px) {
+  #request-card-container {
+    width: 94%;
+    #react-btn-container {
+      flex: 1.8;
+    }
+  }
+};
+
+@media screen and (max-width: 310px) {
+  #request-card-container {
+    #react-btn-container {
+      flex: 1.5;
+    }
   }
 }

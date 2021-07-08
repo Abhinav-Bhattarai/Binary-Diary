@@ -11,6 +11,7 @@ import PostCard, {
   PostCardHeader,
   PostCardImageContainer,
 } from "./PostCard/post-card";
+import './PostCard/post-card.scss';
 
 interface PROPS {
   PostList: Array<POSTS> | null;
@@ -43,6 +44,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
       <React.Fragment>
         <MainPageContainer>
           <img
+            id='default-post-container-img'
             draggable={false}
             src={NoPostImage}
             alt="no-post"
@@ -50,9 +52,9 @@ const PostContainer: React.FC<PROPS> = (props) => {
             height="300px"
             style={{ marginTop: "60px" }}
           />
-          <h3 style={{ marginTop: "30px", cursor: "context-menu" }}>
+          <div id='remarks' style={{ marginTop: "8px", cursor: "context-menu" }}>
             No Posts Available! Lonely Bastard
-          </h3>
+          </div>
         </MainPageContainer>
       </React.Fragment>
     );

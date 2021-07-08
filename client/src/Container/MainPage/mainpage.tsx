@@ -123,6 +123,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           };
           setPostIDList(postIDs);
           PostFetch({ variables: config });
+        } else {
+          setInitialRequest(false);
         }
         setProfileData(GetUserData);
       }

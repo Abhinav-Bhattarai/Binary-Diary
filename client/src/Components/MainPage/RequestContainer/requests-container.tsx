@@ -53,7 +53,7 @@ const RequestContainer: React.FC<PROPS> = (props) => {
                   <ReactButton
                     Click={AcceptRequest.bind(this, index)}
                     name="Confirm"
-                    color="#ff385c"
+                    color="#00acee"
                   />
                   <ReactButton
                     Click={DeleteRequest.bind(this, index)}

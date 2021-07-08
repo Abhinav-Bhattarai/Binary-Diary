@@ -20,7 +20,7 @@ export const ReactButton: React.FC<ReactButtonProps> = (props) => {
       onClick={Click}
       style={{
         backgroundColor: color,
-        color: color === "#ff385c" ? "#fff" : "#333",
+        color: color === "#00acee" ? "#fff" : "#333",
       }}
     >
       {name}
@@ -31,6 +31,7 @@ export const ReactButton: React.FC<ReactButtonProps> = (props) => {
 export const RequesterImage: React.FC<{ source: string }> = ({ source }) => {
   return (
     <img
+      id='request-card-img'
       draggable={false}
       src={source.length > 0 ? source : DefaultProfile}
       alt="requester-i"
