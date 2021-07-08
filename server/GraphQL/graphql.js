@@ -28,6 +28,9 @@ import {
   RegisterLikeInRegisterSchema,
   RemoveFromFollowersList,
   RemoveFromFollowingList,
+  RemoveLikeInPostSchema,
+  RemoveLikeInRegisterSchema,
+  RemoveUserCacheForLikedPosts,
   UpdateCacheUserInfo,
   UpdateRequestList,
 } from "./helper.js";
@@ -288,6 +291,10 @@ const Mutation = new GraphQLObjectType({
             RegisterLikeInPostSchema(id, PostID);
             RegisterLikeInRegisterSchema(id, PostID);
             await AddToUserCacheForLikedPosts(cache, id, uid, PostID)
+          } else {
+            RemoveLikeInPostSchema(id, PostID);
+            RemoveLikeInRegisterSchema(id, PostID)
+            await RemoveUserCacheForLikedPosts(cache, id, uid, PostID)
           }
           return { Mutated: true };
         }
