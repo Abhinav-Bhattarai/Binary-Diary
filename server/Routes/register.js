@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { SignupMiddleware } from "../Middleware/signup-middleware.js";
-import { RegisterModel } from "../Models/register-model.js";
+import RegisterModel from "../Models/register-model.js";
 import { Encrypt } from "../GraphQL/helper.js";
 import RequestModel from "../Models/RequestModel.js";
 

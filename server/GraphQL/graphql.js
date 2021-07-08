@@ -18,6 +18,7 @@ import {
   AddToFollowingList,
   AddToRequestedList,
   AddToRequestsList,
+  AddToUserCacheForLikedPosts,
   FetchUserData,
   FollowingDataSearch,
   GetPostDataHandler,
@@ -280,11 +281,14 @@ const Mutation = new GraphQLObjectType({
         type: { type: GraphQLString },
       },
       resolve: async (_, args) => {
-        const { id, uid, auth_token, Username, PostID } = args;
+        const { id, uid, auth_token, PostID, type } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          await RegisterLikeInPostSchema(Username, id, PostID);
-          await RegisterLikeInRegisterSchema(id, PostID);
+          if (type === 'like') {
+            RegisterLikeInPostSchema(id, PostID);
+            RegisterLikeInRegisterSchema(id, PostID);
+            await AddToUserCacheForLikedPosts(cache, id, uid, PostID)
+          }
           return { Mutated: true };
         }
       },

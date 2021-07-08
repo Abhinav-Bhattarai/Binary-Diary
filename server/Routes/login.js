@@ -1,6 +1,6 @@
 import express from "express";
 import { LoginMiddleware } from "../Middleware/login-middleware.js";
-import { RegisterModel } from "../Models/register-model.js";
+import RegisterModel from "../Models/register-model.js";
 import { GenerateAuthToken } from "./register.js";
 import bcrypt from "bcrypt";
 import { Encrypt } from "../GraphQL/helper.js";

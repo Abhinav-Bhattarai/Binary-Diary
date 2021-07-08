@@ -1,6 +1,6 @@
 import express from "express";
-import { PostModel } from "../Models/post-model.js";
-import { RegisterModel } from "../Models/register-model.js";
+import PostModel from "../Models/post-model.js";
+import RegisterModel from "../Models/register-model.js";
 import RequestModel from "../Models/RequestModel.js";
 
 const router = express.Router();

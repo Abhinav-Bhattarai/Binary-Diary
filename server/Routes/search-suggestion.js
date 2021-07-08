@@ -1,5 +1,5 @@
 import express from "express";
-import { RegisterModel } from "../Models/register-model.js";
+import RegisterModel from "../Models/register-model.js";
 import redis from "async-redis";
 const cache = redis.createClient();
 const router = express.Router();

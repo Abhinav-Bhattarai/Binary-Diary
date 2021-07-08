@@ -1,6 +1,6 @@
-import { RegisterModel } from "../Models/register-model.js";
+import RegisterModel from "../Models/register-model.js";
 import dotenv from "dotenv";
-import { PostModel } from "../Models/post-model.js";
+import PostModel from "../Models/post-model.js";
 import Crypto from "crypto-js";
 import RequestModel from "../Models/RequestModel.js";
 dotenv.config();
@@ -193,9 +193,33 @@ export const UpdateCacheUserInfo = async (cache, db_response, id, uid) => {
   await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(serialized_data));
 };
 
-export const RegisterLikeInPostSchema = async (Username, userID, postID) => {};
+export const RegisterLikeInPostSchema = async (userID, postID) => {
+  const response = await PostModel.findOne({_id: postID});
+  if (response) {
+    const dummy = [...response.Likes];
+    dummy.push(userID);
+    response.Likes = dummy;
+    await response.save();
+  }
+};
 
-export const RegisterLikeInRegisterSchema = async (userID, PostID) => {};
+export const RegisterLikeInRegisterSchema = async (userID, PostID) => {
+  const response = await RegisterModel.findOne({_id: userID});
+  if (response) {
+    const dummy = [...response.LikedPosts];
+    dummy.push(PostID)
+    response.LikedPosts = dummy;
+    await response.save();
+  }
+};
+
+export const AddToUserCacheForLikedPosts = async (cache, userID, uid, PostID) => {
+  const UnserializedData = await cache.get(`UserInfo/${userID}/${uid}`);
+  const SerializedData = JSON.parse(UnserializedData);
+  SerializedData.LikedPosts.push(PostID);
+  await cache.set(`UserInfo/${userID}/${uid}`, JSON.stringify(SerializedData));
+  return;
+}
 
 export const CreatePostCommentSchema = async () => {};
 
