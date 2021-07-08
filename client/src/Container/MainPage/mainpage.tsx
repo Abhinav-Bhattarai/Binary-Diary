@@ -194,6 +194,16 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
 
   const [FollowRequestMutationCall] = useMutation(RespondToRequest);
 
+  useEffect(() => {
+    if (search_value.length === 1) {
+      const regex = /^profile/;
+      const pathName = window.location.pathname.split("/")[1];
+      if (regex.exec(pathName)) {
+        history.push("/posts");
+      }
+    }
+  }, [search_value, history]);
+
   // RenderFunctions
   const ChangeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -291,7 +301,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     setRequests([]);
   };
 
-  const ChangeLikedPost = useCallback((isLiked: boolean, id: string) => {
+  const ChangeLikedPost = useCallback(
+    (isLiked: boolean, id: string) => {
       if (profile_data) {
         const dummy = [...profile_data.LikedPosts];
         if (isLiked) {
@@ -304,7 +315,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         } else {
           dummy.push(id);
         }
-        setProfileData({...profile_data, LikedPosts: dummy});
+        setProfileData({ ...profile_data, LikedPosts: dummy });
       }
     },
     [profile_data]

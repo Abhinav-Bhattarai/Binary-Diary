@@ -32,7 +32,7 @@ const PORT = 8000;
 // middleware
 app.use(
   cors({
-    origin: ["https://localhost:3000", "https://192.168.56.1:3000"],
+    origin: ["https://localhost:3000", "https://192.168.56.1:3000", "https://192.168.0.106:3000"],
   })
 );
 app.use(express.json({ limit: "50mb" }));
