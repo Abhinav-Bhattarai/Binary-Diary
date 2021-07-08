@@ -38,6 +38,7 @@ interface POSTCARDPROPS {
   id: string;
   UserInfo: UserInfo | null;
   Click?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  ChangeLikedPost: ((type: boolean, id: string) => void) | undefined;
 }
 
 const PostCard: React.FC<POSTCARDPROPS> = (props) => {
@@ -47,37 +48,44 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   const [MutatePostLike] = useMutation(PostLikeMutation);
   const { children } = props;
   const LikeClickHandler = (id: string) => {
-    if (likeStatus === "") {
-      setLikeStatus("#00acee");
-      MutatePostLike({
-        variables: {
-          type: "like",
-          id: props.UserInfo?.userID,
-          Username: props.UserInfo?.username,
-          auth_token: props.UserInfo?.auth_token,
-          uid: props.UserInfo?.uid,
-          PostID: id,
-        },
-      });
-    } else {
-      MutatePostLike({
-        variables: {
-          type: "unlike",
-          id: props.UserInfo?.userID,
-          Username: props.UserInfo?.username,
-          auth_token: props.UserInfo?.auth_token,
-          uid: props.UserInfo?.uid,
-          PostID: id,
-        },
-      });
-      setLikeStatus("");
+    if (props.ChangeLikedPost) {
+      if (likeStatus === "") {
+        MutatePostLike({
+          variables: {
+            type: "like",
+            id: props.UserInfo?.userID,
+            Username: props.UserInfo?.username,
+            auth_token: props.UserInfo?.auth_token,
+            uid: props.UserInfo?.uid,
+            PostID: id,
+          },
+        });
+        props.ChangeLikedPost(false, props.id);
+        setLikeStatus("#00acee");
+      } else {
+        MutatePostLike({
+          variables: {
+            type: "unlike",
+            id: props.UserInfo?.userID,
+            Username: props.UserInfo?.username,
+            auth_token: props.UserInfo?.auth_token,
+            uid: props.UserInfo?.uid,
+            PostID: id,
+          },
+        });
+        props.ChangeLikedPost(true, props.id);
+        setLikeStatus("");
+      }
     }
   };
 
   const CommentClickHandler = () => {};
   return (
     <React.Fragment>
-      <main id="post-card-container" onClick={props.Click ? props.Click : undefined}>
+      <main
+        id="post-card-container"
+        onClick={props.Click ? props.Click : undefined}
+      >
         {children}
         <InteractionContainer>
           <Interactants

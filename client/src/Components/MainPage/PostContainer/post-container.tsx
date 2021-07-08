@@ -19,10 +19,11 @@ interface PROPS {
   UserInfo: UserInfo | null;
   spinner: boolean;
   initialRequest: boolean;
+  ChangeLikedPosts: (type: boolean, id: string) => void;
 }
 
 const PostContainer: React.FC<PROPS> = (props) => {
-  const { PostList, ProfileData, UserInfo, spinner, initialRequest } = props;
+  const { PostList, ProfileData, UserInfo, spinner, initialRequest, ChangeLikedPosts } = props;
 
   if (initialRequest) {
     return (
@@ -80,6 +81,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
               id={post._id}
               UserInfo={UserInfo}
               isPostLiked={isPostLiked}
+              ChangeLikedPost={ChangeLikedPosts}
             >
               <PostCardHeader
                 Username={post.CreatorUsername}

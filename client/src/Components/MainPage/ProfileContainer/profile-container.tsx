@@ -51,6 +51,7 @@ interface PROPS {
   ProfilePicture: string;
   ProfileData: UserData | null;
   Requested: Array<string> | null;
+  ChangeLikedPosts: (type: boolean, id: string) => void;
 }
 
 const AsyncBigPopupContainer = React.lazy(
@@ -66,6 +67,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     ProfilePicture,
     ProfileData,
     Requested,
+    ChangeLikedPosts
   } = props;
   const [profile_info, setProfileInfo] = useState<
     contextData | SerializedProfile
@@ -387,7 +389,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     post_list,
     ProfileData?.LikedPosts,
     profile_info.ProfilePicture,
-    userInfo,
+    userInfo
   ]);
 
   if (owner_status === null) {
@@ -443,6 +445,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         ProfilePicture={profile_info.ProfilePicture}
         UserInfo={userInfo}
         RevertPopup={RevertProfilePostDetails}
+        ChangeLikedPosts={ChangeLikedPosts}
       />
     );
   }

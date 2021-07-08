@@ -52,6 +52,7 @@ export interface ProfilePostDetailsType {
   UserInfo: UserInfo | null;
   ProfilePicture: string;
   RevertPopup?: () => void;
+  ChangeLikedPosts?: (type: boolean, id: string) => void;
 }
 
 export interface GetProfileDataProps {

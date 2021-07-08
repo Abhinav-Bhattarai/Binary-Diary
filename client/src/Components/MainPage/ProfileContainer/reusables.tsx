@@ -189,7 +189,7 @@ export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
 };
 
 const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
-  const { LikeStatus, id, CreatorUsername, Post, UserInfo, ProfilePicture, RevertPopup } = props;
+  const { LikeStatus, id, CreatorUsername, Post, UserInfo, ProfilePicture, RevertPopup, ChangeLikedPosts } = props;
   const PostCardClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
   }
@@ -200,6 +200,7 @@ const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
         UserInfo={UserInfo}
         isPostLiked={LikeStatus}
         Click={PostCardClick}
+        ChangeLikedPost={ChangeLikedPosts}
       >
         <PostCardHeader
           Username={CreatorUsername}
