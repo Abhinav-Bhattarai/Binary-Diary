@@ -30,25 +30,23 @@ export const FormHeader: React.FC<HEADER> = (props) => {
   return (
     <nav id="form-header">
       <img width="60px" draggable={false} height="60px" src={Logo} alt="logo" />
-      <h3
+      <h2
         contentEditable={false}
-        style={{ marginTop: "20px", marginBottom: 0, cursor: 'context-menu' }}
+        style={{ marginTop: "15px", marginBottom: 0, cursor: "context-menu" }}
       >
         {props.name}
-      </h3>
+      </h2>
     </nav>
   );
 };
 
-export const CredentialError: React.FC<{name: string}> = (props) => {
+export const CredentialError: React.FC<{ name: string }> = (props) => {
   const { name } = props;
   return (
     <React.Fragment>
-      <main id='cred-error'>
-        { name }
-      </main>
+      <main id="cred-error">{name}</main>
     </React.Fragment>
-  )
+  );
 };
 
 export const FormInput: React.FC<FORMINPUT> = (props) => {
