@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { LoginError } from '../../../Container/LandingPage/landingpage';
+import { LoginError } from "../../../Container/LandingPage/landingpage";
 // import FacebookLogo from '../../../assets/Images/facebook.svg';
 // import InstagramLogo from '../../../assets/Images/instagram.svg';
 import {
@@ -12,6 +12,7 @@ import {
   FormHeader,
   FormInput,
   FormLabel,
+  PageContainer,
 } from "../Reusables/reusables";
 
 interface LoginProps {
@@ -23,10 +24,19 @@ interface LoginProps {
   Error: LoginError;
   UsernameRef: React.RefObject<HTMLInputElement>;
   PasswordRef: React.RefObject<HTMLInputElement>;
-};
+}
 
 const Login: React.FC<LoginProps> = (props) => {
-  const { username, password, Submit, changePassword, changeUsername, UsernameRef, PasswordRef, Error } = props;
+  const {
+    username,
+    password,
+    Submit,
+    changePassword,
+    changeUsername,
+    UsernameRef,
+    PasswordRef,
+    Error,
+  } = props;
   const { cred_err } = Error;
   const history = useHistory();
 
@@ -36,35 +46,37 @@ const Login: React.FC<LoginProps> = (props) => {
 
   return (
     <React.Fragment>
-      <FormContainer>
-        <FormHeader name="Login" />
-        {cred_err && <CredentialError name={cred_err}/>}
-        <Form Submit={Submit}>
-          <FormLabel html_for="username-login" name="Username" />
-          <FormInput
-            name="username-login"
-            value={username}
-            change={changeUsername}
-            type="text"
-            Reference={UsernameRef}
-          />
+      <PageContainer>
+        <FormContainer>
+          <FormHeader name="Login" />
+          {cred_err && <CredentialError name={cred_err} />}
+          <Form Submit={Submit}>
+            <FormLabel html_for="username-login" name="Username" />
+            <FormInput
+              name="username-login"
+              value={username}
+              change={changeUsername}
+              type="text"
+              Reference={UsernameRef}
+            />
 
-          <FormLabel html_for="password-login" name="Password" />
-          <FormInput
-            name="password-login"
-            value={password}
-            change={changePassword}
-            type="password"
-            Reference={PasswordRef}
-          />
-          <FormButton name="Login" />
-        </Form>
-        <ChangeRouterButton name="Create New Account" Change={ChangeRoute} />
-        {/* <LogoContainer>
+            <FormLabel html_for="password-login" name="Password" />
+            <FormInput
+              name="password-login"
+              value={password}
+              change={changePassword}
+              type="password"
+              Reference={PasswordRef}
+            />
+            <FormButton name="Login" />
+          </Form>
+          <ChangeRouterButton name="Create New Account" Change={ChangeRoute} />
+          {/* <LogoContainer>
           <LogoAuth url={FacebookLogo}/>
           <LogoAuth url={InstagramLogo}/>
         </LogoContainer> */}
-      </FormContainer>
+        </FormContainer>
+      </PageContainer>
     </React.Fragment>
   );
 };

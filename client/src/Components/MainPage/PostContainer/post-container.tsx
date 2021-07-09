@@ -40,7 +40,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
     );
   };
 
-  if (PostList === null) {
+  if (PostList === null || PostList.length === 0) {
     return (
       <React.Fragment>
         <MainPageContainer>
@@ -53,7 +53,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
             height="300px"
             style={{ marginTop: "60px" }}
           />
-          <div id='remarks' style={{ marginTop: "8px", cursor: "context-menu" }}>
+          <div id='remarks' style={{ marginTop: "15px", cursor: "context-menu" }}>
             No Posts Available! Lonely Bastard
           </div>
         </MainPageContainer>

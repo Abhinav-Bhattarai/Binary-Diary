@@ -255,7 +255,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           type: "Add",
         },
       });
-      const new_array = SpliceArray(requests, index);
+      const dummy = [...requests];
+      const new_array = SpliceArray(dummy, index);
       setRequests(new_array);
       socket?.emit("accept-follow-request", {
         id: user_info?.userID,
@@ -275,7 +276,8 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
           type: "Delete",
         },
       });
-      const new_array = SpliceArray(requests, index);
+      const dummy = [...requests];
+      const new_array = SpliceArray(dummy, index);
       setRequests(new_array);
     }
   };

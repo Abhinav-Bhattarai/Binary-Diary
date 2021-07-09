@@ -5,9 +5,18 @@ $router-btn: rgb(206, 206, 206);
 $router-btn-hover: #39d353;
 $error: #fd4d6d;
 
+#lp-container {
+  margin: 10px auto;
+  min-height: 100vh;
+  width: 100%;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 #form-container {
   width: 40%;
-  margin: 20px auto;
+  margin: 0px auto;
   display: flex;
   flex-direction: column;
 
@@ -28,7 +37,8 @@ $error: #fd4d6d;
 
     .form-input {
       flex: 1;
-      padding: 18px 3%;
+      padding: 15px 3%;
+      font-size: 18px;
       border: none;
       border-radius: 6px;
       background-color: $input-bg-color;
@@ -54,14 +64,14 @@ $error: #fd4d6d;
     .submit-btn {
       cursor: pointer;
       color: #fff;
-      padding: 20.5px 0;
+      padding: 17px 0;
       background-color: $btn-color;
       font-weight: bold;
       transition: background 0.3s;
       margin-top: 40px;
       border: none;
       border-radius: 6px;
-      font-size: 17px;
+      font-size: 14px;
 
       &:focus {
         outline: none;
@@ -76,14 +86,14 @@ $error: #fd4d6d;
 
 .router-btn {
   cursor: pointer;
-  padding: 20.5px 0px;
+  padding: 17px 0px;
   margin-top: 10px;
   background-color: $router-btn;
   border: none;
   border-radius: 6px;
   transition: 0.37867s;
   font-weight: bold;
-  font-size: 17px;
+  font-size: 14px;
 
   &:focus {
     outline: none;
@@ -156,6 +166,11 @@ $error: #fd4d6d;
 @media screen and (max-width: 900px) {
   #form-container {
     width: 72%;
+    #form {
+      .form-input {
+        font: 16px;
+      }
+    }
   }
 }
 

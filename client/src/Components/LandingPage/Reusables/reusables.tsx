@@ -11,6 +11,10 @@ import {
 } from "./interfaces";
 import "./reusables.scss";
 
+export const PageContainer: React.FC<{}> = ({ children }) => {
+  return <main id="lp-container">{children}</main>;
+};
+
 export const FormContainer: React.FC<{}> = (props) => {
   return <main id="form-container">{props.children}</main>;
 };

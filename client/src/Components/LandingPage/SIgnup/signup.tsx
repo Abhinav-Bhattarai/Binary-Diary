@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import { SignupError } from "../../../Container/LandingPage/landingpage";
 import {
   ChangeRouterButton,
@@ -10,6 +10,7 @@ import {
   FormHeader,
   FormInput,
   FormLabel,
+  PageContainer,
 } from "../Reusables/reusables";
 
 interface SignupProps {
@@ -23,10 +24,10 @@ interface SignupProps {
   changeConfirm: (event: React.ChangeEvent<HTMLInputElement>) => void;
   changePhone: (event: React.ChangeEvent<HTMLInputElement>) => void;
   Error: SignupError;
-  UsernameRef: React.RefObject<HTMLInputElement>
-  PasswordRef: React.RefObject<HTMLInputElement>
-  ConfirmRef: React.RefObject<HTMLInputElement>
-  PhoneRef: React.RefObject<HTMLInputElement>
+  UsernameRef: React.RefObject<HTMLInputElement>;
+  PasswordRef: React.RefObject<HTMLInputElement>;
+  ConfirmRef: React.RefObject<HTMLInputElement>;
+  PhoneRef: React.RefObject<HTMLInputElement>;
 }
 
 const Signup: React.FC<SignupProps> = (props) => {
@@ -44,60 +45,65 @@ const Signup: React.FC<SignupProps> = (props) => {
     PasswordRef,
     ConfirmRef,
     PhoneRef,
-    Error
+    Error,
   } = props;
   const { cred_err } = Error;
   const history = useHistory();
 
   const ChangeRoute = () => {
-    history.push('/login');
-  }
+    history.push("/login");
+  };
 
   return (
     <React.Fragment>
-      <FormContainer>
-        <FormHeader name='Signup'/>
-        {cred_err && <CredentialError name={cred_err}/>}
-        <Form Submit={Submit}>
-          <FormLabel html_for="username-signup" name="Username" />
-          <FormInput
-            value={username}
-            change={changeUsername}
-            name="username-signup"
-            type="text"
-            Reference={UsernameRef}
-          />
+      <PageContainer>
+        <FormContainer>
+          <FormHeader name="Signup" />
+          {cred_err && <CredentialError name={cred_err} />}
+          <Form Submit={Submit}>
+            <FormLabel html_for="username-signup" name="Username" />
+            <FormInput
+              value={username}
+              change={changeUsername}
+              name="username-signup"
+              type="text"
+              Reference={UsernameRef}
+            />
 
-          <FormLabel html_for="password-signup" name="Password" />
-          <FormInput
-            value={password}
-            change={changePassword}
-            name="password-signup"
-            type="password"
-            Reference={PasswordRef}
-          />
+            <FormLabel html_for="password-signup" name="Password" />
+            <FormInput
+              value={password}
+              change={changePassword}
+              name="password-signup"
+              type="password"
+              Reference={PasswordRef}
+            />
 
-          <FormLabel html_for="confirm-signup" name="Confirm" />
-          <FormInput
-            value={confirm}
-            change={changeConfirm}
-            name="confirm-signup"
-            type="password"
-            Reference={ConfirmRef}
-          />
+            <FormLabel html_for="confirm-signup" name="Confirm" />
+            <FormInput
+              value={confirm}
+              change={changeConfirm}
+              name="confirm-signup"
+              type="password"
+              Reference={ConfirmRef}
+            />
 
-          <FormLabel html_for="phone-signup" name="Phone" />
-          <FormInput
-            value={phone}
-            change={changePhone}
-            name="phone-signup"
-            type="text"
-            Reference={PhoneRef}
+            <FormLabel html_for="phone-signup" name="Phone" />
+            <FormInput
+              value={phone}
+              change={changePhone}
+              name="phone-signup"
+              type="text"
+              Reference={PhoneRef}
+            />
+            <FormButton name="Signup" />
+          </Form>
+          <ChangeRouterButton
+            name="Already Have an Account ?"
+            Change={ChangeRoute}
           />
-          <FormButton name='Signup'/>
-        </Form>
-        <ChangeRouterButton name='Already Have an Account ?' Change={ChangeRoute}/>
-      </FormContainer>
+        </FormContainer>
+      </PageContainer>
     </React.Fragment>
   );
 };
