@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Route, Switch, useHistory } from "react-router";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import { usePostRequest } from "../../Hooks/LandingPage";
@@ -66,6 +66,15 @@ const Encrypt = (Encryption: object | string) => {
   return bytes;
 };
 
+export const ScrollToBottom = () => {
+  const criteria = window.outerHeight + window.innerHeight / 2;
+  if (criteria > 1030) {
+    setTimeout(() => {
+      window.scrollTo({ behavior: "smooth", top: 100 });
+    }, 100);
+  }
+};
+
 const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   // states
   const [login_username, setLoginUsername] = useState<string>("");
@@ -95,7 +104,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       localStorage.setItem("username", username);
       localStorage.setItem("userID", id);
       localStorage.setItem("uid", UniqueID);
-      history.replace('/post');
+      history.replace("/post");
       ChangeAuthentication(true);
     },
 
@@ -181,6 +190,10 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       }
     }
   };
+
+  useEffect(() => {
+    ScrollToBottom();
+  }, []);
 
   const SignupFormSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();

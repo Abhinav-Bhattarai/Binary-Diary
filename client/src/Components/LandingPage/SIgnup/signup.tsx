@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { SignupError } from "../../../Container/LandingPage/landingpage";
+import { ScrollToBottom, SignupError } from "../../../Container/LandingPage/landingpage";
 import {
   ChangeRouterButton,
   CredentialError,
@@ -51,6 +51,7 @@ const Signup: React.FC<SignupProps> = (props) => {
   const history = useHistory();
 
   const ChangeRoute = () => {
+    ScrollToBottom();
     history.push("/login");
   };
 

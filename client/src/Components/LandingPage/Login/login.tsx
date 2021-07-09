@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { LoginError } from "../../../Container/LandingPage/landingpage";
+import { LoginError, ScrollToBottom } from "../../../Container/LandingPage/landingpage";
 // import FacebookLogo from '../../../assets/Images/facebook.svg';
 // import InstagramLogo from '../../../assets/Images/instagram.svg';
 import {
@@ -41,6 +41,7 @@ const Login: React.FC<LoginProps> = (props) => {
   const history = useHistory();
 
   const ChangeRoute = () => {
+    ScrollToBottom();
     history.push("/signup");
   };
 
