@@ -81,4 +81,5 @@ export interface PROFILESTATEBTN {
   RequesterID: string | undefined;
   userInfo: UserInfo | null  
   RequesterUsername: string | undefined;
+  SendSocketRequest: (id: string | undefined) => void;
 }
