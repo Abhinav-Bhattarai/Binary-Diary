@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import PostModel from "../Models/post-model.js";
 import Crypto from "crypto-js";
 import RequestModel from "../Models/RequestModel.js";
+import { CommentModel } from "../Models/comment-model.js";
 dotenv.config();
 
 export const FollowingDataSearch = async (Following) => {
@@ -385,4 +386,23 @@ export const RemoveFromRequestedList = async (ReceiverID, id) => {
 export const UpdateRequestList = async (id, RequesterID) => {
   RemoveFromRequestedList(id, RequesterID);
   RemoveFromRequestsList(RequesterID, id);
+};
+
+const SerializeComments = async (cache, arr) => {
+  const SerializedData = []
+  for (let comment of arr) {
+    const ProfilePicture = await cache.get(`ProfilePicture/${comment.CommentatorID}`);
+    comment.ProfilePicture = ProfilePicture;
+    SerializedData.push(comment);
+  };
+  return SerializedData;
+}
+
+export const GetProfileComments = async (PostID, requestCount, cache) => {
+  const response = await CommentModel.find({_id: PostID}).skip(requestCount * 10).limit(requestCount);
+  if (response.length > 0) {
+    const SerializedResponse = await SerializeComments(cache, response);
+    return SerializedResponse;
+  }
+  return response;
 };

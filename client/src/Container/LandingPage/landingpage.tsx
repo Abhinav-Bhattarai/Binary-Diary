@@ -2,87 +2,28 @@ import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Route, Switch, useHistory } from "react-router";
 import LoadingPage from "../../Components/UI/LoadingPage/LoadingPage";
 import { usePostRequest } from "../../Hooks/LandingPage";
-import Crypto from "crypto-js";
-export interface POSTFETCH {
-  auth_token: string;
-  type: string;
-  username: string;
-  error: boolean;
-  id: string;
-  UniqueID: string;
-  EncryptedData: string;
-}
-
-export interface LoginError {
-  username_err: null | string;
-  password_err: null | string;
-  cred_err: null | string;
-}
-
-export interface SignupError {
-  username_err: null | string;
-  password_err: null | string;
-  confirm_err: null | string;
-  phone_err: null | string;
-  cred_err: null | string;
-}
+import {
+  AsyncLogin,
+  AsyncSignup,
+  Encrypt,
+  Decrypt,
+  initial_login_error,
+  initial_signup_error,
+  LoginError,
+  POSTFETCH,
+  ScrollToBottom,
+  SignupError,
+} from "./helper";
 interface PROPS {
   ChangeAuthentication: (type: boolean) => void;
 }
-
-const initial_login_error: LoginError = {
-  username_err: null,
-  password_err: null,
-  cred_err: null,
-};
-
-const initial_signup_error: SignupError = {
-  username_err: null,
-  password_err: null,
-  confirm_err: null,
-  phone_err: null,
-  cred_err: null,
-};
-
-const AsyncSignup = React.lazy(
-  () => import("../../Components/LandingPage/SIgnup/signup")
-);
-const AsyncLogin = React.lazy(
-  () => import("../../Components/LandingPage/Login/login")
-);
-
-export const Decrypt = (Encryption: string) => {
-  const bytes = Crypto.AES.decrypt(Encryption, "VJ02394JG0-0@!");
-  // @ts-ignore
-  const data = bytes.toString(Crypto.enc.Utf8);
-  return JSON.parse(data);
-};
-
-const Encrypt = (Encryption: object | string) => {
-  const bytes = Crypto.AES.encrypt(
-    JSON.stringify(Encryption),
-    "VJ02394JG0-0@!"
-  ).toString();
-  return bytes;
-};
-
-export const ScrollToBottom = () => {
-  const criteria = window.outerHeight + window.innerHeight / 2;
-  if (criteria > 1030) {
-    setTimeout(() => {
-      window.scrollTo({ behavior: "smooth", top: 100 });
-    }, 100);
-  }
-};
 
 const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   // states
   const [login_username, setLoginUsername] = useState<string>("");
   const [login_password, setLoginPassword] = useState<string>("");
-  const [login_error, setLoginError] =
-    useState<LoginError>(initial_login_error);
-  const [signup_error, setSignupError] =
-    useState<SignupError>(initial_signup_error);
+  const [login_error, setLoginError] = useState<LoginError>(initial_login_error);
+  const [signup_error, setSignupError] = useState<SignupError>(initial_signup_error);
   const [signup_username, setSignupUsername] = useState<string>("");
   const [signup_password, setSignupPassword] = useState<string>("");
   const [signup_confirm, setSingupConfirm] = useState<string>("");

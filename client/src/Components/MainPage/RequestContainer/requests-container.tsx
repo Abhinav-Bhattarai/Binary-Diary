@@ -23,7 +23,7 @@ const DefaultRequestContainer: React.FC<{source: string}> = (props) => {
     <React.Fragment>
       <main id='default-request-container'>
         <img src={source} width='30%' height='30%' alt='default'/>
-        <div>No Requests &#128057;</div>
+        <div>No Requests Found !</div>
       </main>
     </React.Fragment>
   )

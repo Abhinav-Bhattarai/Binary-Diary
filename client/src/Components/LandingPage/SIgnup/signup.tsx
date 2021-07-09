@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { ScrollToBottom, SignupError } from "../../../Container/LandingPage/landingpage";
+import { ScrollToBottom, SignupError } from "../../../Container/LandingPage/helper";
 import {
   ChangeRouterButton,
   CredentialError,

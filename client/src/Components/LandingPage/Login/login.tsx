@@ -1,8 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { LoginError, ScrollToBottom } from "../../../Container/LandingPage/landingpage";
-// import FacebookLogo from '../../../assets/Images/facebook.svg';
-// import InstagramLogo from '../../../assets/Images/instagram.svg';
+import { LoginError, ScrollToBottom } from "../../../Container/LandingPage/helper";
 import {
   ChangeRouterButton,
   CredentialError,

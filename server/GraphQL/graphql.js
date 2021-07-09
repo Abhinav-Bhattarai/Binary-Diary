@@ -9,6 +9,7 @@ const {
   GraphQLSchema,
   GraphQLList,
   GraphQLBoolean,
+  GraphQLInt,
 } = require("graphql");
 
 import {
@@ -22,6 +23,7 @@ import {
   FetchUserData,
   FollowingDataSearch,
   GetPostDataHandler,
+  GetProfileComments,
   GetUserDataCacheCheck,
   ProfilePostCollector,
   RegisterLikeInPostSchema,
@@ -142,6 +144,37 @@ const RequestSchema = new GraphQLObjectType({
   },
 });
 
+const CommentSchema = new GraphQLObjectType({
+  name: "CommentSchema",
+  fields: () => {
+    return {
+      PostID: {
+        type: GraphQLString,
+      },
+
+      Comment: {
+        type: GraphQLString,
+      },
+
+      CommentatorID: {
+        type: GraphQLString,
+      },
+
+      CommentatorUsername: {
+        type: GraphQLString,
+      },
+
+      _id: {
+        type: GraphQLString
+      },
+
+      ProfilePicture: {
+        type: GraphQLString
+      }
+    };
+  },
+});
+
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
   fields: {
@@ -175,6 +208,25 @@ const RootQuery = new GraphQLObjectType({
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
           const response = await GetPostDataHandler(cache, Posts);
+          return response;
+        }
+      },
+    },
+
+    GetPostComments: {
+      type: new GraphQLList(CommentSchema),
+      args: {
+        auth_token: { type: GraphQLString },
+        PostID: { type: GraphQLString },
+        id: { type: GraphQLString },
+        uid: { type: GraphQLString },
+        requestCount: { type: GraphQLInt }
+      },
+      resolve: async (_, args) => {
+        const { auth_token, PostID, id, uid, requestCount } = args;
+        const validity = ByPassChecking(auth_token, id, uid);
+        if (validity) {
+          const response = await GetProfileComments(PostID, requestCount, cache);
           return response;
         }
       },
@@ -287,14 +339,14 @@ const Mutation = new GraphQLObjectType({
         const { id, uid, auth_token, PostID, type } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          if (type === 'like') {
+          if (type === "like") {
             RegisterLikeInPostSchema(id, PostID);
             RegisterLikeInRegisterSchema(id, PostID);
-            await AddToUserCacheForLikedPosts(cache, id, uid, PostID)
+            await AddToUserCacheForLikedPosts(cache, id, uid, PostID);
           } else {
             RemoveLikeInPostSchema(id, PostID);
-            RemoveLikeInRegisterSchema(id, PostID)
-            await RemoveUserCacheForLikedPosts(cache, id, uid, PostID)
+            RemoveLikeInRegisterSchema(id, PostID);
+            await RemoveUserCacheForLikedPosts(cache, id, uid, PostID);
           }
           return { Mutated: true };
         }
@@ -309,21 +361,21 @@ const Mutation = new GraphQLObjectType({
         auth_token: { type: GraphQLString },
         type: { type: GraphQLString },
         RequesterID: { type: GraphQLString },
-        RequesterUsername: { type: GraphQLString }
+        RequesterUsername: { type: GraphQLString },
       },
       resolve: async (_, args) => {
-        const { id, uid, auth_token, type, RequesterID, RequesterUsername } = args;
+        const { id, uid, auth_token, type, RequesterID, RequesterUsername } =
+          args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          if (type === 'Follow') {
+          if (type === "Follow") {
             AddToRequestsList(id, RequesterID, RequesterUsername);
             AddToRequestedList(RequesterID, id);
-          }
-          else if (type === "Following") {
+          } else if (type === "Following") {
             RemoveFromFollowersList(id, RequesterID);
             RemoveFromFollowingList(RequesterID, id);
-          } 
-          
+          }
+
           return { Mutated: true };
         }
         return { Mutated: false };
@@ -347,7 +399,7 @@ const Mutation = new GraphQLObjectType({
           if (type === "Add") {
             AddToFollowersList(cache, RequesterID, id);
             AddToFollowingList(cache, RequesterID, id);
-          } 
+          }
           return { Mutated: true };
         }
         return { Mutated: false };

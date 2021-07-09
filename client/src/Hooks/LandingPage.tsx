@@ -1,5 +1,5 @@
 import axios from "axios";
-import { POSTFETCH } from "../Container/LandingPage/landingpage";
+import { POSTFETCH } from "../Container/LandingPage/helper";
 
 interface Config {
   onComplete: (data: POSTFETCH) => void;
