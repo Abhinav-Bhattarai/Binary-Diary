@@ -11,12 +11,12 @@ const Schema = new mongoose.Schema({
     required: true,
   },
 
-  CommentatorID: {
+  CommenterID: {
     type: String,
     required: true,
   },
 
-  CommentatorUsername: {
+  CommenterUsername: {
     type: String,
     required: true,
   },

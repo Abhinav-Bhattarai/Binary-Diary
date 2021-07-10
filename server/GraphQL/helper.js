@@ -391,14 +391,14 @@ export const UpdateRequestList = async (id, RequesterID) => {
 const SerializeComments = async (cache, arr) => {
   const SerializedData = []
   for (let comment of arr) {
-    const ProfilePicture = await cache.get(`ProfilePicture/${comment.CommentatorID}`);
+    const ProfilePicture = await cache.get(`ProfilePicture/${comment.CommenterID}`);
     comment.ProfilePicture = ProfilePicture;
     SerializedData.push(comment);
   };
   return SerializedData;
 }
 
-export const GetProfileComments = async (PostID, requestCount, cache) => {
+export const GetPostComments = async (PostID, requestCount, cache) => {
   const response = await CommentModel.find({_id: PostID}).skip(requestCount * 10).limit(requestCount);
   if (response.length > 0) {
     const SerializedResponse = await SerializeComments(cache, response);
@@ -406,3 +406,10 @@ export const GetProfileComments = async (PostID, requestCount, cache) => {
   }
   return response;
 };
+
+export const AddNewComment = async (config) => {
+  const response = new CommentModel(config);
+  await response.save();
+}
+
+// export const RemoveComments = async () => {};

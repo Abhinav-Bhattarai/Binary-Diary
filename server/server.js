@@ -58,6 +58,25 @@ io.on("connection", (socket) => {
       });
   });
 
+  socket.on('comment-room-join', postID => {
+    socket.join(postID);
+  });
+
+  socket.on('leave-comment-room', postID => {
+    socket.leave(postID);
+  }) 
+
+  socket.on('add-new-comment', async(postID, userID, userName, comment) => {
+    const ProfilePicture = await cache.get(`ProfilePicture/${userID}`);
+    const config = {
+      ProfilePicture: ProfilePicture ? ProfilePicture : "",
+      CommentatorUsername: userName,
+      CommentatorID: userID,
+      Comment: comment
+    }
+    socket.to(postID).broadcast.emit('get-new-comment', config);
+  })
+
   socket.on("disconnect", () => {});
 });
 

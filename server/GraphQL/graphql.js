@@ -13,6 +13,7 @@ const {
 } = require("graphql");
 
 import {
+  AddNewComment,
   AddPostID,
   AddPostToDatabase,
   AddToFollowersList,
@@ -23,7 +24,7 @@ import {
   FetchUserData,
   FollowingDataSearch,
   GetPostDataHandler,
-  GetProfileComments,
+  GetPostComments,
   GetUserDataCacheCheck,
   ProfilePostCollector,
   RegisterLikeInPostSchema,
@@ -156,20 +157,24 @@ const CommentSchema = new GraphQLObjectType({
         type: GraphQLString,
       },
 
-      CommentatorID: {
+      CommenterID: {
         type: GraphQLString,
       },
 
-      CommentatorUsername: {
+      CommenterUsername: {
         type: GraphQLString,
       },
 
       _id: {
-        type: GraphQLString
+        type: GraphQLString,
       },
 
       ProfilePicture: {
-        type: GraphQLString
+        type: GraphQLString,
+      },
+
+      Mutated: {
+        type: GraphQLBoolean
       }
     };
   },
@@ -220,13 +225,17 @@ const RootQuery = new GraphQLObjectType({
         PostID: { type: GraphQLString },
         id: { type: GraphQLString },
         uid: { type: GraphQLString },
-        requestCount: { type: GraphQLInt }
+        requestCount: { type: GraphQLInt },
       },
       resolve: async (_, args) => {
         const { auth_token, PostID, id, uid, requestCount } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          const response = await GetProfileComments(PostID, requestCount, cache);
+          const response = await GetPostComments(
+            PostID,
+            requestCount,
+            cache
+          );
           return response;
         }
       },
@@ -400,6 +409,33 @@ const Mutation = new GraphQLObjectType({
             AddToFollowersList(cache, RequesterID, id);
             AddToFollowingList(cache, RequesterID, id);
           }
+          return { Mutated: true };
+        }
+        return { Mutated: false };
+      },
+    },
+
+    MutateComments: {
+      type: CommentSchema,
+      args: {
+        auth_token: { type: GraphQLString },
+        PostID: { type: GraphQLString },
+        id: { type: GraphQLString },
+        uid: { type: GraphQLString },
+        username: { type: GraphQLString },
+        Comment: { type: GraphQLString },
+      },
+      resolve: async (_, args) => {
+        const { auth_token, PostID, id, uid, username, Comment } = args;
+        const validity = ByPassChecking(auth_token, id, uid);
+        if (validity) {
+          const config = {
+            CommenterID: id,
+            CommenterUsername: username,
+            PostID,
+            Comment,
+          };
+          AddNewComment(config);
           return { Mutated: true };
         }
         return { Mutated: false };
