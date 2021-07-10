@@ -85,3 +85,25 @@ export const RespondToRequest = gql`
     }
   }
 `;
+
+export const MutatePostComments = gql`
+  query(
+    $auth_token: String!,
+    $id: String!, 
+    $uid: String!, 
+    $PostID: String!, 
+    $username: String!
+    $Comment: String!
+  ) {
+    GetPostComments(
+      auth_token: $auth_token
+      id: $id
+      uid: $uid
+      PostID: $PostID, 
+      username: $username
+      Comment: $Comment
+    ) {
+      Mutated
+    }
+  }
+`;

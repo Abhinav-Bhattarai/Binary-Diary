@@ -92,16 +92,37 @@ export const FetchMoreProfilePosts = gql`
 
 export const FetchProfileRequests = gql`
   query ($auth_token: String!, $id: String!, $uid: String!) {
-    GetProfileRequests(
-      auth_token: $auth_token
-      id: $id
-      uid: $uid
-    ) {
+    GetProfileRequests(auth_token: $auth_token, id: $id, uid: $uid) {
       Requests {
         Username
         extenderID
         ProfilePicture
       }
+    }
+  }
+`;
+
+export const FetchPostComments = gql`
+  query(
+    $auth_token: String!,
+    $id: String!, 
+    $uid: String!, 
+    $PostID: String!, 
+    $requestCount: Int!
+  ) {
+    GetPostComments(
+      auth_token: $auth_token
+      id: $id
+      uid: $uid
+      requestCount: $requestCount
+      PostID: $PostID, 
+    ) {
+      _id
+      PostID
+      CommenterID
+      CommenterUsername
+      Comment
+      ProfilePicture
     }
   }
 `;
