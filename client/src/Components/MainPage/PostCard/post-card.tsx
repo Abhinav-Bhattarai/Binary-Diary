@@ -1,52 +1,50 @@
-import React, { useState } from "react";
-import DefaultProfile from "../../../../assets/Images/profile-user.svg";
-import InteractionContainer, { Interactants } from "../Interaction/interaction";
+import React, { useEffect, useRef, useState } from "react";
+import InteractionContainer, {
+  Interactants,
+} from "../PostContainer/Interaction/interaction";
 import { AiOutlineLike, AiOutlinePlusCircle } from "react-icons/ai";
 import { MdComment } from "react-icons/md";
 import "./post-card.scss";
-import { useMutation } from "@apollo/client";
-import { PostLikeMutation } from "../../../../GraphQL/mutations";
-import { UserInfo } from "../../../../Container/MainPage/interfaces";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { PostLikeMutation } from "../../../GraphQL/mutations";
+import { FetchPostComments } from "../../../GraphQL/gql";
+import { COMMENTS } from "../CommentCard/inteface";
+import { useInteractionObserver } from "../../../Hooks/IntersectionObserver";
+import {
+  AsyncCommentSection,
+  POSTCARDPROPS,
+  SerializeComments,
+} from "./reusables";
 
-export const PostCardImageContainer: React.FC<{ source: string }> = (props) => {
-  return (
-    <header id="post-card-img-container">
-      <img draggable={false} src={props.source} alt="post" />
-    </header>
-  );
-};
-
-export const PostCardHeader: React.FC<{ source: string; Username: string }> = (
-  props
-) => {
-  const { source, Username } = props;
-  return (
-    <header id="post-card-header">
-      <img
-        src={source.length > 0 ? source : DefaultProfile}
-        width="40px"
-        height="40px"
-        alt="header-profile"
-      />
-      <div>{Username}</div>
-    </header>
-  );
-};
-
-interface POSTCARDPROPS {
-  isPostLiked: boolean;
-  id: string;
-  UserInfo: UserInfo | null;
-  Click?: (event: React.MouseEvent<HTMLDivElement>) => void;
-  ChangeLikedPost: ((type: boolean, id: string) => void) | undefined;
-}
+const AsyncDefaultCommentSection = React.lazy(() => import("./reusables"));
 
 const PostCard: React.FC<POSTCARDPROPS> = (props) => {
+  const { children } = props;
+
+  // state
   const [likeStatus, setLikeStatus] = useState<string>(
     props.isPostLiked ? "#00acee" : ""
   );
+  const [isCommentVisible, setIsCommentVisible] = useState<boolean>(false);
+  const [requestCount, setRequestCount] = useState<number>(0);
+  const [comments, setComments] = useState<Array<COMMENTS> | null>(null);
+  const lastCardRef = useRef<HTMLDivElement>(null);
+  const isIntersecting = useInteractionObserver(lastCardRef);
+
+  // apollo-client
+  const [GetComments] = useLazyQuery(FetchPostComments, {
+    onCompleted: (data) => {
+      const { GetPostComments }: { GetPostComments: Array<COMMENTS> } = data;
+      let SerializedComments = GetPostComments;
+      if (comments) {
+        SerializedComments = SerializeComments(comments, GetPostComments);
+      }
+      setComments(SerializedComments);
+      setRequestCount(requestCount + 1);
+    },
+  });
   const [MutatePostLike] = useMutation(PostLikeMutation);
-  const { children } = props;
+
   const LikeClickHandler = (id: string) => {
     if (props.ChangeLikedPost) {
       if (likeStatus === "") {
@@ -79,7 +77,26 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
     }
   };
 
-  const CommentClickHandler = () => {};
+  useEffect(() => {
+    if (isIntersecting) {
+    }
+  }, [isIntersecting]);
+
+  const CommentClickHandler = () => {
+    if (!comments) {
+      GetComments({
+        variables: {
+          id: props.UserInfo?.userID,
+          auth_token: props.UserInfo?.auth_token,
+          uid: props.UserInfo?.uid,
+          PostID: props.id,
+          requestCount,
+        },
+      });
+    }
+    setIsCommentVisible(true);
+  };
+
   return (
     <React.Fragment>
       <main
@@ -108,6 +125,11 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
             <MdComment />
           </Interactants>
         </InteractionContainer>
+        {isCommentVisible ? (
+          <AsyncCommentSection Comments={comments} />
+        ) : (
+          <AsyncDefaultCommentSection />
+        )}
       </main>
     </React.Fragment>
   );

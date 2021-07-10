@@ -7,11 +7,12 @@ import {
 } from "../../../Container/MainPage/interfaces";
 import Spinner from "../../UI/Spinner/spinner";
 import { MainPageContainer } from "../Reusables/reusables";
-import PostCard, {
+import {
   PostCardHeader,
   PostCardImageContainer,
-} from "./PostCard/post-card";
-import './PostCard/post-card.scss';
+} from "../PostCard/reusables";
+import '../PostCard/post-card.scss';
+import PostCard from "../PostCard/post-card";
 
 interface PROPS {
   PostList: Array<POSTS> | null;

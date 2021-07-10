@@ -4,10 +4,8 @@ import { IconContext } from "react-icons";
 import { UserInfo } from "../../../Container/MainPage/interfaces";
 import { FollowRequestMutations } from "../../../GraphQL/mutations";
 import { ProfilePostDetailsType, PROFILESTATEBTN } from "../interfaces";
-import PostCard, {
-  PostCardHeader,
-  PostCardImageContainer
-} from '../PostContainer/PostCard/post-card';
+import PostCard from "../PostCard/post-card";
+import { PostCardHeader, PostCardImageContainer } from "../PostCard/reusables";
 import "./profile-container.scss";
 
 export const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
@@ -24,7 +22,7 @@ export const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
       />
     </div>
   );
-}
+};
 
 export const ProfileHeaderContainer: React.FC<{}> = ({ children }) => {
   return <header id="profile-header-container">{children}</header>;
@@ -90,7 +88,7 @@ interface ProfilePostOverviewProps {
   CreatorUsername: string;
   Click: (config: ProfilePostDetailsType) => void;
   ProfilePicture: string;
-  UserInfo: UserInfo | null
+  UserInfo: UserInfo | null;
 }
 
 export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
@@ -106,7 +104,7 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
     LikeStatus,
     id,
     ProfilePicture,
-    UserInfo
+    UserInfo,
   } = props;
   const config = {
     Likes,
@@ -117,7 +115,7 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
     id,
     Post: source,
     UserInfo,
-    ProfilePicture
+    ProfilePicture,
   };
   return (
     <React.Fragment>
@@ -164,24 +162,28 @@ export const SettingsOverViewElement: React.FC<{
 };
 
 export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
-  const { name, userInfo, RequesterID, RequesterUsername, SendSocketRequest } = props;
-  const [type, setType] = useState<'Follow' | 'Following' | 'Requested' | 'Loading'>(name);
+  const { name, userInfo, RequesterID, RequesterUsername, SendSocketRequest } =
+    props;
+  const [type, setType] = useState<
+    "Follow" | "Following" | "Requested" | "Loading"
+  >(name);
   const [MutateFollowRequests] = useMutation(FollowRequestMutations);
 
   const ClickHandler = () => {
-    MutateFollowRequests({variables: {
-      type: name,
-      id: userInfo?.userID,
-      uid: userInfo?.uid,
-      auth_token: userInfo?.auth_token,
-      RequesterID,
-      RequesterUsername
-    }});
-    if (type === 'Follow') {
-      setType('Requested')
+    MutateFollowRequests({
+      variables: {
+        type: name,
+        id: userInfo?.userID,
+        uid: userInfo?.uid,
+        auth_token: userInfo?.auth_token,
+        RequesterID,
+        RequesterUsername,
+      },
+    });
+    if (type === "Follow") {
+      setType("Requested");
       SendSocketRequest(RequesterID);
-    }
-    else if (type === 'Following') setType('Follow')
+    } else if (type === "Following") setType("Follow");
   };
 
   return (
@@ -192,10 +194,19 @@ export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
 };
 
 const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
-  const { LikeStatus, id, CreatorUsername, Post, UserInfo, ProfilePicture, RevertPopup, ChangeLikedPosts } = props;
+  const {
+    LikeStatus,
+    id,
+    CreatorUsername,
+    Post,
+    UserInfo,
+    ProfilePicture,
+    RevertPopup,
+    ChangeLikedPosts,
+  } = props;
   const PostCardClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-  }
+  };
   return (
     <main id="detailed-post-container" onClick={RevertPopup}>
       <PostCard
@@ -205,10 +216,7 @@ const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
         Click={PostCardClick}
         ChangeLikedPost={ChangeLikedPosts}
       >
-        <PostCardHeader
-          Username={CreatorUsername}
-          source={ProfilePicture}
-        />
+        <PostCardHeader Username={CreatorUsername} source={ProfilePicture} />
         <PostCardImageContainer source={Post} />
       </PostCard>
     </main>
