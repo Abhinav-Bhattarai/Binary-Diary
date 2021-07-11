@@ -1,6 +1,14 @@
 import React from "react";
 import { COMMENTS } from "./inteface";
-import { CommentCardContainer } from "./reusables";
+import DefaultProfile from "../../../assets/Images/profile-user.svg";
+
+import {
+  CommentArea,
+  CommentCardContainer,
+  CommentDataContainer,
+  CommenterNameArea,
+  CommenterProfile,
+} from "./reusables";
 import "./style.scss";
 
 interface PROPS {
@@ -14,7 +22,19 @@ const CommentSection: React.FC<PROPS> = (props) => {
       <main id="comment-section">
         {Comments.map((comment) => {
           return (
-            <CommentCardContainer key={comment._id}></CommentCardContainer>
+            <CommentCardContainer key={comment._id}>
+              <CommenterProfile
+                soruce={
+                  comment.ProfilePicture.length > 0
+                    ? comment.ProfilePicture
+                    : DefaultProfile
+                }
+              />
+              <CommentDataContainer>
+                <CommenterNameArea username={comment.CommenterUsername} />
+                <CommentArea comment={comment.Comment} />
+              </CommentDataContainer>
+            </CommentCardContainer>
           );
         })}
       </main>

@@ -1,0 +1,49 @@
+$faint-white: rgb(230, 230, 230);
+$comment-white: rgb(220, 220, 220);
+
+#comment-section {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-height: 400px;
+  flex-direction: column;
+  overflow-y: scroll;
+
+  #comment-card-container {
+    flex: 1;
+    padding: 8px 0;
+    background-color: $faint-white;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    border-radius: 2px;
+    margin: 1px 0;
+    #commenter-profile {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin: 0 3%;
+    }
+    #comment-data-container {
+      display: flex;
+      flex-direction: column;
+      flex: 2;
+
+      #commenter-username {
+        font-weight: bolder;
+        font-size: 16px;
+        margin-bottom: 3px;
+      }
+
+      #comment {
+        border-radius: 8px;
+        font-weight: 700;
+        max-width: 75%;
+        width: 75%;
+        font-size: 14px;
+        background-color: $comment-white;
+        padding: 5px 3%;
+      }
+    }
+  }
+}
