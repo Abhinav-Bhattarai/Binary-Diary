@@ -4,7 +4,7 @@ import { CommentCardContainer } from "./reusables";
 import "./style.scss";
 
 interface PROPS {
-  Comments: Array<COMMENTS> | null;
+  Comments: Array<COMMENTS>;
 }
 
 let CommentList = () => {
@@ -14,7 +14,7 @@ let CommentList = () => {
 const CommentSection: React.FC<PROPS> = (props) => {
   const { Comments } = props;
 
-  if (Comments) {
+  if (Comments.length > 0) {
     CommentList = () => {
       return (
         <React.Fragment>

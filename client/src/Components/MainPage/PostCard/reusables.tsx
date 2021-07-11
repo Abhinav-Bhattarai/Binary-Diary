@@ -2,7 +2,7 @@ import React from "react";
 import { UserInfo } from "../../../Container/MainPage/interfaces";
 import DefaultProfile from "../../../assets/Images/profile-user.svg";
 import { COMMENTS } from "../CommentCard/inteface";
-import Spinner from "../../UI/Spinner/spinner";
+import PostCardSpinner from "../../UI/Spinner/PostCardSpinner/postcard-spinner";
 
 export const PostCardImageContainer: React.FC<{ source: string }> = (props) => {
   return (
@@ -51,7 +51,7 @@ export const SerializeComments = (
 };
 
 const DefaultCommentSection = () => {
-    return <main id='default-comment-section'><Spinner/></main>
+  return <main id='default-comment-section'><PostCardSpinner/></main>
 };
 
 export default DefaultCommentSection;

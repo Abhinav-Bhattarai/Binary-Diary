@@ -9,23 +9,21 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { PostLikeMutation } from "../../../GraphQL/mutations";
 import { FetchPostComments } from "../../../GraphQL/gql";
 import { COMMENTS } from "../CommentCard/inteface";
-import { useInteractionObserver } from "../../../Hooks/IntersectionObserver";
-import {
-  AsyncCommentSection,
+// import { useInteractionObserver } from "../../../Hooks/IntersectionObserver";
+import DefaultCommentSection, {
   POSTCARDPROPS,
   SerializeComments,
 } from "./reusables";
 
-const AsyncDefaultCommentSection = React.lazy(() => import("./reusables"));
+import CommentSection from "../CommentCard/comment-card"
+import { useInteractionObserver } from "../../../Hooks/IntersectionObserver";
 
 const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   const { children } = props;
 
   // state
-  const [likeStatus, setLikeStatus] = useState<string>(
-    props.isPostLiked ? "#00acee" : ""
-  );
-  const [isCommentVisible, setIsCommentVisible] = useState<boolean>(false);
+  const [likeStatus, setLikeStatus] = useState<string>(props.isPostLiked ? "#00acee" : "");
+  const [isCommentVisible, setIsCommentVisible] = useState<boolean | null>(null);
   const [requestCount, setRequestCount] = useState<number>(0);
   const [comments, setComments] = useState<Array<COMMENTS> | null>(null);
   const lastCardRef = useRef<HTMLDivElement>(null);
@@ -35,12 +33,14 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   const [GetComments] = useLazyQuery(FetchPostComments, {
     onCompleted: (data) => {
       const { GetPostComments }: { GetPostComments: Array<COMMENTS> } = data;
-      let SerializedComments = GetPostComments;
-      if (comments) {
-        SerializedComments = SerializeComments(comments, GetPostComments);
+      let SerializedComments = [...GetPostComments];
+      if (comments && SerializeComments.length > 0) {
+        SerializedComments = SerializeComments([...comments], SerializedComments);
       }
       setComments(SerializedComments);
       setRequestCount(requestCount + 1);
+      if (SerializeComments.length === 0) setIsCommentVisible(null);
+      else setIsCommentVisible(true);
     },
   });
   const [MutatePostLike] = useMutation(PostLikeMutation);
@@ -83,7 +83,9 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   }, [isIntersecting]);
 
   const CommentClickHandler = () => {
-    if (!comments) {
+    if (!comments){
+      setIsCommentVisible(false);
+      window.scrollTo(0, window.scrollY + 50);
       GetComments({
         variables: {
           id: props.UserInfo?.userID,
@@ -93,8 +95,7 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
           requestCount,
         },
       });
-    }
-    setIsCommentVisible(true);
+    };
   };
 
   return (
@@ -125,11 +126,10 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
             <MdComment />
           </Interactants>
         </InteractionContainer>
-        {isCommentVisible ? (
-          <AsyncCommentSection Comments={comments} />
-        ) : (
-          <AsyncDefaultCommentSection />
+        {(isCommentVisible === true && comments) && (
+          <CommentSection Comments={comments} />
         )}
+        {isCommentVisible === false && <DefaultCommentSection />}
       </main>
     </React.Fragment>
   );

@@ -61,6 +61,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
       </React.Fragment>
     );
   }
+  
   return (
     <React.Fragment>
       <MainPageContainer>
