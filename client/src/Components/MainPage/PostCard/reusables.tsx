@@ -1,4 +1,5 @@
 import React from "react";
+import './post-card.scss';
 import { UserInfo } from "../../../Container/MainPage/interfaces";
 import DefaultProfile from "../../../assets/Images/profile-user.svg";
 import { COMMENTS } from "../CommentCard/inteface";

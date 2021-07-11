@@ -92,7 +92,6 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   // intead use useMemo() for heavy render calculations;
   // so this is my own custom hook with window.location
   const params = useProfileParams();
-
   // apollo-client-helper
   const SerializeNewPosts = (PostData: Array<PostListType>) => {
     let serialized_post_list = PostData;
@@ -329,6 +328,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   }, [ProfileData?.Following, params?.id, Requested]);
 
   const PostArea = useMemo(() => {
+    console.log('went')
     if (post_list) {
       if (post_list.length > 0) {
         return (
@@ -383,12 +383,9 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         </ProfilePostAreaContainer>
       </React.Fragment>
     );
-  }, [
-    post_list,
-    ProfileData?.LikedPosts,
-    profile_info.ProfilePicture,
-    userInfo
-  ]);
+  }, 
+  // eslint-disable-next-line
+  [post_list]);
 
   if (owner_status === null) {
     return (
@@ -429,9 +426,10 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       );
     };
   }
-
+  
+  let DetailedPosts = null;
   if (isPostShown && currentPostDetails) {
-    return (
+    DetailedPosts =  (
       <AsyncDetailedPostContainer
         CreatorID={currentPostDetails.CreatorID}
         Caption={currentPostDetails.Caption}
@@ -451,6 +449,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   return (
     <React.Fragment>
       {POPUP}
+      {DetailedPosts}
       <input type="file" hidden onChange={FetchImages} ref={FileInputRef} />
       <MainPageContainer popup={transitioning} Exit={ExitPopup}>
         <ProfileHeaderContainer>

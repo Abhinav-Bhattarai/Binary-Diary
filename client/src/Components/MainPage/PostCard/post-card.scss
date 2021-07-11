@@ -46,6 +46,14 @@ $faint-white: rgb(243, 243, 243);
   font-size: 18px;
 }
 
+#default-comment-section {
+  min-height: 50px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 @media screen and (max-width: 1370px) {
   #post-card-container {
     width: 35%;
