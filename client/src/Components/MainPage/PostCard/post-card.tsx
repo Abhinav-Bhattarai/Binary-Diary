@@ -47,6 +47,7 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
     },
   });
   const [MutatePostLike] = useMutation(PostLikeMutation);
+
   // event functions
   const LikeClickHandler = (id: string) => {
     if (props.ChangeLikedPost) {
@@ -114,8 +115,6 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
     [isIntersecting]
   );
 
-  console.log('rendered')
-
   return (
     <React.Fragment>
       <main
@@ -146,9 +145,9 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
         </InteractionContainer>
         {isCommentVisible === true && comments && (
           <>
-            {comments.length > 0 && (
+            {props.UserInfo && (
               <>
-                <CommentSection Comments={comments} />
+                <CommentSection PostID={props.id} Comments={comments} userInfo={props.UserInfo}/>
                 <footer ref={lastCardRef} style={{ height: "10px" }}></footer>
               </>
             )}

@@ -251,46 +251,6 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     [params]
   );
 
-  const POPUP = useMemo(() => {
-    if (transitioning !== null) {
-      return (
-        <Transition
-          in={transitioning}
-          timeout={{
-            enter: transition_duration,
-            exit: transition_duration,
-          }}
-          unmountOnExit
-          mountOnEnter
-        >
-          {(status) => {
-            return (
-              <AsyncBigPopupContainer
-                ID={`popup-container-${status}`}
-                status={status}
-              >
-                <PopupHeader Exit={ExitPopup} name="Add new Photo" />
-                <PopupImageContainer
-                  Click={() => {
-                    if (FileInputRef.current) {
-                      FileInputRef.current.click();
-                    }
-                  }}
-                  source={post}
-                />
-                <ImageSelector
-                  backgroundColor="#ff385c"
-                  name="Upload Image"
-                  Click={UploadImage}
-                />
-              </AsyncBigPopupContainer>
-            );
-          }}
-        </Transition>
-      );
-    }
-  }, [transitioning, UploadImage, post]);
-
   const LogoutHandler = () => {
     ChangeAuthentication(false);
   };
@@ -425,6 +385,45 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         </ProfileConfigurationContainer>
       );
     };
+  }
+
+  let POPUP = null;
+  if (transitioning !== null) {
+    POPUP = (
+      <Transition
+        in={transitioning}
+        timeout={{
+          enter: transition_duration,
+          exit: transition_duration,
+        }}
+        unmountOnExit
+        mountOnEnter
+      >
+        {(status) => {
+          return (
+            <AsyncBigPopupContainer
+              ID={`popup-container-${status}`}
+              status={status}
+            >
+              <PopupHeader Exit={ExitPopup} name="Add new Photo" />
+              <PopupImageContainer
+                Click={() => {
+                  if (FileInputRef.current) {
+                    FileInputRef.current.click();
+                  }
+                }}
+                source={post}
+              />
+              <ImageSelector
+                backgroundColor="#ff385c"
+                name="Upload Image"
+                Click={UploadImage}
+              />
+            </AsyncBigPopupContainer>
+          );
+        }}
+      </Transition>
+    );
   }
   
   let DetailedPosts = null;

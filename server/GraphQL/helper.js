@@ -392,17 +392,18 @@ const SerializeComments = async (cache, arr) => {
   const SerializedData = []
   for (let comment of arr) {
     const ProfilePicture = await cache.get(`ProfilePicture/${comment.CommenterID}`);
-    comment.ProfilePicture = ProfilePicture;
+    comment.ProfilePicture = ProfilePicture ? ProfilePicture : '';
     SerializedData.push(comment);
   };
   return SerializedData;
 }
 
 export const GetPostComments = async (PostID, requestCount, cache) => {
-  const response = await CommentModel.find({_id: PostID}).skip(requestCount * 10).limit(requestCount);
+  const response = await CommentModel.find({PostID: PostID}).skip(requestCount * 10).limit(requestCount);
+  console.log(response);
   if (response.length > 0) {
     const SerializedResponse = await SerializeComments(cache, response);
-    return SerializedResponse;
+    return SerializedResponse.reverse();
   }
   return response;
 };

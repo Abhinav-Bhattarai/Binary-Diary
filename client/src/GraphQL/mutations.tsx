@@ -87,7 +87,7 @@ export const RespondToRequest = gql`
 `;
 
 export const MutatePostComments = gql`
-  query(
+  mutation(
     $auth_token: String!,
     $id: String!, 
     $uid: String!, 
@@ -95,7 +95,7 @@ export const MutatePostComments = gql`
     $username: String!
     $Comment: String!
   ) {
-    GetPostComments(
+    MutateComments(
       auth_token: $auth_token
       id: $id
       uid: $uid

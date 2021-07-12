@@ -1,13 +1,23 @@
-$faint-white: rgb(230, 230, 230);
-$comment-white: rgb(220, 220, 220);
+$faint-white: rgb(238, 238, 238);
+$comment-white: rgb(238, 238, 238);
+$input-bg-color: rgb(235, 235, 235);
 
 #comment-section {
   display: flex;
   align-items: center;
   width: 100%;
-  max-height: 400px;
+  max-height: 300px;
   flex-direction: column;
   overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 2.1231px; /* width of the entire scrollbar */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: grey; /* color of the scroll thumb */
+    border-radius: 8px; /* roundness of the scroll thumb */
+  }
 
   #comment-card-container {
     flex: 1;
@@ -19,8 +29,8 @@ $comment-white: rgb(220, 220, 220);
     border-radius: 2px;
     margin: 1px 0;
     #commenter-profile {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       margin: 0 3%;
     }
@@ -32,10 +42,12 @@ $comment-white: rgb(220, 220, 220);
       #commenter-username {
         font-weight: bolder;
         font-size: 16px;
+        color: #333;
         margin-bottom: 3px;
       }
 
       #comment {
+        color: #333;
         border-radius: 8px;
         font-weight: 700;
         max-width: 75%;
@@ -45,5 +57,33 @@ $comment-white: rgb(220, 220, 220);
         padding: 5px 3%;
       }
     }
+  }
+}
+
+#comment-input {
+  padding: 10px 3%;
+  padding-top: 15px;
+  width: 94%;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-top: 7px;
+  max-height: 400px;
+  background-color: $input-bg-color;
+  height: auto;
+  resize: none;
+  font-family: sans-serif;
+
+  &::-webkit-scrollbar {
+    width: 2.1231px; /* width of the entire scrollbar */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: grey; /* color of the scroll thumb */
+    border-radius: 8px; /* roundness of the scroll thumb */
+  }
+
+  &:focus {
+    outline: none;
   }
 }
