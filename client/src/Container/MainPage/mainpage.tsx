@@ -87,10 +87,13 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
-  const [isfetchlimitreached, setIsFetchLimitReached] = useState<boolean>(false);
+  const [isfetchlimitreached, setIsFetchLimitReached] =
+    useState<boolean>(false);
   const [request_count, setReqestCount] = useState<number>(0);
-  const [search_suggestion, setSearchSuggestion] = useState<Array<Suggestion> | null>(null);
-  const [search_suggestion_loading, setSearchSuggestionLoading] = useState<boolean>(false);
+  const [search_suggestion, setSearchSuggestion] =
+    useState<Array<Suggestion> | null>(null);
+  const [search_suggestion_loading, setSearchSuggestionLoading] =
+    useState<boolean>(false);
   const [requests, setRequests] = useState<null | Array<RequestConfig>>(null);
   const [requested, setRequested] = useState<Array<string> | null>(null);
   const [socket, setSocket] = useState<null | SocketIOClient.Socket>(null);
@@ -320,11 +323,14 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     [profile_data]
   );
 
-  const SendSocketRequest = useCallback((id: string | undefined) => {
-    if (id) {
-      socket?.emit('/', user_info?.userID, id, user_info?.username);
-    }
-  }, [socket, user_info]);
+  const SendSocketRequest = useCallback(
+    (id: string | undefined) => {
+      if (id) {
+        socket?.emit("/", user_info?.userID, id, user_info?.username);
+      }
+    },
+    [socket, user_info]
+  );
 
   const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
     history.push("/posts");
@@ -365,7 +371,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   useEffect(() => {
     if (socket) {
       socket.on("real-time-request-receiver", (config: RequestConfig) => {
-        if(config) AddRequests(config);
+        if (config) AddRequests(config);
       });
     }
     return () => {
@@ -454,6 +460,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
                   initialRequest={initialRequest}
                   ChangeLikedPosts={ChangeLikedPost}
                 />
+                <FooterRef Reference={LastCardRef} />
               </Suspense>
             );
           }}
@@ -515,12 +522,12 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
                   initialRequest={initialRequest}
                   ChangeLikedPosts={ChangeLikedPost}
                 />
+                <FooterRef Reference={LastCardRef} />
               </Suspense>
             );
           }}
         />
       </Switch>
-      <FooterRef Reference={LastCardRef} />
     </React.Fragment>
   );
 });

@@ -57,6 +57,11 @@ $faint-white: rgb(250, 250, 249);
 
     img {
       border-radius: 50%;
+      cursor: pointer;
+      transition: 0.5s;
+      &:hover {
+        transform: scale(1.05);
+      }
     }
   }
 
@@ -143,10 +148,10 @@ $faint-white: rgb(250, 250, 249);
 }
 
 #add-logo-container {
-  padding: 15px;
+  padding: 8px 10px;
   border-radius: 50%;
-  margin-bottom: 15px;
-  background-color: rgb(242, 242, 242);
+  margin: 8px 0;
+  cursor: pointer;
 }
 
 #profile-state-btn {

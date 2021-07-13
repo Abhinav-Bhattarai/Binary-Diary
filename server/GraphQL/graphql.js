@@ -214,7 +214,6 @@ const RootQuery = new GraphQLObjectType({
       resolve: async (_, args) => {
         const { auth_token, Posts, id, uid } = args;
         const validity = ByPassChecking(auth_token, id, uid);
-        console.log(Posts);
         if (validity) {
           const response = await GetPostDataHandler(cache, Posts);
           return response;

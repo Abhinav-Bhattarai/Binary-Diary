@@ -14,15 +14,19 @@ import "./style.scss";
 import { UserInfo } from "../../../Container/MainPage/interfaces";
 import { useMutation } from "@apollo/client";
 import { MutatePostComments } from "../../../GraphQL/mutations";
+import { Paginate } from "../ProfileContainer/reusables";
 
 interface PROPS {
   Comments: Array<COMMENTS>;
   userInfo: UserInfo;
-  PostID: string
+  PostID: string;
+  isFetchLimitReached: boolean | null;
+  FetchMoreComments: () => void;
 }
 
 const CommentSection: React.FC<PROPS> = (props) => {
-  const { Comments, userInfo, PostID } = props;
+  const { Comments, userInfo, PostID, isFetchLimitReached, FetchMoreComments } =
+    props;
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
   const [MutateComments] = useMutation(MutatePostComments);
 
@@ -48,40 +52,43 @@ const CommentSection: React.FC<PROPS> = (props) => {
     if (commentInputRef.current) commentInputRef.current.value = "";
   };
 
-  const GetKeyboardEvent = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const GetKeyboardEvent = (
+    event: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
     if (event.code === "Enter" && commentInputRef.current) {
       if (commentInputRef.current.value.length > 0) {
         AddCommentHandler();
       }
     }
   };
-  let comments_list: any = <h3> no comments found </h3>
+  let comments_list: any = <h4> no comments </h4>;
   if (Comments.length > 0) {
-    comments_list = (
-      Comments.map((comment) => {
-        return (
-          <CommentCardContainer key={comment._id}>
-            <CommenterProfile
-              soruce={
-                comment.ProfilePicture.length > 0
-                  ? comment.ProfilePicture
-                  : DefaultProfile
-              }
-            />
-            <CommentDataContainer>
-              <CommenterNameArea username={comment.CommenterUsername} />
-              <CommentArea comment={comment.Comment} />
-            </CommentDataContainer>
-          </CommentCardContainer>
-        );
-      })
-    )
+    comments_list = Comments.map((comment) => {
+      return (
+        <CommentCardContainer key={comment._id}>
+          <CommenterProfile
+            soruce={
+              comment.ProfilePicture.length > 0
+                ? comment.ProfilePicture
+                : DefaultProfile
+            }
+          />
+          <CommentDataContainer>
+            <CommenterNameArea username={comment.CommenterUsername} />
+            <CommentArea comment={comment.Comment} />
+          </CommentDataContainer>
+        </CommentCardContainer>
+      );
+    });
   }
 
   return (
     <React.Fragment>
       <main id="comment-section">
-        { comments_list }
+        {comments_list}
+        {isFetchLimitReached === false && (
+          <Paginate color='rgb(232, 232, 232)' Click={FetchMoreComments} />
+        )}
       </main>
       <CommentInput
         reference={commentInputRef}

@@ -38,6 +38,7 @@ import {
   SettingsOverViewPopup,
   SettingsOverViewElement,
   ProfileStateButton,
+  Paginate,
 } from "./reusables";
 import { AddPost, MutateProfilePicture } from "../../../GraphQL/mutations";
 import { UserData, UserInfo } from "../../../Container/MainPage/interfaces";
@@ -511,11 +512,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         {isFetchLimitReached === null ? (
           <Spinner />
         ) : isFetchLimitReached === true ? null : (
-          <div id="add-logo-container" onClick={FetchMorePosts}>
-            <Logo>
-              <AiOutlinePlus />
-            </Logo>
-          </div>
+          <Paginate color='rgb(242, 242, 242)' Click={FetchMorePosts}/>
         )}
       </MainPageContainer>
     </React.Fragment>

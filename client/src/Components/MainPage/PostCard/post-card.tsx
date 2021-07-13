@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { AiOutlineLike, AiOutlinePlusCircle } from "react-icons/ai";
 import { MdComment } from "react-icons/md";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -15,34 +15,34 @@ import DefaultCommentSection, {
   SerializeComments,
 } from "./reusables";
 import CommentSection from "../CommentCard/comment-card";
-import { useInteractionObserver } from "../../../Hooks/IntersectionObserver";
 
 const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   const { children } = props;
   // state
-  const [likeStatus, setLikeStatus] = useState<string>(props.isPostLiked ? "#00acee" : "");
-  const [isCommentVisible, setIsCommentVisible] = useState<boolean | null>(null);
+  const [likeStatus, setLikeStatus] = useState<string>(
+    props.isPostLiked ? "#00acee" : ""
+  );
+  const [isCommentVisible, setIsCommentVisible] = useState<boolean | null>(
+    null
+  );
   const [requestCount, setRequestCount] = useState<number>(0);
-  const [isFetchlimitReached, setIsFetchLimitReached] = useState<boolean>(false);
+  const [isFetchlimitReached, setIsFetchLimitReached] = useState<boolean>(true);
   const [comments, setComments] = useState<Array<COMMENTS> | null>(null);
-  const lastCardRef = useRef<HTMLDivElement>(null);
-  const isIntersecting = useInteractionObserver(lastCardRef);
 
   // apollo-client
   const [GetComments] = useLazyQuery(FetchPostComments, {
     onCompleted: (data) => {
       const { GetPostComments }: { GetPostComments: Array<COMMENTS> } = data;
       let SerializedComments = [...GetPostComments];
-      if (comments && SerializeComments.length > 0) {
-        SerializedComments = SerializeComments(
-          comments,
-          SerializedComments
-        );
+      if (comments && SerializedComments.length > 0) {
+        SerializedComments = SerializeComments(comments, SerializedComments);
       }
       setComments(SerializedComments);
       setRequestCount(requestCount + 1);
-      if (SerializeComments.length < 10) setIsFetchLimitReached(true);
-      if (SerializeComments.length === 0) setIsCommentVisible(null);
+      console.log(SerializedComments.length);
+      if (GetPostComments.length >= 8) setIsFetchLimitReached(false);
+      if (GetPostComments.length < 8) setIsFetchLimitReached(true);
+      if (SerializedComments.length === 0) setIsCommentVisible(null);
       else setIsCommentVisible(true);
     },
   });
@@ -97,23 +97,20 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
     }
   };
 
-  // effects
-  useEffect(
-    () => {
-      if (isIntersecting && isFetchlimitReached === false) {
-        GetComments({
-          variables: {
-            id: props.UserInfo?.userID,
-            auth_token: props.UserInfo?.auth_token,
-            uid: props.UserInfo?.uid,
-            PostID: props.id,
-            requestCount,
-          },
-        });
-      }
-    }, // eslint-disable-next-line
-    [isIntersecting]
-  );
+  const FetchMoreComments = () => {
+    if (isFetchlimitReached === false) {
+      setIsFetchLimitReached(true);
+      GetComments({
+        variables: {
+          id: props.UserInfo?.userID,
+          auth_token: props.UserInfo?.auth_token,
+          uid: props.UserInfo?.uid,
+          PostID: props.id,
+          requestCount,
+        },
+      });
+    }
+  };
 
   return (
     <React.Fragment>
@@ -147,8 +144,13 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
           <>
             {props.UserInfo && (
               <>
-                <CommentSection PostID={props.id} Comments={comments} userInfo={props.UserInfo}/>
-                <footer ref={lastCardRef} style={{ height: "10px" }}></footer>
+                <CommentSection
+                  PostID={props.id}
+                  Comments={comments}
+                  userInfo={props.UserInfo}
+                  isFetchLimitReached={isFetchlimitReached}
+                  FetchMoreComments={FetchMoreComments}
+                />
               </>
             )}
           </>

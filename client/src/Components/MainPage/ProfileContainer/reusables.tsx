@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
 import { IconContext } from "react-icons";
+import { AiOutlinePlus } from "react-icons/ai";
 import { UserInfo } from "../../../Container/MainPage/interfaces";
 import { FollowRequestMutations } from "../../../GraphQL/mutations";
 import { ProfilePostDetailsType, PROFILESTATEBTN } from "../interfaces";
@@ -79,6 +80,16 @@ export const ProfilePostArea: React.FC<{}> = ({ children }) => {
     </React.Fragment>
   );
 };
+
+export const Paginate: React.FC<{Click: () => void; color: string}> = ({ Click, color }) => {
+  return (
+    <div id="add-logo-container" style={{backgroundColor: color}} onClick={Click}>
+    <Logo>
+      <AiOutlinePlus />
+    </Logo>
+  </div>
+  )
+}
 
 interface ProfilePostOverviewProps {
   source: string;

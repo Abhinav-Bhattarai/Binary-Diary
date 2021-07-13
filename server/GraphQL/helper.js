@@ -399,8 +399,7 @@ const SerializeComments = async (cache, arr) => {
 }
 
 export const GetPostComments = async (PostID, requestCount, cache) => {
-  const response = await CommentModel.find({PostID: PostID}).skip(requestCount * 10).limit(requestCount);
-  console.log(response);
+  const response = await CommentModel.find({PostID: PostID}).skip(requestCount * 8).limit(8);
   if (response.length > 0) {
     const SerializedResponse = await SerializeComments(cache, response);
     return SerializedResponse.reverse();
