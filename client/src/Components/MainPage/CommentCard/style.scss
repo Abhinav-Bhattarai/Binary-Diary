@@ -1,6 +1,6 @@
 $faint-white: rgb(238, 238, 238);
 $comment-white: rgb(238, 238, 238);
-$input-bg-color: rgb(235, 235, 235);
+$input-bg-color: rgb(227, 227, 227);
 
 #comment-section {
   display: flex;
@@ -21,7 +21,7 @@ $input-bg-color: rgb(235, 235, 235);
 
   #comment-card-container {
     flex: 1;
-    padding: 8px 0;
+    padding: 14px 0;
     background-color: $faint-white;
     display: flex;
     width: 100%;
@@ -50,8 +50,8 @@ $input-bg-color: rgb(235, 235, 235);
         color: #333;
         border-radius: 8px;
         font-weight: 700;
-        max-width: 75%;
-        width: 75%;
+        max-width: 85%;
+        width: 85%;
         font-size: 14px;
         background-color: $comment-white;
         padding: 5px 3%;

@@ -36,6 +36,9 @@ import {
   RemoveUserCacheForLikedPosts,
   UpdateCacheUserInfo,
   UpdateRequestList,
+  AddProfilePictureToPpCacheLayer,
+  AddProfilePictureToUserInfoCacheLayer,
+  AddProfilePictureToDB,
 } from "./helper.js";
 
 const cache = redis.createClient();
@@ -211,6 +214,7 @@ const RootQuery = new GraphQLObjectType({
       resolve: async (_, args) => {
         const { auth_token, Posts, id, uid } = args;
         const validity = ByPassChecking(auth_token, id, uid);
+        console.log(Posts);
         if (validity) {
           const response = await GetPostDataHandler(cache, Posts);
           return response;
@@ -441,6 +445,26 @@ const Mutation = new GraphQLObjectType({
         return { Mutated: false };
       },
     },
+
+    MutateProfilePicture: {
+      type: UserSchema,
+      args: {
+        auth_token: { type: GraphQLString },
+        id: { type: GraphQLString },
+        uid: { type: GraphQLString },
+        ProfilePicture: { type: GraphQLString }
+      },
+      resolve: async(_, args) => {
+        const { auth_token, ProfilePicture, id, uid } = args;
+        const validity = ByPassChecking(auth_token, id, uid);
+        if (validity) {
+          AddProfilePictureToPpCacheLayer(cache, ProfilePicture, id);
+          AddProfilePictureToUserInfoCacheLayer(cache, ProfilePicture, id, uid)
+          AddProfilePictureToDB(ProfilePicture, id);
+          return { Mutated: true };
+        }
+      }
+    }
   },
 });
 

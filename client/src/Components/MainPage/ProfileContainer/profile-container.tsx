@@ -39,7 +39,7 @@ import {
   SettingsOverViewElement,
   ProfileStateButton,
 } from "./reusables";
-import { AddPost } from "../../../GraphQL/mutations";
+import { AddPost, MutateProfilePicture } from "../../../GraphQL/mutations";
 import { UserData, UserInfo } from "../../../Container/MainPage/interfaces";
 import useProfileParams from "../../../Hooks/profileHook";
 
@@ -69,7 +69,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     ProfileData,
     Requested,
     ChangeLikedPosts,
-    SendSocketRequest
+    SendSocketRequest,
   } = props;
   const [profile_info, setProfileInfo] = useState<
     contextData | SerializedProfile
@@ -79,13 +79,18 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     userInfo,
   });
   const [transitioning, setTransitioning] = useState<boolean | null>(null);
+  const [uploadType, setUploadType] = useState<string | null>(null);
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [isPostShown, setIsPostShown] = useState<boolean>(false);
-  const [currentPostDetails, setCurrentPostDetails] = useState<ProfilePostDetailsType | null>(null);
+  const [currentPostDetails, setCurrentPostDetails] =
+    useState<ProfilePostDetailsType | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
-  const [isFetchLimitReached, setIsFetchlimitReached] = useState<boolean | null>(true);
-  const [settingOverviewPopup, setSettingsOverviewPopup] = useState<boolean>(false);
+  const [isFetchLimitReached, setIsFetchlimitReached] = useState<
+    boolean | null
+  >(true);
+  const [settingOverviewPopup, setSettingsOverviewPopup] =
+    useState<boolean>(false);
   const [request_count, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
   // all the hooks in react-router-dom causes re-render so React.memo() won't work in this case scenario
@@ -156,6 +161,13 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     },
   });
 
+  const [ChangeProfilePicture] = useMutation(MutateProfilePicture, {
+    onCompleted: (_) => {
+      setTransitioning(false);
+      setPost(null);
+    },
+  });
+
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const image = event.target.files[0];
@@ -167,8 +179,9 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
 
   const ExitPopup = () => setTransitioning(false);
 
-  const AddPostHandler = () => {
+  const AddPostHandler = (type: string) => {
     setTransitioning(true);
+    setUploadType(type);
     if (FileInputRef.current) {
       FileInputRef.current.click();
     }
@@ -185,23 +198,34 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const ChangeProfileHandler = () => {};
 
   const UploadImage = useCallback(() => {
-    if (post) {
+    if (post && uploadType) {
       if (post.length > 0) {
-        MutatePost({
-          variables: {
-            auth_token: userInfo?.auth_token,
-            uid: userInfo?.uid,
-            id: userInfo?.userID,
-            Caption: "",
-            Post: post,
-            Username: userInfo?.username,
-          },
-        });
+        if (uploadType === "profile") {
+          ChangeProfilePicture({
+            variables: {
+              auth_token: userInfo?.auth_token,
+              uid: userInfo?.uid,
+              id: userInfo?.userID,
+              ProfilePicture: post,
+            },
+          });
+        } else {
+          MutatePost({
+            variables: {
+              auth_token: userInfo?.auth_token,
+              uid: userInfo?.uid,
+              id: userInfo?.userID,
+              Caption: "",
+              Post: post,
+              Username: userInfo?.username,
+            },
+          });
+        }
       }
     } else {
       alert("Please select a image to continue !!");
     }
-  }, [post, MutatePost, userInfo]);
+  }, [post, MutatePost, userInfo, uploadType, ChangeProfilePicture]);
 
   const FetchMorePosts = () => {
     if (profile_info.ProfileData?.Posts && isFetchLimitReached === false) {
@@ -287,43 +311,52 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     return "Loading";
   }, [ProfileData?.Following, params?.id, Requested]);
 
-  const PostArea = useMemo(() => {
-    console.log('went')
-    if (post_list) {
-      if (post_list.length > 0) {
-        return (
-          <React.Fragment>
-            <ProfilePostAreaContainer>
-              <ProfilePostArea>
-                {post_list.map((posts) => {
-                  let isPostLiked = false;
-                  if (ProfileData?.LikedPosts) {
-                    if (ProfileData.LikedPosts.length > 0) {
-                      for (let id of ProfileData.LikedPosts) {
-                        if (posts._id === id) {
-                          isPostLiked = true;
-                          break;
+  const PostArea = useMemo(
+    () => {
+      console.log("went");
+      if (post_list) {
+        if (post_list.length > 0) {
+          return (
+            <React.Fragment>
+              <ProfilePostAreaContainer>
+                <ProfilePostArea>
+                  {post_list.map((posts) => {
+                    let isPostLiked = false;
+                    if (ProfileData?.LikedPosts) {
+                      if (ProfileData.LikedPosts.length > 0) {
+                        for (let id of ProfileData.LikedPosts) {
+                          if (posts._id === id) {
+                            isPostLiked = true;
+                            break;
+                          }
                         }
                       }
                     }
-                  }
-                  return (
-                    <ProfilePostOverview
-                      Click={GetMorePostInfo}
-                      key={posts._id}
-                      source={posts.Post}
-                      id={posts._id}
-                      LikeStatus={isPostLiked}
-                      CreatorID={posts.CreatorID}
-                      CreatorUsername={posts.CreatorUsername}
-                      Caption={posts.Caption}
-                      Likes={posts.Likes}
-                      UserInfo={userInfo}
-                      ProfilePicture={profile_info.ProfilePicture}
-                    />
-                  );
-                })}
-              </ProfilePostArea>
+                    return (
+                      <ProfilePostOverview
+                        Click={GetMorePostInfo}
+                        key={posts._id}
+                        source={posts.Post}
+                        id={posts._id}
+                        LikeStatus={isPostLiked}
+                        CreatorID={posts.CreatorID}
+                        CreatorUsername={posts.CreatorUsername}
+                        Caption={posts.Caption}
+                        Likes={posts.Likes}
+                        UserInfo={userInfo}
+                        ProfilePicture={profile_info.ProfilePicture}
+                      />
+                    );
+                  })}
+                </ProfilePostArea>
+              </ProfilePostAreaContainer>
+            </React.Fragment>
+          );
+        }
+        return (
+          <React.Fragment>
+            <ProfilePostAreaContainer>
+              <h3>Sorry no Posts</h3>
             </ProfilePostAreaContainer>
           </React.Fragment>
         );
@@ -331,21 +364,14 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       return (
         <React.Fragment>
           <ProfilePostAreaContainer>
-            <h3>Sorry no Posts</h3>
+            <Spinner />
           </ProfilePostAreaContainer>
         </React.Fragment>
       );
-    }
-    return (
-      <React.Fragment>
-        <ProfilePostAreaContainer>
-          <Spinner />
-        </ProfilePostAreaContainer>
-      </React.Fragment>
-    );
-  }, 
-  // eslint-disable-next-line
-  [post_list]);
+    },
+    // eslint-disable-next-line
+    [post_list]
+  );
 
   if (owner_status === null) {
     return (
@@ -425,10 +451,10 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       </Transition>
     );
   }
-  
+
   let DetailedPosts = null;
   if (isPostShown && currentPostDetails) {
-    DetailedPosts =  (
+    DetailedPosts = (
       <AsyncDetailedPostContainer
         CreatorID={currentPostDetails.CreatorID}
         Caption={currentPostDetails.Caption}
@@ -452,7 +478,10 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       <input type="file" hidden onChange={FetchImages} ref={FileInputRef} />
       <MainPageContainer popup={transitioning} Exit={ExitPopup}>
         <ProfileHeaderContainer>
-          <ProfileHeaderImageContainer source={profile_info.ProfilePicture} />
+          <ProfileHeaderImageContainer
+            Click={owner_status ? AddPostHandler : undefined}
+            source={profile_info.ProfilePicture}
+          />
           <ProfileInformationOverView>
             <ProfileHeaderInfo
               name="Followers"

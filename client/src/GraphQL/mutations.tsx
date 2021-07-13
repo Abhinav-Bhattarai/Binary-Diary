@@ -45,7 +45,7 @@ export const PostLikeMutation = gql`
 `;
 
 export const FollowRequestMutations = gql`
-  mutation(
+  mutation (
     $id: String!
     $uid: String!
     $auth_token: String!
@@ -53,7 +53,7 @@ export const FollowRequestMutations = gql`
     $RequesterID: String!
     $RequesterUsername: String!
   ) {
-    MutateFollowRequests (
+    MutateFollowRequests(
       id: $id
       uid: $uid
       auth_token: $auth_token
@@ -67,14 +67,14 @@ export const FollowRequestMutations = gql`
 `;
 
 export const RespondToRequest = gql`
-  mutation(
+  mutation (
     $id: String!
     $uid: String!
     $auth_token: String!
     $type: String!
     $RequesterID: String!
   ) {
-    MutateRequestsResponse (
+    MutateRequestsResponse(
       id: $id
       uid: $uid
       auth_token: $auth_token
@@ -87,11 +87,11 @@ export const RespondToRequest = gql`
 `;
 
 export const MutatePostComments = gql`
-  mutation(
-    $auth_token: String!,
-    $id: String!, 
-    $uid: String!, 
-    $PostID: String!, 
+  mutation (
+    $auth_token: String!
+    $id: String!
+    $uid: String!
+    $PostID: String!
     $username: String!
     $Comment: String!
   ) {
@@ -99,9 +99,27 @@ export const MutatePostComments = gql`
       auth_token: $auth_token
       id: $id
       uid: $uid
-      PostID: $PostID, 
+      PostID: $PostID
       username: $username
       Comment: $Comment
+    ) {
+      Mutated
+    }
+  }
+`;
+
+export const MutateProfilePicture = gql`
+  mutation (
+    $auth_token: String!
+    $id: String!
+    $uid: String!
+    $ProfilePicture: String!
+  ) {
+    MutateProfilePicture(
+      auth_token: $auth_token
+      id: $id
+      uid: $uid
+      ProfilePicture: $ProfilePicture
     ) {
       Mutated
     }

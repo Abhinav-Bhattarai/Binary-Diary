@@ -8,11 +8,15 @@ import PostCard from "../PostCard/post-card";
 import { PostCardHeader, PostCardImageContainer } from "../PostCard/reusables";
 import "./profile-container.scss";
 
-export const ProfileHeaderImageContainer: React.FC<{ source: string }> = ({
-  source,
-}) => {
+export const ProfileHeaderImageContainer: React.FC<{
+  source: string;
+  Click: ((type: string) => void) | undefined;
+}> = ({ source, Click }) => {
   return (
-    <div id="profile-img-container">
+    <div
+      id="profile-img-container"
+      onClick={Click ? Click.bind(this, "profile") : undefined}
+    >
       <img
         draggable={false}
         src={source}
@@ -51,16 +55,14 @@ export const Logo: React.FC<{}> = ({ children }) => {
   );
 };
 
-export const ConfigLogoContainer: React.FC<{ click: () => void }> = ({
-  children,
-  click,
-}) => {
-  return (
-    <nav id="config-logo-container" onClick={click}>
-      {children}
-    </nav>
-  );
-};
+export const ConfigLogoContainer: React.FC<{ click: (type: string) => void }> =
+  ({ children, click }) => {
+    return (
+      <nav id="config-logo-container" onClick={click.bind(this, "photo")}>
+        {children}
+      </nav>
+    );
+  };
 
 export const ProfileInformationOverView: React.FC<{}> = ({ children }) => {
   return <main id="profile-information-overview">{children}</main>;

@@ -39,7 +39,7 @@ export function FlattenPost(posts, sort) {
         const DAY = 60 * 60 * 24;
         const date_difference =
           (new Date() - new Date(post.CreationDate)) / 1000;
-        if (date_difference <= DAY * 2) {
+        if (date_difference <= DAY * 3) {
           new_post.push(post.PostID);
         }
       } else {
@@ -410,6 +410,23 @@ export const GetPostComments = async (PostID, requestCount, cache) => {
 
 export const AddNewComment = async (config) => {
   const response = new CommentModel(config);
+  await response.save();
+}
+
+export const AddProfilePictureToPpCacheLayer = async(cache, ProfilePicture, id) => {
+  await cache.set(`ProfilePicture/${id}`, ProfilePicture);
+}
+
+export const AddProfilePictureToUserInfoCacheLayer = async(cache, ProfilePicture, id, uid) => {
+  const UnserializedData = await cache.get(`UserInfo/${id}/${uid}`);
+  const SerializedData = JSON.parse(UnserializedData);
+  SerializedData.ProfilePicture = ProfilePicture;
+  await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
+}
+
+export const AddProfilePictureToDB = async(ProfilePicture, id) => {
+  const response = await RegisterModel.findOne({_id: id});
+  response.ProfilePicture = ProfilePicture;
   await response.save();
 }
 
