@@ -373,15 +373,14 @@ const Mutation = new GraphQLObjectType({
         auth_token: { type: GraphQLString },
         type: { type: GraphQLString },
         RequesterID: { type: GraphQLString },
-        RequesterUsername: { type: GraphQLString },
+        username: { type: GraphQLString },
       },
       resolve: async (_, args) => {
-        const { id, uid, auth_token, type, RequesterID, RequesterUsername } =
-          args;
+        const { id, uid, auth_token, type, RequesterID, username } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
           if (type === "Follow") {
-            AddToRequestsList(id, RequesterID, RequesterUsername);
+            AddToRequestsList(id, RequesterID, username);
             AddToRequestedList(RequesterID, id);
           } else if (type === "Following") {
             RemoveFromFollowersList(id, RequesterID);

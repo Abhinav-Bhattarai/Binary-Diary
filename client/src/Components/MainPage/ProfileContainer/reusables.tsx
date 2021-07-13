@@ -175,7 +175,7 @@ export const SettingsOverViewElement: React.FC<{
 };
 
 export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
-  const { name, userInfo, RequesterID, RequesterUsername, SendSocketRequest } =
+  const { name, userInfo, RequesterID, SendSocketRequest } =
     props;
   const [type, setType] = useState<
     "Follow" | "Following" | "Requested" | "Loading"
@@ -190,7 +190,7 @@ export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
         uid: userInfo?.uid,
         auth_token: userInfo?.auth_token,
         RequesterID,
-        RequesterUsername,
+        username: userInfo?.username,
       },
     });
     if (type === "Follow") {

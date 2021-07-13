@@ -18,6 +18,12 @@
   align-items: center;
   margin-bottom: 5px;
 
+  img {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+  }
+
   #requester-username {
     font-weight: bold;
     flex: 1.2;

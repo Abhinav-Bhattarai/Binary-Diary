@@ -314,7 +314,6 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
 
   const PostArea = useMemo(
     () => {
-      console.log("went");
       if (post_list) {
         if (post_list.length > 0) {
           return (
