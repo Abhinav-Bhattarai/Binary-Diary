@@ -35,11 +35,12 @@ export const CommentInput: React.FC<COMMENTINPUT> = (props) => {
   const { Change, reference, GetKeyboardEvent } = props;
   return (
     <textarea
-      rows={2}
+      rows={1}
       cols={5}
       placeholder="Write your comment here ..."
       onChange={Change}
       ref={reference}
+      autoFocus
       id="comment-input"
       onKeyPress={GetKeyboardEvent}
     />

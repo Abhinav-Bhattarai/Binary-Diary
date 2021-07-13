@@ -39,10 +39,9 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
       }
       setComments(SerializedComments);
       setRequestCount(requestCount + 1);
-      console.log(SerializedComments.length);
+      setIsCommentVisible(true);
       if (GetPostComments.length >= 8) setIsFetchLimitReached(false);
       if (GetPostComments.length < 8) setIsFetchLimitReached(true);
-      if (SerializedComments.length === 0) setIsCommentVisible(null);
       else setIsCommentVisible(true);
     },
   });
@@ -111,7 +110,6 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
       });
     }
   };
-
   return (
     <React.Fragment>
       <main
@@ -140,7 +138,7 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
             <MdComment />
           </Interactants>
         </InteractionContainer>
-        {isCommentVisible === true && comments && (
+        {isCommentVisible && comments && (
           <>
             {props.UserInfo && (
               <>
