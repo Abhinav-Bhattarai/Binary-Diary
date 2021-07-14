@@ -134,6 +134,7 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
     <React.Fragment>
       <div id="profile-post-overview" onClick={Click.bind(this, config)}>
         <img draggable={false} src={source} alt="profile-overview" />
+        <div id='profile-hover'></div>
       </div>
     </React.Fragment>
   );

@@ -51,7 +51,7 @@ export const FollowRequestMutations = gql`
     $auth_token: String!
     $type: String!
     $RequesterID: String!
-    username: String!
+    $username: String!
   ) {
     MutateFollowRequests(
       id: $id

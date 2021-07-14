@@ -74,7 +74,7 @@ const RequestContainer: React.FC<PROPS> = (props) => {
   return (
     <React.Fragment>
       <MainPageContainer>
-        <RequestContainerHeader />
+        {requestList && requestList.length > 0 && <RequestContainerHeader />}
         {RequestLists}
       </MainPageContainer>
     </React.Fragment>
