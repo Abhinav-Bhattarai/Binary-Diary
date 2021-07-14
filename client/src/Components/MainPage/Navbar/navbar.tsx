@@ -18,8 +18,8 @@ const SubContainer: React.FC<{ id: string }> = (props) => {
   );
 };
 
-const NavbarContainer: React.FC<{}> = ({ children }) => {
-  return <nav id="navbar-container">{children}</nav>;
+const NavbarContainer: React.FC<{reference: React.RefObject<HTMLDivElement>}> = ({ children, reference }) => {
+  return <nav id="navbar-container" ref={reference}>{children}</nav>;
 };
 
 const Logo: React.FC<LogoProps> = (props) => {
@@ -87,12 +87,13 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     ProfilePressHandler,
     ProfilePicture,
     Username,
-    Blur
+    Blur,
+    reference
   } = props;
 
   return (
     <React.Fragment>
-      <NavbarContainer>
+      <NavbarContainer reference={reference}>
         <SubContainer id="sub-container-1">
           <Logo source={AppLogo} width="40px" height="40px" />
           <SearchBar

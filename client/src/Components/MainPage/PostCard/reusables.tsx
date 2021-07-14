@@ -1,13 +1,20 @@
 import React from "react";
-import './post-card.scss';
+import "./post-card.scss";
 import { UserInfo } from "../../../Container/MainPage/interfaces";
 import DefaultProfile from "../../../assets/Images/profile-user.svg";
 import { COMMENTS } from "../CommentCard/inteface";
 import PostCardSpinner from "../../UI/Spinner/PostCardSpinner/postcard-spinner";
 
-export const PostCardImageContainer: React.FC<{ source: string }> = (props) => {
+export const PostCardImageContainer: React.FC<{
+  source: string;
+  id: string;
+  DbClick: (id: string) => void;
+}> = (props) => {
   return (
-    <header id="post-card-img-container">
+    <header
+      id="post-card-img-container"
+      onDoubleClick={props.DbClick.bind(this, props.id)}
+    >
       <img draggable={false} src={props.source} alt="post" />
     </header>
   );
@@ -39,6 +46,7 @@ export interface POSTCARDPROPS {
   UserInfo: UserInfo | null;
   Click?: (event: React.MouseEvent<HTMLDivElement>) => void;
   ChangeLikedPost: ((type: boolean, id: string) => void) | undefined;
+  Post: string;
 }
 
 export const SerializeComments = (
@@ -52,7 +60,11 @@ export const SerializeComments = (
 };
 
 const DefaultCommentSection = () => {
-  return <main id='default-comment-section'><PostCardSpinner/></main>
+  return (
+    <main id="default-comment-section">
+      <PostCardSpinner />
+    </main>
+  );
 };
 
 export default DefaultCommentSection;

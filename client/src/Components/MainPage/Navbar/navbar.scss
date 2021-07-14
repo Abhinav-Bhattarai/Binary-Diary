@@ -10,12 +10,13 @@ $input-glow: rgb(235, 235, 235);
   top: 0;
   left: 0;
   z-index: 2;
+  background-color: rgb(254, 254, 254);
 
   .sub-container {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 75px;
+    height: 70px;
 
     img {
       flex: 0.5;

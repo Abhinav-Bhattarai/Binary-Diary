@@ -6,7 +6,7 @@ import { UserInfo } from "../../../Container/MainPage/interfaces";
 import { FollowRequestMutations } from "../../../GraphQL/mutations";
 import { ProfilePostDetailsType, PROFILESTATEBTN } from "../interfaces";
 import PostCard from "../PostCard/post-card";
-import { PostCardHeader, PostCardImageContainer } from "../PostCard/reusables";
+import { PostCardHeader } from "../PostCard/reusables";
 import "./profile-container.scss";
 
 export const ProfileHeaderImageContainer: React.FC<{
@@ -229,9 +229,9 @@ const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
         isPostLiked={LikeStatus}
         Click={PostCardClick}
         ChangeLikedPost={ChangeLikedPosts}
+        Post={Post}
       >
         <PostCardHeader Username={CreatorUsername} source={ProfilePicture} />
-        <PostCardImageContainer source={Post} />
       </PostCard>
     </main>
   );

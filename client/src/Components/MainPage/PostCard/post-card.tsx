@@ -11,6 +11,7 @@ import { PostLikeMutation } from "../../../GraphQL/mutations";
 import { FetchPostComments } from "../../../GraphQL/gql";
 import { COMMENTS } from "../CommentCard/inteface";
 import DefaultCommentSection, {
+  PostCardImageContainer,
   POSTCARDPROPS,
   SerializeComments,
 } from "./reusables";
@@ -117,6 +118,11 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
         onClick={props.Click ? props.Click : undefined}
       >
         {children}
+        <PostCardImageContainer
+          id={props.id}
+          DbClick={LikeClickHandler}
+          source={props.Post}
+        />
         <InteractionContainer>
           <Interactants
             id={props.id}

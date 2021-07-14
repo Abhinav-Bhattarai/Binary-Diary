@@ -11,6 +11,7 @@ export interface NavbarProps {
   ProfilePicture: string | undefined;
   Username: string | undefined;
   Blur: () => void;
+  reference: React.RefObject<HTMLDivElement>
 }
 
 export interface ProfileAreaProps {

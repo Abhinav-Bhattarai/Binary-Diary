@@ -7,7 +7,7 @@ import {
 } from "../../../Container/MainPage/interfaces";
 import Spinner from "../../UI/Spinner/spinner";
 import { MainPageContainer } from "../Reusables/reusables";
-import { PostCardHeader, PostCardImageContainer } from "../PostCard/reusables";
+import { PostCardHeader } from "../PostCard/reusables";
 import "../PostCard/post-card.scss";
 import PostCard from "../PostCard/post-card";
 
@@ -54,12 +54,12 @@ const PostContainer: React.FC<PROPS> = (props) => {
                   UserInfo={UserInfo}
                   isPostLiked={isPostLiked}
                   ChangeLikedPost={ChangeLikedPosts}
+                  Post={post.Post}
                 >
                   <PostCardHeader
                     Username={post.CreatorUsername}
                     source={post.ProfilePicture}
                   />
-                  <PostCardImageContainer source={post.Post} />
                 </PostCard>
               );
             })}

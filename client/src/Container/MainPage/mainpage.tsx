@@ -87,13 +87,10 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
-  const [isfetchlimitreached, setIsFetchLimitReached] =
-    useState<boolean>(false);
+  const [isfetchlimitreached, setIsFetchLimitReached] = useState<boolean>(false);
   const [request_count, setReqestCount] = useState<number>(0);
-  const [search_suggestion, setSearchSuggestion] =
-    useState<Array<Suggestion> | null>(null);
-  const [search_suggestion_loading, setSearchSuggestionLoading] =
-    useState<boolean>(false);
+  const [search_suggestion, setSearchSuggestion] = useState<Array<Suggestion> | null>(null);
+  const [search_suggestion_loading, setSearchSuggestionLoading] = useState<boolean>(false);
   const [requests, setRequests] = useState<null | Array<RequestConfig>>(null);
   const [requested, setRequested] = useState<Array<string> | null>(null);
   const [socket, setSocket] = useState<null | SocketIOClient.Socket>(null);
@@ -102,6 +99,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   // hooks and refs
   const LastCardRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
+  const NavBarRef = useRef<HTMLDivElement>(null);
   const cancelToken = useRef<CancelTokenSource>();
   const isInteracting = useInteractionObserver(LastCardRef);
 
@@ -231,7 +229,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
             setSearchSuggestion(data);
           })
           .catch(() => {});
-      }, 200);
+      }, 254);
     }
   };
 
@@ -379,6 +377,24 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     };
   });
 
+  // const ChangeNavbarFromScroll = () => {
+  //   if (NavBarRef.current) {
+  //     const scrollY = window.scrollY;
+  //     if (scrollY === 0 && NavBarRef.current.style.backgroundColor === 'rgb(254, 254, 254)') {
+  //       NavBarRef.current.style.backgroundColor = ''
+  //     }
+  //     else if (scrollY > 10 && NavBarRef.current.style.backgroundColor === '') {
+  //       NavBarRef.current.style.backgroundColor = 'rgb(254, 254, 254)'
+  //     }
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   document.addEventListener('scroll', ChangeNavbarFromScroll);
+  //   return () => 
+  //   document.removeEventListener('scroll', ChangeNavbarFromScroll);
+  // })
+
   useEffect(
     () => {
       if (postid_list) {
@@ -443,6 +459,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
         ProfilePicture={profile_picture}
         Username={user_info?.username}
         Blur={BlurSearchFocus}
+        reference={NavBarRef}
       />
       {Suggestions}
       <Switch>
