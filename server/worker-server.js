@@ -101,7 +101,6 @@ export const RunServerClusters = () => {
   app.use("/signup", RegisterRoute);
   app.use("/delete", DeleteRoute);
   app.use("/search-profile", SearchSuggestionRoute);
-  app.use("/", (req, res) => {res.send(`<h1>${process.pid}</h1>`)})
 
   // DB connection
   mongoose

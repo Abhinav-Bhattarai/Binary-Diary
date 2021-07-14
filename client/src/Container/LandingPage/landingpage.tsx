@@ -98,7 +98,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
 
   const LoginFormSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    if (login_username.length > 4 && login_password.length > 7) {
+    if (login_username.length > 4 && login_username.length < 16 && login_password.length > 7) {
       const number_regex = /[0-9]/;
       if (number_regex.exec(login_password)) {
         let context: any = {
@@ -118,6 +118,13 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       if (login_username.length < 5) {
         const dummy = { ...login_error };
         dummy.username_err = "Username length must be atleast 5";
+        LoginUsernameRef.current &&
+          (LoginUsernameRef.current.style.border = "2px solid #ff385c");
+        setLoginError(dummy);
+      }
+      if (login_username.length > 15) {
+        const dummy = { ...login_error };
+        dummy.username_err = "Username length must less than 15";
         LoginUsernameRef.current &&
           (LoginUsernameRef.current.style.border = "2px solid #ff385c");
         setLoginError(dummy);
@@ -142,7 +149,8 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       signup_username.length > 4 &&
       signup_password === signup_confirm &&
       signup_password.length > 7 &&
-      signup_phone.length >= 10
+      signup_phone.length >= 10 &&
+      signup_username.length < 16
     ) {
       const number_regex = /[0-9]/;
       if (number_regex.exec(signup_password)) {
@@ -165,6 +173,14 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       if (signup_username.length < 5) {
         const dummy = { ...signup_error };
         dummy.username_err = "Username length must be atleast 5";
+        SignupUsernameRef.current &&
+          (SignupUsernameRef.current.style.border = "2px solid #ff385c");
+        setSignupError(dummy);
+      }
+
+      if (signup_username.length > 15) {
+        const dummy = { ...signup_error };
+        dummy.username_err = "Username length must be less than 15";
         SignupUsernameRef.current &&
           (SignupUsernameRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);

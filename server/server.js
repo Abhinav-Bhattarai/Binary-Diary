@@ -8,4 +8,4 @@ if (cluster.isMaster) {
   RunMasterServer(processor_count);
 } else {
   RunServerClusters();
-}
+};

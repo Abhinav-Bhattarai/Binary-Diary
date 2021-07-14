@@ -5,6 +5,7 @@ export const SignupMiddleware = (req, res, next) => {
   const { Username, Password, Confirm, Phone } = Decrypt(ContextData);
   if (
     Username.length > 4 &&
+    Username.length < 16 &&
     Password === Confirm &&
     Password.length > 7 &&
     Phone.length >= 10
