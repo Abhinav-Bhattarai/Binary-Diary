@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { ScrollToBottom } from "../../../Container/LandingPage/helper";
-import { SignupError } from '../../../Container/LandingPage/interface';
+import { SignupProps } from "../Reusables/interfaces";
 import {
   ChangeRouterButton,
   CredentialError,
@@ -13,23 +13,6 @@ import {
   FormLabel,
   PageContainer,
 } from "../Reusables/reusables";
-
-interface SignupProps {
-  username: string;
-  password: string;
-  confirm: string;
-  phone: string;
-  Submit: (event: React.FormEvent) => void;
-  changeUsername: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  changePassword: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  changeConfirm: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  changePhone: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  Error: SignupError;
-  UsernameRef: React.RefObject<HTMLInputElement>;
-  PasswordRef: React.RefObject<HTMLInputElement>;
-  ConfirmRef: React.RefObject<HTMLInputElement>;
-  PhoneRef: React.RefObject<HTMLInputElement>;
-}
 
 const Signup: React.FC<SignupProps> = (props) => {
   const {

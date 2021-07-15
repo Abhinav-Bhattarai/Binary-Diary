@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { ScrollToBottom } from "../../../Container/LandingPage/helper";
-import { LoginError } from '../../../Container/LandingPage/interface';
+import { LoginProps } from "../Reusables/interfaces";
 import {
   ChangeRouterButton,
   CredentialError,
@@ -13,17 +13,6 @@ import {
   FormLabel,
   PageContainer,
 } from "../Reusables/reusables";
-
-interface LoginProps {
-  username: string;
-  password: string;
-  Submit: (event: React.FormEvent) => void;
-  changeUsername: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  changePassword: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  Error: LoginError;
-  UsernameRef: React.RefObject<HTMLInputElement>;
-  PasswordRef: React.RefObject<HTMLInputElement>;
-}
 
 const Login: React.FC<LoginProps> = (props) => {
   const {
