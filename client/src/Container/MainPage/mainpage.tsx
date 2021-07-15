@@ -87,10 +87,13 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   const [posts, setPosts] = useState<null | Array<POSTS>>(null);
   const [search_value, setSearchValue] = useState<string>("");
   const [profile_picture, setProfilePicture] = useState<string>(DefaultProfile);
-  const [isfetchlimitreached, setIsFetchLimitReached] = useState<boolean>(false);
+  const [isfetchlimitreached, setIsFetchLimitReached] =
+    useState<boolean>(false);
   const [request_count, setReqestCount] = useState<number>(0);
-  const [search_suggestion, setSearchSuggestion] = useState<Array<Suggestion> | null>(null);
-  const [search_suggestion_loading, setSearchSuggestionLoading] = useState<boolean>(false);
+  const [search_suggestion, setSearchSuggestion] =
+    useState<Array<Suggestion> | null>(null);
+  const [search_suggestion_loading, setSearchSuggestionLoading] =
+    useState<boolean>(false);
   const [requests, setRequests] = useState<null | Array<RequestConfig>>(null);
   const [requested, setRequested] = useState<Array<string> | null>(null);
   const [socket, setSocket] = useState<null | SocketIOClient.Socket>(null);
@@ -296,8 +299,9 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       } else {
         setRequests([SerializedConfig]);
       }
+    } else {
+      setRequests([]);
     }
-    setRequests([]);
   };
 
   const ChangeLikedPost = useCallback(
@@ -320,18 +324,9 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     [profile_data]
   );
 
-  const SendSocketRequest = useCallback(
-    (id: string | undefined) => {
-      if (id) {
-        socket?.emit("/", user_info?.userID, id, user_info?.username);
-      }
-    },
-    [socket, user_info]
-  );
-
   const AddProflePicture = (pp: string) => {
     setProfilePicture(pp);
-  }
+  };
 
   const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
     history.push("/posts");
@@ -372,31 +367,15 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   useEffect(() => {
     if (socket) {
       socket.on("real-time-request-receiver", (config: RequestConfig) => {
+        console.log('socket got in clientB', config);
         if (config) AddRequests(config);
       });
+
+      return () => {
+        socket.removeAllListeners();
+      }
     }
-    return () => {
-      socket?.disconnect();
-    };
   });
-
-  // const ChangeNavbarFromScroll = () => {
-  //   if (NavBarRef.current) {
-  //     const scrollY = window.scrollY;
-  //     if (scrollY === 0 && NavBarRef.current.style.backgroundColor === 'rgb(254, 254, 254)') {
-  //       NavBarRef.current.style.backgroundColor = ''
-  //     }
-  //     else if (scrollY > 10 && NavBarRef.current.style.backgroundColor === '') {
-  //       NavBarRef.current.style.backgroundColor = 'rgb(254, 254, 254)'
-  //     }
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   document.addEventListener('scroll', ChangeNavbarFromScroll);
-  //   return () => 
-  //   document.removeEventListener('scroll', ChangeNavbarFromScroll);
-  // })
 
   useEffect(
     () => {
@@ -498,7 +477,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
                   ProfileData={profile_data}
                   ChangeAuthentication={ChangeAuthentication}
                   ChangeLikedPosts={ChangeLikedPost}
-                  SendSocketRequest={SendSocketRequest}
+                  socket={socket}
                   AddProfilePictureGlobally={AddProflePicture}
                 />
               </Suspense>

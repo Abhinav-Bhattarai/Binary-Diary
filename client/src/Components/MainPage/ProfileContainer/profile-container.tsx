@@ -53,8 +53,8 @@ interface PROPS {
   ProfileData: UserData | null;
   Requested: Array<string> | null;
   ChangeLikedPosts: (type: boolean, id: string) => void;
-  SendSocketRequest: (id: string | undefined) => void;
   AddProfilePictureGlobally: (profile_picture: string) => void;
+  socket: SocketIOClient.Socket | null;
 }
 
 const AsyncBigPopupContainer = React.lazy(
@@ -71,8 +71,8 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     ProfileData,
     Requested,
     ChangeLikedPosts,
-    SendSocketRequest,
     AddProfilePictureGlobally,
+    socket,
   } = props;
   const [profile_info, setProfileInfo] = useState<
     contextData | SerializedProfile
@@ -86,10 +86,14 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [isPostShown, setIsPostShown] = useState<boolean>(false);
-  const [currentPostDetails, setCurrentPostDetails] = useState<ProfilePostDetailsType | null>(null);
+  const [currentPostDetails, setCurrentPostDetails] =
+    useState<ProfilePostDetailsType | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
-  const [isFetchLimitReached, setIsFetchlimitReached] = useState<boolean | null>(true);
-  const [settingOverviewPopup, setSettingsOverviewPopup] = useState<boolean>(false);
+  const [isFetchLimitReached, setIsFetchlimitReached] = useState<
+    boolean | null
+  >(true);
+  const [settingOverviewPopup, setSettingsOverviewPopup] =
+    useState<boolean>(false);
   const [request_count, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
   // all the hooks in react-router-dom causes re-render so React.memo() won't work in this case scenario
@@ -170,12 +174,20 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     onCompleted: (_) => {
       if (post) {
         AddProfilePictureGlobally(post);
-        setProfileInfo({ ...profile_info, ProfilePicture: post});
+        setProfileInfo({ ...profile_info, ProfilePicture: post });
       }
       setTransitioning(false);
       setPost(null);
     },
   });
+
+  const SendSocketRequest = useCallback((id: string | undefined) => {
+    if (id && socket && userInfo) {
+      console.log(socket.connected);
+      socket.emit("send-request", userInfo.userID, id, userInfo.username);
+      console.log("socket sent from clientA");
+    }
+  }, [userInfo, socket]);
 
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
