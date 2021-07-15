@@ -51,9 +51,10 @@ export const RunServerClusters = () => {
     socket.on("accept-follow-request", (config) => {});
 
     socket.on(
-      "real-time-request",
-      async (extenedFrom, extendedTo, Username) => {
-        const ProfilePicture = await cache.get(`ProfilePicture/${extenedFrom}`);
+      "send-request",
+      async(extenedFrom, extendedTo, Username) => {
+        console.log('socket received in server');
+        const ProfilePicture = await cache.get(`ProfilePicture/${extenedFrom}`)
         socket.broadcast.to(extendedTo).emit("real-time-request-receiver", {
           Username,
           extenderID: extenedFrom,
@@ -65,6 +66,10 @@ export const RunServerClusters = () => {
     socket.on("comment-room-join", (postID) => {
       socket.join(postID);
     });
+
+    socket.on("test", () => {
+      console.log('test-passed')
+    })
 
     socket.on("leave-comment-room", (postID) => {
       socket.leave(postID);

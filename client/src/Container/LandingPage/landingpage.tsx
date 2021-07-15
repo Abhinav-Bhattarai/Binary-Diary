@@ -6,14 +6,21 @@ import {
   AsyncLogin,
   AsyncSignup,
   Encrypt,
-  Decrypt,
+  ScrollToBottom,
+  DecryptandAddInLocalStorage,
+  validateLoginForm,
+  ValidateRegex,
+  validateSignupForm,
+  UsernameErrorCheck,
+  PasswordErrorCheck,
+} from "./helper";
+import {
   initial_login_error,
   initial_signup_error,
   LoginError,
   POSTFETCH,
-  ScrollToBottom,
   SignupError,
-} from "./helper";
+} from "./interface";
 interface PROPS {
   ChangeAuthentication: (type: boolean) => void;
 }
@@ -40,29 +47,21 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   const { SendPOSTRequest } = usePostRequest({
     onComplete: (data: POSTFETCH) => {
       const { EncryptedData } = data;
-      const { auth_token, username, id, UniqueID } = Decrypt(EncryptedData);
-      localStorage.setItem("auth-token", auth_token);
-      localStorage.setItem("username", username);
-      localStorage.setItem("userID", id);
-      localStorage.setItem("uid", UniqueID);
+      DecryptandAddInLocalStorage(EncryptedData);
       history.replace("/post");
       ChangeAuthentication(true);
     },
 
     onError: (err: POSTFETCH) => {
       if (err.type === "login") {
-        LoginUsernameRef.current &&
-          (LoginUsernameRef.current.style.border = "2px solid #ff385c");
-        LoginPasswordRef.current &&
-          (LoginPasswordRef.current.style.border = "2px solid #ff385c");
+        LoginUsernameRef.current && (LoginUsernameRef.current.style.border = "2px solid #ff385c");
+        LoginPasswordRef.current && (LoginPasswordRef.current.style.border = "2px solid #ff385c");
         const dummy = { ...login_error };
         dummy.cred_err = "Invalid Credentials !!";
         setLoginError(dummy);
       } else {
-        SignupUsernameRef.current &&
-          (SignupUsernameRef.current.style.border = "2px solid #ff385c");
-        SignupPasswordRef.current &&
-          (SignupPasswordRef.current.style.border = "2px solid #ff385c");
+        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = "2px solid #ff385c");
+        SignupPasswordRef.current && (SignupPasswordRef.current.style.border = "2px solid #ff385c");
         const dummy = { ...signup_error };
         dummy.cred_err = "Username already taken !!";
         setSignupError(dummy);
@@ -70,6 +69,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
     },
   });
 
+  // form input change
   const ChangeUsernameLogin = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setLoginUsername(value);
@@ -98,9 +98,10 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
 
   const LoginFormSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    if (login_username.length > 4 && login_username.length < 16 && login_password.length > 7) {
-      const number_regex = /[0-9]/;
-      if (number_regex.exec(login_password)) {
+    const ValidationStatus = validateLoginForm(login_username, login_password);
+    if (ValidationStatus) {
+      const RegexCheck = ValidateRegex(login_password);
+      if (RegexCheck) {
         let context: any = {
           Username: login_username,
           Password: login_password,
@@ -110,50 +111,24 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       } else {
         const dummy = { ...login_error };
         dummy.password_err = "Password must contain a number";
-        LoginUsernameRef.current &&
-          (LoginUsernameRef.current.style.border = "2px solid #ff385c");
+        LoginUsernameRef.current && (LoginUsernameRef.current.style.border = "2px solid #ff385c");
         setLoginError(dummy);
       }
     } else {
-      if (login_username.length < 5) {
-        const dummy = { ...login_error };
-        dummy.username_err = "Username length must be atleast 5";
-        LoginUsernameRef.current &&
-          (LoginUsernameRef.current.style.border = "2px solid #ff385c");
-        setLoginError(dummy);
-      }
-      if (login_username.length > 15) {
-        const dummy = { ...login_error };
-        dummy.username_err = "Username length must less than 15";
-        LoginUsernameRef.current &&
-          (LoginUsernameRef.current.style.border = "2px solid #ff385c");
-        setLoginError(dummy);
-      }
-      if (login_password.length < 8) {
-        const dummy = { ...login_error };
-        dummy.password_err = "Password length must be atleast 8";
-        LoginPasswordRef.current &&
-          (LoginPasswordRef.current.style.border = "2px solid #ff385c");
-        setLoginError(dummy);
-      }
+      const UserNameError = UsernameErrorCheck(login_username, LoginUsernameRef, login_error);
+      const PasswordError = PasswordErrorCheck(login_password, login_password, LoginPasswordRef, login_error)
+      if (UserNameError) setLoginError(UserNameError);
+      if (PasswordError) setLoginError(PasswordError);
     }
   };
 
-  useEffect(() => {
-    ScrollToBottom();
-  }, []);
-
   const SignupFormSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    if (
-      signup_username.length > 4 &&
-      signup_password === signup_confirm &&
-      signup_password.length > 7 &&
-      signup_phone.length >= 10 &&
-      signup_username.length < 16
-    ) {
-      const number_regex = /[0-9]/;
-      if (number_regex.exec(signup_password)) {
+    const ValidationStatus = validateSignupForm(signup_username, signup_password, signup_confirm, signup_phone);
+
+    if (ValidationStatus) {
+      const RegexCheck = ValidateRegex(login_password);
+      if (RegexCheck) {
         let context: any = {
           Username: signup_username,
           Password: signup_password,
@@ -165,50 +140,32 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
       } else {
         const dummy = { ...signup_error };
         dummy.password_err = "Password must contain a number";
-        SignupUsernameRef.current &&
-          (SignupUsernameRef.current.style.border = "2px solid #ff385c");
+        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);
       }
     } else {
-      if (signup_username.length < 5) {
-        const dummy = { ...signup_error };
-        dummy.username_err = "Username length must be atleast 5";
-        SignupUsernameRef.current &&
-          (SignupUsernameRef.current.style.border = "2px solid #ff385c");
-        setSignupError(dummy);
+      const UserNameError = UsernameErrorCheck(signup_username, SignupUsernameRef, signup_error);
+      const PasswordError = PasswordErrorCheck(signup_password, signup_confirm, SignupPasswordRef, signup_error);
+      if (UserNameError) {
+        // @ts-ignore
+        setSignupError(UserNameError);
       }
-
-      if (signup_username.length > 15) {
-        const dummy = { ...signup_error };
-        dummy.username_err = "Username length must be less than 15";
-        SignupUsernameRef.current &&
-          (SignupUsernameRef.current.style.border = "2px solid #ff385c");
-        setSignupError(dummy);
+      if (PasswordError) {
+        // @ts-ignore
+        setSignupError(PasswordError);
       }
-
-      if (signup_password.length < 8) {
-        const dummy = { ...signup_error };
-        dummy.password_err = "Password length must be atleast 8";
-        SignupPasswordRef.current &&
-          (SignupPasswordRef.current.style.border = "2px solid #ff385c");
-        setSignupError(dummy);
-      } else if (signup_confirm !== signup_password) {
-        const dummy = { ...signup_error };
-        dummy.confirm_err = "Passwords donot match";
-        SignupConfirmRef.current &&
-          (SignupConfirmRef.current.style.border = "2px solid #ff385c");
-        setSignupError(dummy);
-      }
-
       if (signup_phone.length < 10) {
         const dummy = { ...signup_error };
         dummy.phone_err = "Phone number not found";
-        SignupPhoneRef.current &&
-          (SignupPhoneRef.current.style.border = "2px solid #ff385c");
+        SignupPhoneRef.current && (SignupPhoneRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);
       }
     }
   };
+  
+  useEffect(() => {
+    ScrollToBottom();
+  }, []);
 
   return (
     <React.Fragment>

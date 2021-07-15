@@ -177,8 +177,8 @@ const CommentSchema = new GraphQLObjectType({
       },
 
       Mutated: {
-        type: GraphQLBoolean
-      }
+        type: GraphQLBoolean,
+      },
     };
   },
 });
@@ -234,11 +234,7 @@ const RootQuery = new GraphQLObjectType({
         const { auth_token, PostID, id, uid, requestCount } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
-          const response = await GetPostComments(
-            PostID,
-            requestCount,
-            cache
-          );
+          const response = await GetPostComments(PostID, requestCount, cache);
           return response;
         }
       },
@@ -331,8 +327,16 @@ const Mutation = new GraphQLObjectType({
         if (validity) {
           const db_response = await AddPostToDatabase(args);
           await UpdateCacheUserInfo(cache, db_response, args.id, args.uid);
-          await AddPostID(args.id, db_response._id);
-          return { Mutated: true };
+          AddPostID(args.id, db_response._id);
+          return {
+            Mutated: true,
+            Post: args.Post,
+            _id: db_response._id,
+            CreatorUsername: args.Username,
+            CreatorID: args.id,
+            Likes: [],
+            Caption: "",
+          };
         }
       },
     },
@@ -450,19 +454,19 @@ const Mutation = new GraphQLObjectType({
         auth_token: { type: GraphQLString },
         id: { type: GraphQLString },
         uid: { type: GraphQLString },
-        ProfilePicture: { type: GraphQLString }
+        ProfilePicture: { type: GraphQLString },
       },
-      resolve: async(_, args) => {
+      resolve: async (_, args) => {
         const { auth_token, ProfilePicture, id, uid } = args;
         const validity = ByPassChecking(auth_token, id, uid);
         if (validity) {
           AddProfilePictureToPpCacheLayer(cache, ProfilePicture, id);
-          AddProfilePictureToUserInfoCacheLayer(cache, ProfilePicture, id, uid)
+          AddProfilePictureToUserInfoCacheLayer(cache, ProfilePicture, id, uid);
           AddProfilePictureToDB(ProfilePicture, id);
           return { Mutated: true };
         }
-      }
-    }
+      },
+    },
   },
 });
 

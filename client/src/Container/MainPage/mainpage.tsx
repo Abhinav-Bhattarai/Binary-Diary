@@ -367,7 +367,6 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
   useEffect(() => {
     if (socket) {
       socket.on("real-time-request-receiver", (config: RequestConfig) => {
-        console.log('socket got in clientB', config);
         if (config) AddRequests(config);
       });
 

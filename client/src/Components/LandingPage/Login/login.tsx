@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { LoginError, ScrollToBottom } from "../../../Container/LandingPage/helper";
+import { ScrollToBottom } from "../../../Container/LandingPage/helper";
+import { LoginError } from '../../../Container/LandingPage/interface';
 import {
   ChangeRouterButton,
   CredentialError,
@@ -70,10 +71,6 @@ const Login: React.FC<LoginProps> = (props) => {
             <FormButton name="Login" />
           </Form>
           <ChangeRouterButton name="Create New Account" Change={ChangeRoute} />
-          {/* <LogoContainer>
-          <LogoAuth url={FacebookLogo}/>
-          <LogoAuth url={InstagramLogo}/>
-        </LogoContainer> */}
         </FormContainer>
       </PageContainer>
     </React.Fragment>
