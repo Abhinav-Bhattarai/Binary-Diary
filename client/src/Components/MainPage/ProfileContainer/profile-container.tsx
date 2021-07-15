@@ -54,6 +54,7 @@ interface PROPS {
   Requested: Array<string> | null;
   ChangeLikedPosts: (type: boolean, id: string) => void;
   SendSocketRequest: (id: string | undefined) => void;
+  AddProfilePictureGlobally: (profile_picture: string) => void;
 }
 
 const AsyncBigPopupContainer = React.lazy(
@@ -71,6 +72,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     Requested,
     ChangeLikedPosts,
     SendSocketRequest,
+    AddProfilePictureGlobally,
   } = props;
   const [profile_info, setProfileInfo] = useState<
     contextData | SerializedProfile
@@ -84,14 +86,10 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [isPostShown, setIsPostShown] = useState<boolean>(false);
-  const [currentPostDetails, setCurrentPostDetails] =
-    useState<ProfilePostDetailsType | null>(null);
+  const [currentPostDetails, setCurrentPostDetails] = useState<ProfilePostDetailsType | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
-  const [isFetchLimitReached, setIsFetchlimitReached] = useState<
-    boolean | null
-  >(true);
-  const [settingOverviewPopup, setSettingsOverviewPopup] =
-    useState<boolean>(false);
+  const [isFetchLimitReached, setIsFetchlimitReached] = useState<boolean | null>(true);
+  const [settingOverviewPopup, setSettingsOverviewPopup] = useState<boolean>(false);
   const [request_count, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
   // all the hooks in react-router-dom causes re-render so React.memo() won't work in this case scenario
@@ -156,7 +154,13 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   });
 
   const [MutatePost] = useMutation(AddPost, {
-    onCompleted: (_) => {
+    onCompleted: (data) => {
+      const { AddPost }: { AddPost: PostListType } = data;
+      if (post_list) {
+        const dummy = [...post_list];
+        dummy.unshift(AddPost);
+        setPostList(dummy);
+      }
       setTransitioning(false);
       setPost(null);
     },
@@ -164,6 +168,10 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
 
   const [ChangeProfilePicture] = useMutation(MutateProfilePicture, {
     onCompleted: (_) => {
+      if (post) {
+        AddProfilePictureGlobally(post);
+        setProfileInfo({ ...profile_info, ProfilePicture: post});
+      }
       setTransitioning(false);
       setPost(null);
     },
@@ -481,6 +489,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
           <ProfileHeaderImageContainer
             Click={owner_status ? AddPostHandler : undefined}
             source={profile_info.ProfilePicture}
+            ownerStatus={owner_status}
           />
           <ProfileInformationOverView>
             <ProfileHeaderInfo
@@ -511,7 +520,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         {isFetchLimitReached === null ? (
           <Spinner />
         ) : isFetchLimitReached === true ? null : (
-          <Paginate color='rgb(242, 242, 242)' Click={FetchMorePosts}/>
+          <Paginate color="rgb(242, 242, 242)" Click={FetchMorePosts} />
         )}
       </MainPageContainer>
     </React.Fragment>

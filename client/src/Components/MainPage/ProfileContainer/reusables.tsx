@@ -9,15 +9,28 @@ import PostCard from "../PostCard/post-card";
 import { PostCardHeader } from "../PostCard/reusables";
 import "./profile-container.scss";
 
+export const Logo: React.FC<{ fontSize?: string }> = ({
+  children,
+  fontSize,
+}) => {
+  return (
+    <IconContext.Provider
+      value={{
+        style: { color: "#333", fontSize: fontSize ? fontSize : "25px" },
+      }}
+    >
+      {children}
+    </IconContext.Provider>
+  );
+};
+
 export const ProfileHeaderImageContainer: React.FC<{
   source: string;
   Click: ((type: string) => void) | undefined;
-}> = ({ source, Click }) => {
+  ownerStatus: boolean;
+}> = ({ source, Click, ownerStatus }) => {
   return (
-    <div
-      id="profile-img-container"
-      onClick={Click ? Click.bind(this, "profile") : undefined}
-    >
+    <div id="profile-img-container">
       <img
         draggable={false}
         src={source}
@@ -25,6 +38,16 @@ export const ProfileHeaderImageContainer: React.FC<{
         height="200px"
         alt="profile-pic"
       />
+      {ownerStatus && (
+        <div
+          id="abs-img-el"
+          onClick={Click ? Click.bind(this, "profile") : undefined}
+        >
+          <Logo>
+            <AiOutlinePlus />
+          </Logo>
+        </div>
+      )}
     </div>
   );
 };
@@ -43,16 +66,6 @@ export const ProfileHeaderInfo: React.FC<{
       <div className="overview">{name}</div>
       <div className="overview">{value}</div>
     </main>
-  );
-};
-
-export const Logo: React.FC<{}> = ({ children }) => {
-  return (
-    <IconContext.Provider
-      value={{ style: { color: "#333", fontSize: "25px" } }}
-    >
-      {children}
-    </IconContext.Provider>
   );
 };
 
@@ -81,15 +94,22 @@ export const ProfilePostArea: React.FC<{}> = ({ children }) => {
   );
 };
 
-export const Paginate: React.FC<{Click: () => void; color: string}> = ({ Click, color }) => {
+export const Paginate: React.FC<{ Click: () => void; color: string }> = ({
+  Click,
+  color,
+}) => {
   return (
-    <div id="add-logo-container" style={{backgroundColor: color}} onClick={Click}>
-    <Logo>
-      <AiOutlinePlus />
-    </Logo>
-  </div>
-  )
-}
+    <div
+      id="add-logo-container"
+      style={{ backgroundColor: color }}
+      onClick={Click}
+    >
+      <Logo>
+        <AiOutlinePlus />
+      </Logo>
+    </div>
+  );
+};
 
 interface ProfilePostOverviewProps {
   source: string;
@@ -134,7 +154,7 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
     <React.Fragment>
       <div id="profile-post-overview" onClick={Click.bind(this, config)}>
         <img draggable={false} src={source} alt="profile-overview" />
-        <div id='profile-hover'></div>
+        <div id="profile-hover"></div>
       </div>
     </React.Fragment>
   );
@@ -176,8 +196,7 @@ export const SettingsOverViewElement: React.FC<{
 };
 
 export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
-  const { name, userInfo, RequesterID, SendSocketRequest } =
-    props;
+  const { name, userInfo, RequesterID, SendSocketRequest } = props;
   const [type, setType] = useState<
     "Follow" | "Following" | "Requested" | "Loading"
   >(name);

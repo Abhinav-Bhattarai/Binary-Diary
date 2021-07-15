@@ -18,6 +18,12 @@ export const AddPost = gql`
       auth_token: $auth_token
     ) {
       Mutated
+      Post
+      _id
+      CreatorUsername
+      CreatorID
+      Caption
+      Likes
     }
   }
 `;

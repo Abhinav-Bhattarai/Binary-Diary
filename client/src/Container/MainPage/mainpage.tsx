@@ -185,8 +185,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
     onCompleted: (data) => {
       const { GetProfileRequests } = data;
-      const Requests: Array<RequestConfig> = GetProfileRequests.Requests;
-      setRequests(Requests);
+      setRequests(GetProfileRequests.Requests);
     },
   });
 
@@ -329,6 +328,10 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
     [socket, user_info]
   );
+
+  const AddProflePicture = (pp: string) => {
+    setProfilePicture(pp);
+  }
 
   const HomePressHandler = (event: React.MouseEvent<HTMLDivElement>) =>
     history.push("/posts");
@@ -496,6 +499,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
                   ChangeAuthentication={ChangeAuthentication}
                   ChangeLikedPosts={ChangeLikedPost}
                   SendSocketRequest={SendSocketRequest}
+                  AddProfilePictureGlobally={AddProflePicture}
                 />
               </Suspense>
             );

@@ -69,14 +69,36 @@ $faint-white: rgb(250, 250, 249);
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+
+    #abs-img-el {
+      position: absolute;
+      bottom: -18px;
+      left: 48.8%;
+      width: 40px;
+      height: 40px;
+      background-color:rgb(226,226,226);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      transition: 0.5s;
+      cursor: pointer;
+
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
 
     img {
       border-radius: 50%;
       cursor: pointer;
       transition: 0.5s;
-      &:hover {
-        transform: scale(1.05);
-      }
+      position: relative;
+    }
+    img:hover {
+      transform: scale(1.05);
     }
   }
 
@@ -85,6 +107,8 @@ $faint-white: rgb(250, 250, 249);
     align-items: center;
     width: 60%;
     margin: 20px auto;
+    margin-top: 50px;
+    margin-bottom: 10px;
     padding-top: 10px;
 
     #profile-overview-container {
