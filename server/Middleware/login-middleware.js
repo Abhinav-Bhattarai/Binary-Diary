@@ -3,7 +3,7 @@ import { Decrypt } from "../GraphQL/helper.js";
 export const LoginMiddleware = (req, res, next) => {
   const { ContextData } = req.body;
   const { Username, Password } = Decrypt(ContextData);
-  if (Username.length > 4 && Password.length > 7) {
+  if (Username.length > 4 && Password.length > 7 && Username.length < 16) {
     req.body.Username = Username;
     req.body.Password = Password;
     next();

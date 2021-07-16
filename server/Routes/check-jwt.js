@@ -11,15 +11,15 @@ router.post("/", (req, res) => {
     const data = jwt.verify(token, process.env.JWT_AUTH_TOKEN);
     if (data) {
       if (data.Username === username) {
-        return res.json({ auth_status: true });
+        return res.json({ auth_status: true, error: false });
       } else {
-        return res.json({ auth_status: false });
+        return res.json({ auth_status: false, error: true });
       }
     } else {
-      return res.json({ auth_status: false });
+      return res.json({ auth_status: false, error: true });
     }
   } else {
-    return res.json({ auth_status: false });
+    return res.json({ auth_status: false, error: true });
   }
 });
 

@@ -21,12 +21,6 @@ import {
   AddToRequestedList,
   AddToRequestsList,
   AddToUserCacheForLikedPosts,
-  FetchUserData,
-  FollowingDataSearch,
-  GetPostDataHandler,
-  GetPostComments,
-  GetUserDataCacheCheck,
-  ProfilePostCollector,
   RegisterLikeInPostSchema,
   RegisterLikeInRegisterSchema,
   RemoveFromFollowersList,
@@ -39,7 +33,19 @@ import {
   AddProfilePictureToPpCacheLayer,
   AddProfilePictureToUserInfoCacheLayer,
   AddProfilePictureToDB,
-} from "./helper.js";
+  AddToRequestedListCacheLayer,
+  RemoveFromRequestedList,
+  RemoveFromRequestsList,
+  RemoveFromRequestedListCache,
+} from "./MutationHelper.js";
+import {
+  GetPostComments,
+  GetPostDataHandler,
+  GetUserDataCacheCheck,
+  FetchUserData,
+  FollowingDataSearch,
+  ProfilePostCollector
+} from "./QueryHelper.js";
 
 const cache = redis.createClient();
 
@@ -56,6 +62,7 @@ const PostSchema = new GraphQLObjectType({
       Likes: { type: new GraphQLList(GraphQLString) },
       ProfilePicture: { type: GraphQLString },
       Mutated: { type: GraphQLBoolean },
+      Error: {type: GraphQLBoolean}
     };
   },
 });
@@ -79,6 +86,7 @@ const ProfileSchema = new GraphQLObjectType({
         },
       },
       Mutated: { type: GraphQLBoolean },
+      Error: {type: GraphQLBoolean}
     };
   },
 });
@@ -107,6 +115,7 @@ const UserSchema = new GraphQLObjectType({
           return [];
         },
       },
+      Error: {type: GraphQLBoolean}
     };
   },
 });
@@ -144,6 +153,7 @@ const RequestSchema = new GraphQLObjectType({
           return Requests;
         },
       },
+      Error: {type: GraphQLBoolean}
     };
   },
 });
@@ -177,6 +187,10 @@ const CommentSchema = new GraphQLObjectType({
       },
 
       Mutated: {
+        type: GraphQLBoolean,
+      },
+
+      Error: {
         type: GraphQLBoolean,
       },
     };
@@ -386,9 +400,14 @@ const Mutation = new GraphQLObjectType({
           if (type === "Follow") {
             AddToRequestsList(id, RequesterID, username);
             AddToRequestedList(RequesterID, id);
+            AddToRequestedListCacheLayer(cache, RequesterID, id, uid)
           } else if (type === "Following") {
             RemoveFromFollowersList(id, RequesterID);
             RemoveFromFollowingList(RequesterID, id);
+          } else if(type === 'Requested') {
+            RemoveFromRequestedList(RequesterID, id)
+            RemoveFromRequestsList(id, RequesterID);
+            RemoveFromRequestedListCache(cache, RequesterID, id, uid);
           }
 
           return { Mutated: true };
