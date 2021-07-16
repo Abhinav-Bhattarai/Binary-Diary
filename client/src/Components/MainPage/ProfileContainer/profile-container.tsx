@@ -99,7 +99,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const [GetProfileData] = useLazyQuery(ProfileDataFetch, {
     onCompleted: (data) => {
       const { GetProfileData }: { GetProfileData: GetProfileDataProps } = data;
-      if (GetProfileData) {
+      if (GetProfileData.Error !== true) {
         const { PostData } = GetProfileData;
         if (
           GetProfileData.Verified === false ||
@@ -123,14 +123,16 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
 
   const [FetchMorePostData] = useLazyQuery(FetchMoreProfilePosts, {
     onCompleted: (data) => {
-      const {GetMoreProfilePosts}: { GetMoreProfilePosts: GetProfileDataProps } = data;
+      const {GetMoreProfilePosts}: { GetMoreProfilePosts: GetProfileDataProps | null } = data;
       if (GetMoreProfilePosts) {
-        const { PostData } = GetMoreProfilePosts;
-        const serialized_post_list = SerializeNewPosts(PostData, post_list);
-        const fetchLimitReachedStatus = DetermineFetchLimit(profile_info.ProfileData?.Posts, requestCount);
-        setIsFetchlimitReached(fetchLimitReachedStatus);
-        setRequestCount(requestCount + 1);
-        setPostList(serialized_post_list);
+        if (GetMoreProfilePosts.Error !== true) {
+          const { PostData } = GetMoreProfilePosts;
+          const serialized_post_list = SerializeNewPosts(PostData, post_list);
+          const fetchLimitReachedStatus = DetermineFetchLimit(profile_info.ProfileData?.Posts, requestCount);
+          setIsFetchlimitReached(fetchLimitReachedStatus);
+          setRequestCount(requestCount + 1);
+          setPostList(serialized_post_list);
+        }
       }
     },
   });

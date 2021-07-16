@@ -10,6 +10,7 @@ export const FetchUserData = gql`
       Posts
       LikedPosts
       Requested
+      Error
       FollowingList {
         Username
         ProfilePicture
@@ -30,6 +31,7 @@ export const PostsData = gql`
       CreatorUsername
       ProfilePicture
       Likes
+      Error
     }
   }
 `;
@@ -52,6 +54,7 @@ export const ProfileDataFetch = gql`
       Posts: $Posts
     ) {
       Username
+      Error
       Followers
       Following
       Posts
@@ -85,6 +88,7 @@ export const FetchMoreProfilePosts = gql`
         CreatorID
         Caption
         PostDate
+        Error
       }
     }
   }
@@ -98,6 +102,7 @@ export const FetchProfileRequests = gql`
         extenderID
         ProfilePicture
       }
+      Error
     }
   }
 `;
@@ -123,6 +128,7 @@ export const FetchPostComments = gql`
       CommenterUsername
       Comment
       ProfilePicture
+      Error
     }
   }
 `;

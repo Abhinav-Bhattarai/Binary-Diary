@@ -18,7 +18,7 @@ export interface UserData {
   Username: string;
   FollowingList: Array<FollowingData>;
   Requested: Array<string>;
-  __typename: string;
+  Error: boolean | null;
 }
 
 export interface POSTS {
@@ -30,6 +30,7 @@ export interface POSTS {
   Likes: Array<string>;
   CreatorUsername: string;
   ProfilePicture: string;
+  Error: boolean | null;
 }
 
 export interface FollowingData {

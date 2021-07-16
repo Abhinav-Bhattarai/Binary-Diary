@@ -128,24 +128,26 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     onCompleted: (data) => {
       const { GetUserData }: { GetUserData: UserData | null } = data;
       if (GetUserData) {
-        const { FollowingList }: { FollowingList: Array<FollowingData> } = GetUserData;
-        if (GetUserData.ProfilePicture.length > 0) setProfilePicture(GetUserData.ProfilePicture);
-        setRequested(GetUserData.Requested);
-        if (FollowingList.length > 0) {
-          const postIDs = Convert2Dto1D(FollowingList);
-          const SlicedPostIDs = PostListSerialization(postIDs, 0);
-          const config = {
-            id: localStorage.getItem("userID"),
-            uid: localStorage.getItem("uid"),
-            auth_token: localStorage.getItem("auth-token"),
-            Posts: SlicedPostIDs,
-          };
-          setPostIDList(postIDs);
-          PostFetch({ variables: config });
-        } else {
-          setInitialRequest(false);
+        if (GetUserData.Error !== true) {
+          const { FollowingList }: { FollowingList: Array<FollowingData> } = GetUserData;
+          if (GetUserData.ProfilePicture.length > 0) setProfilePicture(GetUserData.ProfilePicture);
+          setRequested(GetUserData.Requested);
+          if (FollowingList.length > 0) {
+            const postIDs = Convert2Dto1D(FollowingList);
+            const SlicedPostIDs = PostListSerialization(postIDs, 0);
+            const config = {
+              id: localStorage.getItem("userID"),
+              uid: localStorage.getItem("uid"),
+              auth_token: localStorage.getItem("auth-token"),
+              Posts: SlicedPostIDs,
+            };
+            setPostIDList(postIDs);
+            PostFetch({ variables: config });
+          } else {
+            setInitialRequest(false);
+          }
+          setProfileData(GetUserData);
         }
-        setProfileData(GetUserData);
       }
     },
   });
@@ -158,20 +160,25 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
     },
     onCompleted: (data) => {
       const { GetProfileRequests } = data;
-      setRequests(GetProfileRequests.Requests);
+      if (GetProfileRequests.Error !== true) setRequests(GetProfileRequests.Requests);
     },
   });
 
   // lazy-queries
   const [PostFetch, PostFetchConfig] = useLazyQuery(PostsData, {
     onCompleted: (data) => {
-      const { GetPostsData }: { GetPostsData: Array<POSTS> | null } = data;
-      if (GetPostsData) {
-        const posts = AddPostsInPostState(GetPostsData);
-        if (GetPostsData.length === 6) setIsFetchLimitReached(false);
-        setPosts(posts);
-        setReqestCount(request_count + 1);
+      const { GetPostsData }: { GetPostsData: Array<POSTS> } = data;
+      if (GetPostsData.length > 0) {
+        if (GetPostsData[0].Error === true) {
+          setIsFetchLimitReached(true);
+          setPosts([]);
+          return 
+        }
       }
+      const posts = AddPostsInPostState(GetPostsData);
+      if (GetPostsData.length === 6) setIsFetchLimitReached(false);
+      setPosts(posts);
+      setReqestCount(request_count + 1);
     },
   });
 

@@ -65,6 +65,7 @@ export interface GetProfileDataProps {
   ProfilePicture: string | null;
   Verified: boolean | null;
   FetchLimit: boolean;
+  Error: null | boolean;
 }
 
 export interface SerializedProfile {

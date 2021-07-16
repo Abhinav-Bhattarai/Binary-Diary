@@ -5,4 +5,5 @@ export interface COMMENTS {
   _id: string;
   Comment: string;
   PostID: string;
+  Error: boolean | null;
 }

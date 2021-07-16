@@ -27,6 +27,14 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   const [GetComments] = useLazyQuery(FetchPostComments, {
     onCompleted: (data) => {
       const { GetPostComments }: { GetPostComments: Array<COMMENTS> } = data;
+      if (GetPostComments.length > 0) {
+        if (GetPostComments[0].Error === true){
+          setComments([]);
+          setIsCommentVisible(true);
+          setIsFetchLimitReached(true);
+          return
+        }
+      }
       let SerializedComments = [...GetPostComments];
       if (comments && SerializedComments.length > 0) {
         SerializedComments = SerializeComments(comments, SerializedComments);
@@ -36,7 +44,6 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
       setIsCommentVisible(true);
       if (GetPostComments.length >= 8) setIsFetchLimitReached(false);
       if (GetPostComments.length < 8) setIsFetchLimitReached(true);
-      else setIsCommentVisible(true);
     },
   });
   const [MutatePostLike] = useMutation(PostLikeMutation);

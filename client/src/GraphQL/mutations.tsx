@@ -18,6 +18,7 @@ export const AddPost = gql`
       auth_token: $auth_token
     ) {
       Mutated
+      Error
       Post
       _id
       CreatorUsername
@@ -46,6 +47,7 @@ export const PostLikeMutation = gql`
       type: $type
     ) {
       Mutated
+      Error
     }
   }
 `;
@@ -68,6 +70,7 @@ export const FollowRequestMutations = gql`
       username: $username
     ) {
       Mutated
+      Error
     }
   }
 `;
@@ -88,6 +91,7 @@ export const RespondToRequest = gql`
       RequesterID: $RequesterID
     ) {
       Mutated
+      Error
     }
   }
 `;
@@ -110,6 +114,7 @@ export const MutatePostComments = gql`
       Comment: $Comment
     ) {
       Mutated
+      Error
     }
   }
 `;
@@ -128,6 +133,7 @@ export const MutateProfilePicture = gql`
       ProfilePicture: $ProfilePicture
     ) {
       Mutated
+      Error
     }
   }
 `;
