@@ -9,10 +9,32 @@ import PostCard from "../PostCard/post-card";
 import { PostCardHeader } from "../PostCard/reusables";
 import "./profile-container.scss";
 
-export const Logo: React.FC<{ fontSize?: string }> = ({
-  children,
-  fontSize,
-}) => {
+interface ProfilePostOverviewProps {
+  source: string;
+  id: string;
+  LikeStatus: boolean;
+  Likes: Array<string>;
+  Caption: string;
+  CreatorID: string;
+  CreatorUsername: string;
+  Click: (config: ProfilePostDetailsType) => void;
+  ProfilePicture: string;
+  UserInfo: UserInfo | null;
+}
+interface ProfileHeaderImageContainerProps {
+  source: string;
+  Click: ((type: string) => void) | undefined;
+  ownerStatus: boolean
+};
+interface ProfileHeaderInfoProps {
+  name: string;
+  value: string | number | undefined;
+};
+
+interface PaginateProps { Click: () => void; color: string }
+
+export const Logo: React.FC<{ fontSize?: string }> = (props) => {
+  const { children, fontSize } = props
   return (
     <IconContext.Provider
       value={{
@@ -24,11 +46,8 @@ export const Logo: React.FC<{ fontSize?: string }> = ({
   );
 };
 
-export const ProfileHeaderImageContainer: React.FC<{
-  source: string;
-  Click: ((type: string) => void) | undefined;
-  ownerStatus: boolean;
-}> = ({ source, Click, ownerStatus }) => {
+export const ProfileHeaderImageContainer: React.FC<ProfileHeaderImageContainerProps> = (props) => {
+  const { source, Click, ownerStatus } = props;
   return (
     <div id="profile-img-container">
       <img
@@ -56,10 +75,15 @@ export const ProfileHeaderContainer: React.FC<{}> = ({ children }) => {
   return <header id="profile-header-container">{children}</header>;
 };
 
-export const ProfileHeaderInfo: React.FC<{
-  name: string;
-  value: string | number | undefined;
-}> = (props) => {
+export const ProfileInformationOverView: React.FC<{}> = ({ children }) => {
+  return <main id="profile-information-overview">{children}</main>;
+};
+
+export const ProfilePostAreaContainer: React.FC<{}> = ({ children }) => {
+  return <article id="profile-post-area-container">{children}</article>;
+};
+
+export const ProfileHeaderInfo: React.FC<ProfileHeaderInfoProps> = (props) => {
   const { name, value } = props;
   return (
     <main id="profile-overview-container">
@@ -69,22 +93,14 @@ export const ProfileHeaderInfo: React.FC<{
   );
 };
 
-export const ConfigLogoContainer: React.FC<{ click: (type: string) => void }> =
-  ({ children, click }) => {
+export const ConfigLogoContainer: React.FC<{ click: (type: string) => void }> = (props) => {
+    const { children, click } = props;
     return (
       <nav id="config-logo-container" onClick={click.bind(this, "photo")}>
         {children}
       </nav>
     );
   };
-
-export const ProfileInformationOverView: React.FC<{}> = ({ children }) => {
-  return <main id="profile-information-overview">{children}</main>;
-};
-
-export const ProfilePostAreaContainer: React.FC<{}> = ({ children }) => {
-  return <article id="profile-post-area-container">{children}</article>;
-};
 
 export const ProfilePostArea: React.FC<{}> = ({ children }) => {
   return (
@@ -94,10 +110,9 @@ export const ProfilePostArea: React.FC<{}> = ({ children }) => {
   );
 };
 
-export const Paginate: React.FC<{ Click: () => void; color: string }> = ({
-  Click,
-  color,
-}) => {
+
+export const Paginate: React.FC<PaginateProps> = (props) => {
+  const { Click, color } = props
   return (
     <div
       id="add-logo-container"
@@ -110,19 +125,6 @@ export const Paginate: React.FC<{ Click: () => void; color: string }> = ({
     </div>
   );
 };
-
-interface ProfilePostOverviewProps {
-  source: string;
-  id: string;
-  LikeStatus: boolean;
-  Likes: Array<string>;
-  Caption: string;
-  CreatorID: string;
-  CreatorUsername: string;
-  Click: (config: ProfilePostDetailsType) => void;
-  ProfilePicture: string;
-  UserInfo: UserInfo | null;
-}
 
 export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
   props

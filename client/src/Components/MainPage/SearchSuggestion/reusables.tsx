@@ -1,12 +1,13 @@
 import React from "react";
 import "./suggestion.scss";
-
-export const SuggestedUserCard: React.FC<{
+interface PROPS {
   Username: string;
   source: string;
   Click: (id: string) => void;
   id: string;
-}> = (props) => {
+}
+
+export const SuggestedUserCard: React.FC<PROPS> = (props) => {
   const { Username, source, Click, id } = props;
   return (
     <div id="suggested-user-card" onClick={Click.bind(this, id)}>

@@ -25,8 +25,7 @@ interface PROPS {
 }
 
 const CommentSection: React.FC<PROPS> = (props) => {
-  const { Comments, userInfo, PostID, isFetchLimitReached, FetchMoreComments } =
-    props;
+  const { Comments, userInfo, PostID, isFetchLimitReached, FetchMoreComments } = props;
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
   const [MutateComments] = useMutation(MutatePostComments);
 

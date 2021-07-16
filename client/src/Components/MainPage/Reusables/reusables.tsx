@@ -5,6 +5,22 @@ import "./reusable.scss";
 import { Logo } from "../ProfileContainer/reusables";
 import { AiOutlinePlus } from "react-icons/ai";
 
+// interfaces
+interface MainPageContainerProps {
+  popup?: boolean | null;
+  Exit?: () => void;
+};
+interface PopupHeaderProps { name: string; Exit: () => void }
+interface PopupImageContainerProps {
+  source: string | null;
+  Click: () => void;
+};
+interface ImageSelectorProps {
+  backgroundColor: string;
+  Click: () => void;
+  name: string;
+}
+
 const ExitIcon = () => {
   return (
     <IconContext.Provider
@@ -20,10 +36,6 @@ const ExitIcon = () => {
     </IconContext.Provider>
   );
 };
-interface MainPageContainerProps {
-  popup?: boolean | null;
-  Exit?: () => void;
-}
 
 export const MainPageContainer: React.FC<MainPageContainerProps> = React.memo(
   (props) => {
@@ -45,11 +57,8 @@ export const MainPageContainer: React.FC<MainPageContainerProps> = React.memo(
   }
 );
 
-const BigPopupContainer: React.FC<{ status: string; ID: string }> = ({
-  children,
-  status,
-  ID,
-}) => {
+const BigPopupContainer: React.FC<{ status: string; ID: string }> = (props) => {
+  const { children, ID } = props;
   return (
     <React.Fragment>
       <main id={ID} className="big-popup-container">
@@ -60,10 +69,7 @@ const BigPopupContainer: React.FC<{ status: string; ID: string }> = ({
 };
 export default BigPopupContainer;
 
-export const PopupHeader: React.FC<{ name: string; Exit: () => void }> = ({
-  name,
-  Exit,
-}) => {
+export const PopupHeader: React.FC<PopupHeaderProps> = ({ name, Exit }) => {
   return (
     <header id="popup-header">
       <span
@@ -81,10 +87,7 @@ export const PopupHeader: React.FC<{ name: string; Exit: () => void }> = ({
   );
 };
 
-export const PopupImageContainer: React.FC<{
-  source: string | null;
-  Click: () => void;
-}> = ({ source, Click }) => {
+export const PopupImageContainer: React.FC<PopupImageContainerProps> = ({ source, Click }) => {
   return (
     <main id="popup-img-container" onClick={Click}>
       <div
@@ -110,12 +113,6 @@ export const PopupImageContainer: React.FC<{
     </main>
   );
 };
-
-interface ImageSelectorProps {
-  backgroundColor: string;
-  Click: () => void;
-  name: string;
-}
 
 export const ImageSelector: React.FC<ImageSelectorProps> = (props) => {
   const { backgroundColor, Click, name } = props;

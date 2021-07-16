@@ -1,6 +1,12 @@
 import React from "react";
 import "./style.scss";
 
+interface COMMENTINPUT {
+  Change: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  reference: React.RefObject<HTMLTextAreaElement>;
+  GetKeyboardEvent: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+}
+
 export const CommentCardContainer: React.FC<{}> = ({ children }) => {
   return <main id="comment-card-container">{children}</main>;
 };
@@ -24,12 +30,6 @@ export const CommenterNameArea: React.FC<{ username: string }> = ({
 export const CommentArea: React.FC<{ comment: string }> = ({ comment }) => {
   return <div id="comment">{comment}</div>;
 };
-
-interface COMMENTINPUT {
-  Change: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  reference: React.RefObject<HTMLTextAreaElement>;
-  GetKeyboardEvent: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-}
 
 export const CommentInput: React.FC<COMMENTINPUT> = (props) => {
   const { Change, reference, GetKeyboardEvent } = props;

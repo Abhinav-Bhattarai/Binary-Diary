@@ -302,7 +302,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       return "Follow";
     }
     return "Loading";
-  }, [ProfileData?.Following, params?.id, Requested]);
+  }, [ProfileData?.Following, params, Requested]);
 
   const PostArea = useMemo(
     () => {

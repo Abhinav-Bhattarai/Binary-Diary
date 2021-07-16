@@ -4,7 +4,6 @@ import { MainPageContainer } from "../Reusables/reusables";
 interface PROPS {};
 
 const MessageContainer: React.FC<PROPS> = () => {
-  console.log('rendered');
   return (
     <React.Fragment>
       <MainPageContainer>

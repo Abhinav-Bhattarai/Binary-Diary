@@ -19,7 +19,6 @@ interface PROPS {
 
 const RequestContainer: React.FC<PROPS> = (props) => {
   const { requestList, AcceptRequest, DeleteRequest } = props;
-  console.log('rendered requestcontainer')
   const RequestLists = useMemo(
     () => {
       if (requestList) {
