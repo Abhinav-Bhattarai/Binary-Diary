@@ -23,7 +23,7 @@ import {
 } from "../interfaces";
 import Spinner from "../../UI/Spinner/spinner";
 import DefaultProfile from "../../../assets/Images/profile-user.svg";
-import { resizeFile, SerializeProfileData } from "./helper";
+import { DetermineFetchLimit, GetNewSlicedProfileData, resizeFile, SerializeNewPosts, SerializeProfileData } from "./helper";
 import {
   ProfileHeaderContainer,
   ProfilePostAreaContainer,
@@ -43,9 +43,7 @@ import {
 import { AddPost, MutateProfilePicture } from "../../../GraphQL/mutations";
 import { UserData, UserInfo } from "../../../Container/MainPage/interfaces";
 import useProfileParams from "../../../Hooks/profileHook";
-
-const transition_duration: number = 500;
-
+import { GetPostLikeStatus } from "../PostContainer/helper";
 interface PROPS {
   ChangeAuthentication: (type: boolean) => void;
   userInfo: UserInfo | null;
@@ -57,11 +55,9 @@ interface PROPS {
   socket: SocketIOClient.Socket | null;
 }
 
-const AsyncBigPopupContainer = React.lazy(
-  () => import("../Reusables/reusables")
-);
-
+const AsyncBigPopupContainer = React.lazy(() => import("../Reusables/reusables"));
 const AsyncDetailedPostContainer = React.lazy(() => import("./reusables"));
+const transition_duration: number = 500;
 
 const ProfileContainer: React.FC<PROPS> = (props) => {
   const {
@@ -74,9 +70,11 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     AddProfilePictureGlobally,
     socket,
   } = props;
-  const [profile_info, setProfileInfo] = useState<
-    contextData | SerializedProfile
-  >({
+
+
+  // states
+  const [profile_info, setProfileInfo] = useState<contextData | SerializedProfile>
+  ({
     ProfilePicture,
     ProfileData,
     userInfo,
@@ -86,32 +84,16 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const [owner_status, setOwnerStatus] = useState<boolean | null>(null);
   const [post, setPost] = useState<string | null>(null);
   const [isPostShown, setIsPostShown] = useState<boolean>(false);
-  const [currentPostDetails, setCurrentPostDetails] =
-    useState<ProfilePostDetailsType | null>(null);
+  const [currentPostDetails, setCurrentPostDetails] = useState<ProfilePostDetailsType | null>(null);
   const [post_list, setPostList] = useState<Array<PostListType> | null>(null);
-  const [isFetchLimitReached, setIsFetchlimitReached] = useState<
-    boolean | null
-  >(true);
-  const [settingOverviewPopup, setSettingsOverviewPopup] =
-    useState<boolean>(false);
-  const [request_count, setRequestCount] = useState<number>(0);
+  const [isFetchLimitReached, setIsFetchlimitReached] = useState<boolean | null>(true);
+  const [settingOverviewPopup, setSettingsOverviewPopup] = useState<boolean>(false);
+  const [requestCount, setRequestCount] = useState<number>(0);
   const FileInputRef = useRef<HTMLInputElement>(null);
   // all the hooks in react-router-dom causes re-render so React.memo() won't work in this case scenario
   // intead use useMemo() for heavy render calculations;
   // so this is my own custom hook with window.location
   const params = useProfileParams();
-  // apollo-client-helper
-  const SerializeNewPosts = (PostData: Array<PostListType>) => {
-    let serialized_post_list = PostData;
-    if (!PostData) return [];
-    if (post_list && PostData.length > 0) {
-      serialized_post_list = [...post_list];
-      for (let post of PostData) {
-        serialized_post_list.push(post);
-      }
-    }
-    return serialized_post_list;
-  };
 
   // apollo-client;
   const [GetProfileData] = useLazyQuery(ProfileDataFetch, {
@@ -123,35 +105,31 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
           GetProfileData.Verified === false ||
           GetProfileData.Verified === null
         ) {
+          const serialized_post_list = SerializeNewPosts(PostData, post_list);
+          const SerializedData = SerializeProfileData(GetProfileData, DefaultProfile);
           setOwnerStatus(false);
-          const serialized_post_list = SerializeNewPosts(PostData);
-          const SerializedData = SerializeProfileData(
-            GetProfileData,
-            DefaultProfile
-          );
           setProfileInfo(SerializedData);
           setPostList(serialized_post_list);
         } else {
           if (GetProfileData.Verified === true) setOwnerStatus(true);
-          const serialized_post_list = SerializeNewPosts(PostData);
+          const serialized_post_list = SerializeNewPosts(PostData, post_list);
           setPostList(serialized_post_list);
         }
         setIsFetchlimitReached(GetProfileData.Posts.length < 7);
-        setRequestCount(request_count + 1);
+        setRequestCount(requestCount + 1);
       }
     },
   });
 
   const [FetchMorePostData] = useLazyQuery(FetchMoreProfilePosts, {
     onCompleted: (data) => {
-      const {
-        GetMoreProfilePosts,
-      }: { GetMoreProfilePosts: GetProfileDataProps } = data;
+      const {GetMoreProfilePosts}: { GetMoreProfilePosts: GetProfileDataProps } = data;
       if (GetMoreProfilePosts) {
         const { PostData } = GetMoreProfilePosts;
-        const serialized_post_list = SerializeNewPosts(PostData);
-        setIsFetchlimitReached(PostData.length < 7);
-        setRequestCount(request_count + 1);
+        const serialized_post_list = SerializeNewPosts(PostData, post_list);
+        const fetchLimitReachedStatus = DetermineFetchLimit(profile_info.ProfileData?.Posts, requestCount);
+        setIsFetchlimitReached(fetchLimitReachedStatus);
+        setRequestCount(requestCount + 1);
         setPostList(serialized_post_list);
       }
     },
@@ -181,42 +159,12 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     },
   });
 
+  // render functions
   const SendSocketRequest = useCallback((id: string | undefined) => {
     if (id && socket && userInfo) {
-      console.log(socket.connected);
       socket.emit("send-request", userInfo.userID, id, userInfo.username);
-      console.log("socket sent from clientA");
     }
   }, [userInfo, socket]);
-
-  const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const image = event.target.files[0];
-      // @ts-ignore
-      const compressed_image: string = await resizeFile(image);
-      setPost(compressed_image);
-    }
-  };
-
-  const ExitPopup = () => setTransitioning(false);
-
-  const AddPostHandler = (type: string) => {
-    setTransitioning(true);
-    setUploadType(type);
-    if (FileInputRef.current) {
-      FileInputRef.current.click();
-    }
-  };
-
-  const SettingsPressedHandler = () => {
-    setSettingsOverviewPopup(!settingOverviewPopup);
-  };
-
-  const GetMorePostInfo = (config: ProfilePostDetailsType) => {
-    setCurrentPostDetails(config);
-    setIsPostShown(true);
-  };
-  const ChangeProfileHandler = () => {};
 
   const UploadImage = useCallback(() => {
     if (post && uploadType) {
@@ -248,16 +196,41 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     }
   }, [post, MutatePost, userInfo, uploadType, ChangeProfilePicture]);
 
+  const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const image = event.target.files[0];
+      // @ts-ignore
+      const compressed_image: string = await resizeFile(image);
+      setPost(compressed_image);
+    }
+  };
+
+  const ExitPopup = () => setTransitioning(false);
+
+  const AddPostHandler = (type: string) => {
+    setTransitioning(true);
+    setUploadType(type);
+    if (FileInputRef.current) {
+      FileInputRef.current.click();
+    }
+  };
+
+  const SettingsPressedHandler = () => {
+    setSettingsOverviewPopup(!settingOverviewPopup);
+  };
+
+  const GetMorePostInfo = (config: ProfilePostDetailsType) => {
+    setCurrentPostDetails(config);
+    setIsPostShown(true);
+  };
+  const ChangeProfileHandler = () => {};
+
   const FetchMorePosts = () => {
     if (profile_info.ProfileData?.Posts && isFetchLimitReached === false) {
       setIsFetchlimitReached(null);
       let DummyPost = [...profile_info.ProfileData?.Posts];
       if (DummyPost.length > 6) {
-        let last_index = DummyPost.length;
-        if (DummyPost.length - 1 > (request_count + 1) * 6) {
-          last_index = (request_count + 1) * 6;
-        }
-        DummyPost = DummyPost.slice(request_count * 6, last_index);
+        DummyPost = GetNewSlicedProfileData(DummyPost, requestCount);
         FetchMorePostData({
           variables: {
             auth_token: userInfo?.auth_token,
@@ -270,22 +243,31 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     }
   };
 
+  const LogoutHandler = () => {
+    ChangeAuthentication(false);
+  };
+
+  const RevertProfilePostDetails = () => {
+    setCurrentPostDetails(null);
+    setIsPostShown(false);
+  };
+
   useEffect(
     () => {
-      if (params) {
+      if (params && userInfo) {
         const ProfileDataCaller = (type: boolean) => {
           GetProfileData({
             variables: {
-              auth_token: userInfo?.auth_token,
-              id: userInfo?.userID,
-              uid: userInfo?.uid,
+              auth_token: userInfo.auth_token,
+              id: userInfo.userID,
+              uid: userInfo.uid,
               searchID: params.id,
               verify: type,
               Posts: ProfileData?.Posts,
             },
           });
         };
-        if (parseInt(params.owned) === 1 && params.id === userInfo?.userID) {
+        if (parseInt(params.owned) === 1 && params.id === userInfo.userID) {
           setOwnerStatus(true);
           ProfileDataCaller(true);
         } else {
@@ -296,26 +278,16 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     [params]
   );
 
-  const LogoutHandler = () => {
-    ChangeAuthentication(false);
-  };
-
-  const RevertProfilePostDetails = () => {
-    setCurrentPostDetails(null);
-    setIsPostShown(false);
-  };
-
   const type = useMemo(() => {
     if (ProfileData?.Following) {
       if (ProfileData.Following.length > 0) {
         const requiredData = ProfileData.Following.filter((data) => {
           return data === params?.id;
         });
-        if (requiredData.length > 0) {
-          return "Following";
-        }
+        if (requiredData.length > 0) return "Following";
         return "Follow";
       }
+      return "Follow";
     }
     if (Requested) {
       if (Requested.length > 0) {
@@ -341,17 +313,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
               <ProfilePostAreaContainer>
                 <ProfilePostArea>
                   {post_list.map((posts) => {
-                    let isPostLiked = false;
-                    if (ProfileData?.LikedPosts) {
-                      if (ProfileData.LikedPosts.length > 0) {
-                        for (let id of ProfileData.LikedPosts) {
-                          if (posts._id === id) {
-                            isPostLiked = true;
-                            break;
-                          }
-                        }
-                      }
-                    }
+                    const isPostLiked = GetPostLikeStatus(ProfileData, posts);
                     return (
                       <ProfilePostOverview
                         Click={GetMorePostInfo}
@@ -388,8 +350,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
           </ProfilePostAreaContainer>
         </React.Fragment>
       );
-    },
-    // eslint-disable-next-line
+    }, // eslint-disable-next-line 
     [post_list]
   );
 

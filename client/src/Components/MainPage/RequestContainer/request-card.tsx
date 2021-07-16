@@ -6,7 +6,11 @@ interface ReactButtonProps {
   Click: () => void;
   color: string;
   name: string;
-}
+};
+
+const RequestCard: React.FC<{}> = ({ children }) => {
+  return <main id="request-card-container">{children}</main>;
+};
 
 export const ReactButtonContainer: React.FC<{}> = ({ children }) => {
   return <main id="react-btn-container">{children}</main>;
@@ -43,10 +47,6 @@ export const RequesterUsername: React.FC<{ username: string }> = ({
   username,
 }) => {
   return <div id="requester-username"> {username} </div>;
-};
-
-const RequestCard: React.FC<{}> = ({ children }) => {
-  return <main id="request-card-container">{children}</main>;
 };
 
 export default RequestCard;

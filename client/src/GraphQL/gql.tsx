@@ -103,11 +103,11 @@ export const FetchProfileRequests = gql`
 `;
 
 export const FetchPostComments = gql`
-  query(
-    $auth_token: String!,
-    $id: String!, 
-    $uid: String!, 
-    $PostID: String!, 
+  query (
+    $auth_token: String!
+    $id: String!
+    $uid: String!
+    $PostID: String!
     $requestCount: Int!
   ) {
     GetPostComments(
@@ -115,7 +115,7 @@ export const FetchPostComments = gql`
       id: $id
       uid: $uid
       requestCount: $requestCount
-      PostID: $PostID, 
+      PostID: $PostID
     ) {
       _id
       PostID

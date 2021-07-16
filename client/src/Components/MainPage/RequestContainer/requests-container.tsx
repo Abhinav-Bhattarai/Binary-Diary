@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { RequestConfig } from "../../../Container/MainPage/interfaces";
-import { RequestIcon } from "../Navbar/logo";
 import { MainPageContainer } from "../Reusables/reusables";
 import Default from '../../../assets/Images/no-requests.svg';
 import RequestCard, {
@@ -10,6 +9,7 @@ import RequestCard, {
   RequesterUsername,
 } from "./request-card";
 import "./style.scss";
+import { DefaultRequestContainer, RequestContainerHeader } from "./resusables";
 
 interface PROPS {
   requestList: Array<RequestConfig> | null;
@@ -17,29 +17,9 @@ interface PROPS {
   DeleteRequest: (index: number) => void;
 };
 
-const DefaultRequestContainer: React.FC<{source: string}> = (props) => {
-  const { source } = props;
-  return (
-    <React.Fragment>
-      <main id='default-request-container'>
-        <img src={source} width='30%' height='30%' alt='default'/>
-        <div>No Requests Found !</div>
-      </main>
-    </React.Fragment>
-  )
-}
-
-const RequestContainerHeader = () => {
-  return (
-    <div id="request-container-header">
-      <div style={{ marginRight: "1%" }}>Follow Requests</div>
-      <RequestIcon />
-    </div>
-  );
-};
-
 const RequestContainer: React.FC<PROPS> = (props) => {
   const { requestList, AcceptRequest, DeleteRequest } = props;
+  console.log('rendered requestcontainer')
   const RequestLists = useMemo(
     () => {
       if (requestList) {

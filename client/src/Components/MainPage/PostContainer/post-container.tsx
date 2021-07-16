@@ -10,6 +10,7 @@ import { MainPageContainer } from "../Reusables/reusables";
 import { PostCardHeader } from "../PostCard/reusables";
 import "../PostCard/post-card.scss";
 import PostCard from "../PostCard/post-card";
+import { GetPostLikeStatus } from "./helper";
 
 interface PROPS {
   PostList: Array<POSTS> | null;
@@ -36,17 +37,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
         return (
           <React.Fragment>
             {PostList.map((post) => {
-              let isPostLiked = false;
-              if (ProfileData) {
-                if (ProfileData.LikedPosts.length > 0) {
-                  for (let id of ProfileData.LikedPosts) {
-                    if (post._id === id) {
-                      isPostLiked = true;
-                      break;
-                    }
-                  }
-                }
-              }
+              const isPostLiked = GetPostLikeStatus(ProfileData, post);
               return (
                 <PostCard
                   key={post._id}
@@ -84,7 +75,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
       </div>
     );
   }
-
+  console.log('post-container-rendered')
   if (PostList === null || PostList.length === 0) {
     return (
       <React.Fragment>

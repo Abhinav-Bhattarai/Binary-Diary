@@ -10,22 +10,15 @@ import InteractionContainer, {
 import { PostLikeMutation } from "../../../GraphQL/mutations";
 import { FetchPostComments } from "../../../GraphQL/gql";
 import { COMMENTS } from "../CommentCard/inteface";
-import DefaultCommentSection, {
-  PostCardImageContainer,
-  POSTCARDPROPS,
-  SerializeComments,
-} from "./reusables";
+import DefaultCommentSection, {PostCardImageContainer} from "./reusables";
 import CommentSection from "../CommentCard/comment-card";
+import { POSTCARDPROPS, SerializeComments } from "./helper";
 
 const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   const { children } = props;
   // state
-  const [likeStatus, setLikeStatus] = useState<string>(
-    props.isPostLiked ? "#00acee" : ""
-  );
-  const [isCommentVisible, setIsCommentVisible] = useState<boolean | null>(
-    null
-  );
+  const [likeStatus, setLikeStatus] = useState<string>(props.isPostLiked ? "#00acee" : "");
+  const [isCommentVisible, setIsCommentVisible] = useState<boolean | null>(null);
   const [requestCount, setRequestCount] = useState<number>(0);
   const [isFetchlimitReached, setIsFetchLimitReached] = useState<boolean>(true);
   const [comments, setComments] = useState<Array<COMMENTS> | null>(null);
