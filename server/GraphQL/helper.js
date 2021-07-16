@@ -1,3 +1,5 @@
+import Crypto from "crypto-js";
+
 export function FlattenPost(posts, sort) {
   if (posts.length > 0) {
     const new_post = [];

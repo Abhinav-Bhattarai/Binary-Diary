@@ -1,7 +1,6 @@
 import RegisterModel from "../Models/register-model.js";
 import dotenv from "dotenv";
 import PostModel from "../Models/post-model.js";
-import Crypto from "crypto-js";
 import RequestModel from "../Models/RequestModel.js";
 import { CommentModel } from "../Models/comment-model.js";
 dotenv.config();
@@ -28,9 +27,11 @@ export const AddPostID = async (user_id, post_id) => {
 
 export const UpdateCacheUserInfo = async (cache, db_response, id, uid) => {
   const unserialized_data = await cache.get(`UserInfo/${id}/${uid}`);
-  const serialized_data = JSON.parse(unserialized_data);
-  serialized_data.Posts.push(db_response._id);
-  await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(serialized_data));
+  if (unserialized_data) {
+    const serialized_data = JSON.parse(unserialized_data);
+    serialized_data.Posts.push(db_response._id);
+    await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(serialized_data));
+  }
 };
 
 export const RegisterLikeInPostSchema = async (userID, postID) => {
@@ -90,9 +91,14 @@ export const AddToUserCacheForLikedPosts = async (
   PostID
 ) => {
   const UnserializedData = await cache.get(`UserInfo/${userID}/${uid}`);
-  const SerializedData = JSON.parse(UnserializedData);
-  SerializedData.LikedPosts.push(PostID);
-  await cache.set(`UserInfo/${userID}/${uid}`, JSON.stringify(SerializedData));
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    SerializedData.LikedPosts.push(PostID);
+    await cache.set(
+      `UserInfo/${userID}/${uid}`,
+      JSON.stringify(SerializedData)
+    );
+  }
   return;
 };
 
@@ -103,14 +109,19 @@ export const RemoveUserCacheForLikedPosts = async (
   PostID
 ) => {
   const UnserializedData = await cache.get(`UserInfo/${userID}/${uid}`);
-  const SerializedData = JSON.parse(UnserializedData);
-  for (let postID in SerializedData.LikedPosts) {
-    if (SerializedData.LikedPosts[postID] === PostID) {
-      SerializedData.LikedPosts.splice(postID, 1);
-      break;
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    for (let postID in SerializedData.LikedPosts) {
+      if (SerializedData.LikedPosts[postID] === PostID) {
+        SerializedData.LikedPosts.splice(postID, 1);
+        break;
+      }
     }
+    await cache.set(
+      `UserInfo/${userID}/${uid}`,
+      JSON.stringify(SerializedData)
+    );
   }
-  await cache.set(`UserInfo/${userID}/${uid}`, JSON.stringify(SerializedData));
   return;
 };
 
@@ -123,9 +134,11 @@ export const AddToFollowersListInCacheLayer = async (
   newFollowerID
 ) => {
   const UnserializedData = await cache.get(`UserInfo/${myID}/${uid}`);
-  const SerializedData = JSON.parse(UnserializedData);
-  SerializedData.Followers.push(newFollowerID);
-  await cache.set(`UserInfo/${myID}/${uid}`, JSON.stringify(SerializedData));
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    SerializedData.Followers.push(newFollowerID);
+    await cache.set(`UserInfo/${myID}/${uid}`, JSON.stringify(SerializedData));
+  }
 };
 
 export const AddToFollowingListInCacheLayer = async (
@@ -135,9 +148,11 @@ export const AddToFollowingListInCacheLayer = async (
   newFollowingID
 ) => {
   const UnserializedData = await cache.get(`UserInfo/${myID}/${uid}`);
-  const SerializedData = JSON.parse(UnserializedData);
-  SerializedData.Following.push(newFollowingID);
-  await cache.set(`UserInfo/${myID}/${uid}`, JSON.stringify(SerializedData));
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    SerializedData.Following.push(newFollowingID);
+    await cache.set(`UserInfo/${myID}/${uid}`, JSON.stringify(SerializedData));
+  }
 };
 
 export const AddToFollowersList = async (cache, RequesterID, id) => {
@@ -209,12 +224,19 @@ export const AddToRequestedList = async (ReceiverID, id) => {
   await response.save();
 };
 
-export const AddToRequestedListCacheLayer = async (cache, ReceiverID, id, uid) => {
+export const AddToRequestedListCacheLayer = async (
+  cache,
+  ReceiverID,
+  id,
+  uid
+) => {
   const UnserializedData = await cache.get(`UserInfo/${id}/${uid}`);
-  const SerializedData = JSON.parse(UnserializedData);
-  SerializedData.Requested.push(ReceiverID)
-  await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
-}
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    SerializedData.Requested.push(ReceiverID);
+    await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
+  }
+};
 
 export const RemoveFromRequestedList = async (ReceiverID, id) => {
   const response = await RegisterModel.findOne({ _id: id });
@@ -229,17 +251,24 @@ export const RemoveFromRequestedList = async (ReceiverID, id) => {
   await response.save();
 };
 
-export const RemoveFromRequestedListCache = async(cache, ReceiverID, id, uid) => {
+export const RemoveFromRequestedListCache = async (
+  cache,
+  ReceiverID,
+  id,
+  uid
+) => {
   const UnserializedData = await cache.get(`UserInfo/${id}/${uid}`);
-  const SerializedData = JSON.parse(UnserializedData);
-  for (let id_ in SerializedData.Requested) {
-    if (SerializedData.Requested[id_] === ReceiverID) {
-      SerializedData.Requested.splice(id_, 1);
-      break;
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    for (let id_ in SerializedData.Requested) {
+      if (SerializedData.Requested[id_] === ReceiverID) {
+        SerializedData.Requested.splice(id_, 1);
+        break;
+      }
     }
-  };
-  await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
-}
+    await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
+  }
+};
 
 export const UpdateRequestList = async (id, RequesterID) => {
   RemoveFromRequestedList(id, RequesterID);
@@ -249,21 +278,75 @@ export const UpdateRequestList = async (id, RequesterID) => {
 export const AddNewComment = async (config) => {
   const response = new CommentModel(config);
   await response.save();
-}
+};
 
-export const AddProfilePictureToPpCacheLayer = async(cache, ProfilePicture, id) => {
+export const AddProfilePictureToPpCacheLayer = async (
+  cache,
+  ProfilePicture,
+  id
+) => {
   await cache.set(`ProfilePicture/${id}`, ProfilePicture);
-}
+};
 
-export const AddProfilePictureToUserInfoCacheLayer = async(cache, ProfilePicture, id, uid) => {
+export const AddProfilePictureToUserInfoCacheLayer = async (
+  cache,
+  ProfilePicture,
+  id,
+  uid
+) => {
   const UnserializedData = await cache.get(`UserInfo/${id}/${uid}`);
-  const SerializedData = JSON.parse(UnserializedData);
-  SerializedData.ProfilePicture = ProfilePicture;
-  await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
-}
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    SerializedData.ProfilePicture = ProfilePicture;
+    await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
+  }
+};
 
-export const AddProfilePictureToDB = async(ProfilePicture, id) => {
-  const response = await RegisterModel.findOne({_id: id});
+export const AddProfilePictureToDB = async (ProfilePicture, id) => {
+  const response = await RegisterModel.findOne({ _id: id });
   response.ProfilePicture = ProfilePicture;
   await response.save();
-}
+};
+
+export const RemoveFollowersListCacheLayer = async (
+  id,
+  RequesterID,
+  cache,
+  uid
+) => {
+  const UnserializedData = await cache.get(`UserInfo/${RequesterID}/${uid}`);
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    for (let followerID in SerializedData.Followers) {
+      if (SerializedData.Followers[followerID] === id) {
+        SerializedData.splice(followerID, 1);
+        break;
+      }
+    }
+    await cache.set(
+      `UserInfo/${RequesterID}/${uid}`,
+      JSON.stringify(SerializedData)
+    );
+  }
+  return;
+};
+
+export const RemoveFollowingListCacheLayer = async (
+  id,
+  RequesterID,
+  cache,
+  uid
+) => {
+  const UnserializedData = await cache.get(`UserInfo/${id}/${uid}`);
+  if (UnserializedData) {
+    const SerializedData = JSON.parse(UnserializedData);
+    for (let followingID in SerializedData.Following) {
+      if (SerializedData.Following[followingID] === RequesterID) {
+        SerializedData.Following.splice(followingID, 1);
+        break;
+      }
+    }
+    await cache.set(`UserInfo/${id}/${uid}`, JSON.stringify(SerializedData));
+  }
+  return;
+};

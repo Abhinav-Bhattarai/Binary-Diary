@@ -37,6 +37,8 @@ import {
   RemoveFromRequestedList,
   RemoveFromRequestsList,
   RemoveFromRequestedListCache,
+  RemoveFollowersListCacheLayer,
+  RemoveFollowingListCacheLayer,
 } from "./MutationHelper.js";
 import {
   GetPostComments,
@@ -326,6 +328,7 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: "mutation",
   fields: {
+    // verified
     AddPost: {
       type: PostSchema,
       args: {
@@ -355,6 +358,7 @@ const Mutation = new GraphQLObjectType({
       },
     },
 
+    // verified
     MutatePostLike: {
       type: PostSchema,
       args: {
@@ -404,6 +408,8 @@ const Mutation = new GraphQLObjectType({
           } else if (type === "Following") {
             RemoveFromFollowersList(id, RequesterID);
             RemoveFromFollowingList(RequesterID, id);
+            RemoveFollowersListCacheLayer(id, RequesterID, cache, 'RequesterUID');
+            RemoveFollowingListCacheLayer(id, RequesterID, cache, 'RequesterUID');
           } else if(type === 'Requested') {
             RemoveFromRequestedList(RequesterID, id)
             RemoveFromRequestsList(id, RequesterID);
