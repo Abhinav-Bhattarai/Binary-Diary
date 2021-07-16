@@ -54,7 +54,6 @@ interface PROPS {
   AddProfilePictureGlobally: (profile_picture: string) => void;
   socket: SocketIOClient.Socket | null;
 }
-
 const AsyncBigPopupContainer = React.lazy(() => import("../Reusables/reusables"));
 const AsyncDetailedPostContainer = React.lazy(() => import("./reusables"));
 const transition_duration: number = 500;
@@ -70,7 +69,6 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     AddProfilePictureGlobally,
     socket,
   } = props;
-
 
   // states
   const [profile_info, setProfileInfo] = useState<contextData | SerializedProfile>
@@ -140,24 +138,28 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const [MutatePost] = useMutation(AddPost, {
     onCompleted: (data) => {
       const { AddPost }: { AddPost: PostListType } = data;
-      if (post_list) {
-        const dummy = [...post_list];
-        dummy.unshift(AddPost);
-        setPostList(dummy);
+      if (AddPost.Error !== true && AddPost.Mutated === true) {
+        if (post_list) {
+          const dummy = [...post_list];
+          dummy.unshift(AddPost);
+          setPostList(dummy);
+        }
+        setTransitioning(false);
+        setPost(null);
       }
-      setTransitioning(false);
-      setPost(null);
-    },
+    }
   });
 
   const [ChangeProfilePicture] = useMutation(MutateProfilePicture, {
-    onCompleted: (_) => {
-      if (post) {
-        AddProfilePictureGlobally(post);
-        setProfileInfo({ ...profile_info, ProfilePicture: post });
+    onCompleted: (data) => {
+      if (data.MutateProfilePicture.Error !== true && data.MutateProfilePicture.Mutated === true) {
+        if (post) {
+          AddProfilePictureGlobally(post);
+          setProfileInfo({ ...profile_info, ProfilePicture: post });
+        }
+        setTransitioning(false);
+        setPost(null);
       }
-      setTransitioning(false);
-      setPost(null);
     },
   });
 

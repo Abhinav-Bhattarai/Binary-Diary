@@ -40,6 +40,8 @@ export interface PostListType {
   CreatorID: string;
   Caption: string;
   Likes: Array<string>;
+  Error: boolean | null;
+  Mutated: boolean;
 }
 
 export interface ProfilePostDetailsType {
