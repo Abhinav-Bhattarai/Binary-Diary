@@ -25,40 +25,44 @@ const GenerateUniqueID = () => {
   return Math.floor(Math.random() * 100000000);
 };
 
-const CreateRequestModel = async(id) => {
-  const response = new RequestModel({UserID: id});
+const CreateRequestModel = async (id) => {
+  const response = new RequestModel({ UserID: id });
   await response.save();
-}
+};
 
 router.post("/", SignupMiddleware, async (req, res) => {
-  const { Username, Password, Phone } = req.body;
-  const response = await RegisterModel.find({ Username });
-  if (response.length === 0) {
-    const HashedPassword = await HashPassword(Password);
-    const UniqueID = GenerateUniqueID();
-    const data = {
-      Username,
-      Password: HashedPassword,
-      Phone: parseInt(Phone),
-      UniqueID
-    };
-    const RegisterData = new RegisterModel(data);
-    const registered_data = await RegisterData.save();
-    const token = GenerateAuthToken({
-      ...data,
-      id: registered_data._id,
-      uid: UniqueID,
-    });
-    const response_data = {
-      auth_token: token,
-      id: registered_data._id,
-      username: Username,
-      UniqueID,
-    };
-    CreateRequestModel(registered_data._id);
-    const EncryptedString = Encrypt(response_data);
-    return res.json({ EncryptedData: EncryptedString, error: false });
-  } else {
+  try {
+    const { Username, Password, Phone } = req.body;
+    const response = await RegisterModel.find({ Username });
+    if (response.length === 0) {
+      const HashedPassword = await HashPassword(Password);
+      const UniqueID = GenerateUniqueID();
+      const data = {
+        Username,
+        Password: HashedPassword,
+        Phone: parseInt(Phone),
+        UniqueID,
+      };
+      const RegisterData = new RegisterModel(data);
+      const registered_data = await RegisterData.save();
+      const token = GenerateAuthToken({
+        ...data,
+        id: registered_data._id,
+        uid: UniqueID,
+      });
+      const response_data = {
+        auth_token: token,
+        id: registered_data._id,
+        username: Username,
+        UniqueID,
+      };
+      CreateRequestModel(registered_data._id);
+      const EncryptedString = Encrypt(response_data);
+      return res.json({ EncryptedData: EncryptedString, error: false });
+    } else {
+      return res.json({ error: true, type: "signup" });
+    }
+  } catch {
     return res.json({ error: true, type: "signup" });
   }
 });
