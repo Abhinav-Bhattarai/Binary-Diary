@@ -20,6 +20,7 @@ interface ProfilePostOverviewProps {
   Click: (config: ProfilePostDetailsType) => void;
   ProfilePicture: string;
   UserInfo: UserInfo | null;
+  PostDate: string;
 }
 interface ProfileHeaderImageContainerProps {
   source: string;
@@ -38,7 +39,6 @@ interface PaginateProps {
 
 export const Logo: React.FC<{ fontSize?: string; className?: string }> = (props) => {
   const { children, fontSize, className } = props;
-  console.log(className);
   return (
     <IconContext.Provider
       value={{
@@ -149,6 +149,7 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
     id,
     ProfilePicture,
     UserInfo,
+    PostDate
   } = props;
   const config = {
     Likes,
@@ -160,6 +161,7 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
     Post: source,
     UserInfo,
     ProfilePicture,
+    PostDate
   };
   return (
     <React.Fragment>
@@ -247,6 +249,7 @@ const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
     ProfilePicture,
     RevertPopup,
     ChangeLikedPosts,
+    PostDate
   } = props;
   const PostCardClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -261,7 +264,7 @@ const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
         ChangeLikedPost={ChangeLikedPosts}
         Post={Post}
       >
-        <PostCardHeader Username={CreatorUsername} source={ProfilePicture} />
+        <PostCardHeader PostDate={PostDate ? PostDate : ''} Username={CreatorUsername} source={ProfilePicture} />
       </PostCard>
     </main>
   );

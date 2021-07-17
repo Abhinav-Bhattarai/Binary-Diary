@@ -341,6 +341,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
                         Likes={posts.Likes}
                         UserInfo={userInfo}
                         ProfilePicture={profile_info.ProfilePicture}
+                        PostDate={posts.PostDate}
                       />
                     );
                   })}
@@ -462,6 +463,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
         UserInfo={userInfo}
         RevertPopup={RevertProfilePostDetails}
         ChangeLikedPosts={ChangeLikedPosts}
+        PostDate={currentPostDetails.PostDate}
       />
     );
   }

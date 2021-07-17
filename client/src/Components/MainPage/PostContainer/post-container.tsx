@@ -50,6 +50,7 @@ const PostContainer: React.FC<PROPS> = (props) => {
                   <PostCardHeader
                     Username={post.CreatorUsername}
                     source={post.ProfilePicture}
+                    PostDate={post.PostDate}
                   />
                 </PostCard>
               );

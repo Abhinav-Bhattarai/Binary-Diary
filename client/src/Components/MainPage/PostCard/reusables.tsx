@@ -3,6 +3,8 @@ import "./post-card.scss";
 import DefaultProfile from "../../../assets/Images/profile-user.svg";
 import PostCardSpinner from "../../UI/Spinner/PostCardSpinner/postcard-spinner";
 
+interface PostCardHeaderProps { source: string; Username: string, PostDate: string }
+
 export const PostCardImageContainer: React.FC<{
   source: string;
   id: string;
@@ -18,10 +20,11 @@ export const PostCardImageContainer: React.FC<{
   );
 };
 
-export const PostCardHeader: React.FC<{ source: string; Username: string }> = (
+export const PostCardHeader: React.FC<PostCardHeaderProps> = (
   props
 ) => {
-  const { source, Username } = props;
+  const { source, Username, PostDate } = props;
+  console.log(PostDate);
   return (
     <header id="post-card-header">
       <img

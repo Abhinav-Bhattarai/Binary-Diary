@@ -42,6 +42,7 @@ export interface PostListType {
   Likes: Array<string>;
   Error: boolean | null;
   Mutated: boolean;
+  PostDate: string;
 }
 
 export interface ProfilePostDetailsType {
@@ -54,6 +55,7 @@ export interface ProfilePostDetailsType {
   LikeStatus: boolean;
   UserInfo: UserInfo | null;
   ProfilePicture: string;
+  PostDate?: string;
   RevertPopup?: () => void;
   ChangeLikedPosts?: (type: boolean, id: string) => void;
 }
