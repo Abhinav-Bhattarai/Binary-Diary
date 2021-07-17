@@ -6,7 +6,7 @@ $faint-white: rgb(243, 243, 243);
   background-color: $faint-white;
   border-radius: 5px;
   padding: 0 0.4%;
-  border: 1px solid  rgb(233, 233, 233);
+  border: 1px solid rgb(233, 233, 233);
 
   #post-card-header {
     padding: 15px 0;
@@ -14,14 +14,23 @@ $faint-white: rgb(243, 243, 243);
     align-items: center;
     font-weight: bold;
 
-    div {
+    main {
       margin-left: 3%;
+      display: flex;
+      flex-direction: column;
+
+      #post-header-data-date {
+        font-weight: 500;
+        color: grey;
+        font-size: 11px;
+      }
     }
 
     img {
       margin-left: 3%;
       border-radius: 50%;
     }
+
   }
 
   #post-card-img-container {
@@ -91,7 +100,7 @@ $faint-white: rgb(243, 243, 243);
 @media screen and (max-width: 680px) {
   #post-card-container {
     width: 85%;
-  };
+  }
 
   #remarks {
     font-weight: bold;
@@ -108,7 +117,7 @@ $faint-white: rgb(243, 243, 243);
 @media screen and (max-width: 550px) {
   #post-card-container {
     width: 97.3%;
-  };
+  }
   #default-post-container-img {
     width: 65%;
   }
@@ -117,7 +126,7 @@ $faint-white: rgb(243, 243, 243);
 @media screen and (max-width: 350px) {
   #post-card-container {
     width: 98%;
-  };
+  }
   #default-post-container-img {
     width: 80%;
   }

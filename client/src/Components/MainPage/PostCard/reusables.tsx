@@ -2,8 +2,13 @@ import React from "react";
 import "./post-card.scss";
 import DefaultProfile from "../../../assets/Images/profile-user.svg";
 import PostCardSpinner from "../../UI/Spinner/PostCardSpinner/postcard-spinner";
+import { GenerateDate } from "./helper";
 
-interface PostCardHeaderProps { source: string; Username: string, PostDate: string }
+interface PostCardHeaderProps {
+  source: string;
+  Username: string;
+  PostDate: string;
+}
 
 export const PostCardImageContainer: React.FC<{
   source: string;
@@ -20,11 +25,9 @@ export const PostCardImageContainer: React.FC<{
   );
 };
 
-export const PostCardHeader: React.FC<PostCardHeaderProps> = (
-  props
-) => {
+export const PostCardHeader: React.FC<PostCardHeaderProps> = (props) => {
   const { source, Username, PostDate } = props;
-  console.log(PostDate);
+  const date = GenerateDate(PostDate);
   return (
     <header id="post-card-header">
       <img
@@ -33,7 +36,10 @@ export const PostCardHeader: React.FC<PostCardHeaderProps> = (
         height="40px"
         alt="header-profile"
       />
-      <div>{Username}</div>
+      <main>
+        <div id="post-header-data-username">{Username}</div>
+        <div id="post-header-data-date">{date}</div>
+      </main>
     </header>
   );
 };

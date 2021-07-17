@@ -24,3 +24,11 @@ export const SerializeComments = (
   }
   return oldComments;
 };
+
+const Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export const GenerateDate = (date: string) => {
+  const datesArr = date.split('/');
+  const month = datesArr[0];
+  if (month[0] === '0') month.substr(0);
+  return `${Months[parseInt(month) - 1]}. ${datesArr[1]}`;
+}
