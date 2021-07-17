@@ -82,18 +82,25 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
   };
 
   const CommentClickHandler = () => {
-    if (!comments) {
+    if (isCommentVisible === null) {
       setIsCommentVisible(false);
-      window.scrollTo(0, window.scrollY + 50);
-      GetComments({
-        variables: {
-          id: props.UserInfo?.userID,
-          auth_token: props.UserInfo?.auth_token,
-          uid: props.UserInfo?.uid,
-          PostID: props.id,
-          requestCount,
-        },
-      });
+      window.scrollTo(0, window.scrollY + 100);
+      if (!comments) {
+        GetComments({
+          variables: {
+            id: props.UserInfo?.userID,
+            auth_token: props.UserInfo?.auth_token,
+            uid: props.UserInfo?.uid,
+            PostID: props.id,
+            requestCount,
+          },
+        });
+      } else {
+        setIsCommentVisible(true);
+      }
+    } else {
+      setIsCommentVisible(null);
+      window.scrollTo(0, window.scrollY - 100);
     }
   };
 

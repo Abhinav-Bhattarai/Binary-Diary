@@ -1,10 +1,11 @@
 import React from "react";
+import { IoMdSend } from "react-icons/io";
+import { Logo } from "../ProfileContainer/reusables";
 import "./style.scss";
 
 interface COMMENTINPUT {
-  Change: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   reference: React.RefObject<HTMLTextAreaElement>;
-  GetKeyboardEvent: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  EditableRef: React.RefObject<HTMLDivElement>;
 }
 
 export const CommentCardContainer: React.FC<{}> = ({ children }) => {
@@ -32,17 +33,23 @@ export const CommentArea: React.FC<{ comment: string }> = ({ comment }) => {
 };
 
 export const CommentInput: React.FC<COMMENTINPUT> = (props) => {
-  const { Change, reference, GetKeyboardEvent } = props;
+  const { reference, EditableRef } = props;
   return (
-    <textarea
-      rows={1}
-      cols={5}
-      placeholder="Write your comment here ..."
-      onChange={Change}
-      ref={reference}
-      autoFocus
-      id="comment-input"
-      onKeyPress={GetKeyboardEvent}
-    />
+    <main id="comment-input-container">
+      <div
+        ref={EditableRef}
+        id="comment-input"
+        contentEditable="true"
+        role="textbox"
+      >
+        {reference.current && reference.current.value}
+      </div>
+      <div id="send-logo-container">
+        <Logo className="send-icon" fontSize="22px">
+          <IoMdSend />
+        </Logo>
+      </div>
+      <textarea ref={reference} hidden />
+    </main>
   );
 };

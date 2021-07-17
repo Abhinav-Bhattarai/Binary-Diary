@@ -24,21 +24,29 @@ interface ProfilePostOverviewProps {
 interface ProfileHeaderImageContainerProps {
   source: string;
   Click: ((type: string) => void) | undefined;
-  ownerStatus: boolean
-};
+  ownerStatus: boolean;
+}
 interface ProfileHeaderInfoProps {
   name: string;
   value: string | number | undefined;
-};
+}
 
-interface PaginateProps { Click: () => void; color: string }
+interface PaginateProps {
+  Click: () => void;
+  color: string;
+}
 
-export const Logo: React.FC<{ fontSize?: string }> = (props) => {
-  const { children, fontSize } = props
+export const Logo: React.FC<{ fontSize?: string; className?: string }> = (props) => {
+  const { children, fontSize, className } = props;
+  console.log(className);
   return (
     <IconContext.Provider
       value={{
-        style: { color: "#333", fontSize: fontSize ? fontSize : "25px" },
+        style:
+          className === undefined
+            ? { color: "#333", fontSize: fontSize ? fontSize : "25px" }
+            : undefined,
+        className,
       }}
     >
       {children}
@@ -46,30 +54,31 @@ export const Logo: React.FC<{ fontSize?: string }> = (props) => {
   );
 };
 
-export const ProfileHeaderImageContainer: React.FC<ProfileHeaderImageContainerProps> = (props) => {
-  const { source, Click, ownerStatus } = props;
-  return (
-    <div id="profile-img-container">
-      <img
-        draggable={false}
-        src={source}
-        width="200px"
-        height="200px"
-        alt="profile-pic"
-      />
-      {ownerStatus && (
-        <div
-          id="abs-img-el"
-          onClick={Click ? Click.bind(this, "profile") : undefined}
-        >
-          <Logo>
-            <AiOutlinePlus />
-          </Logo>
-        </div>
-      )}
-    </div>
-  );
-};
+export const ProfileHeaderImageContainer: React.FC<ProfileHeaderImageContainerProps> =
+  (props) => {
+    const { source, Click, ownerStatus } = props;
+    return (
+      <div id="profile-img-container">
+        <img
+          draggable={false}
+          src={source}
+          width="200px"
+          height="200px"
+          alt="profile-pic"
+        />
+        {ownerStatus && (
+          <div
+            id="abs-img-el"
+            onClick={Click ? Click.bind(this, "profile") : undefined}
+          >
+            <Logo>
+              <AiOutlinePlus />
+            </Logo>
+          </div>
+        )}
+      </div>
+    );
+  };
 
 export const ProfileHeaderContainer: React.FC<{}> = ({ children }) => {
   return <header id="profile-header-container">{children}</header>;
@@ -93,7 +102,8 @@ export const ProfileHeaderInfo: React.FC<ProfileHeaderInfoProps> = (props) => {
   );
 };
 
-export const ConfigLogoContainer: React.FC<{ click: (type: string) => void }> = (props) => {
+export const ConfigLogoContainer: React.FC<{ click: (type: string) => void }> =
+  (props) => {
     const { children, click } = props;
     return (
       <nav id="config-logo-container" onClick={click.bind(this, "photo")}>
@@ -110,9 +120,8 @@ export const ProfilePostArea: React.FC<{}> = ({ children }) => {
   );
 };
 
-
 export const Paginate: React.FC<PaginateProps> = (props) => {
-  const { Click, color } = props
+  const { Click, color } = props;
   return (
     <div
       id="add-logo-container"

@@ -27,7 +27,7 @@ export function IconContainer({
             transition: "0.3s",
             cursor: "pointer",
           },
-          className: color === "" ? "interaction-icon" : "",
+          className: color === "" ? "i-icon interaction-icon" : "i-icon",
         }}
       >
         {children}

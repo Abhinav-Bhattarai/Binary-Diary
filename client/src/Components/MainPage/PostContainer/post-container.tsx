@@ -75,7 +75,6 @@ const PostContainer: React.FC<PROPS> = (props) => {
       </div>
     );
   }
-  console.log('post-container-rendered')
   if (PostList === null || PostList.length === 0) {
     return (
       <React.Fragment>

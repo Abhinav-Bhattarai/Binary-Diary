@@ -103,13 +103,17 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
           GetProfileData.Verified === false ||
           GetProfileData.Verified === null
         ) {
+          document.title = GetProfileData.Username + '  Search?';
           const serialized_post_list = SerializeNewPosts(PostData, post_list);
           const SerializedData = SerializeProfileData(GetProfileData, DefaultProfile);
           setOwnerStatus(false);
           setProfileInfo(SerializedData);
           setPostList(serialized_post_list);
         } else {
-          if (GetProfileData.Verified === true) setOwnerStatus(true);
+          if (GetProfileData.Verified === true){
+            document.title = userInfo?.username + '  Search?';
+            setOwnerStatus(true)
+          }
           const serialized_post_list = SerializeNewPosts(PostData, post_list);
           setPostList(serialized_post_list);
         }
@@ -118,6 +122,12 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    return () => {
+      document.title = 'Binary Diary';
+    }
+  }, [])
 
   const [FetchMorePostData] = useLazyQuery(FetchMoreProfilePosts, {
     onCompleted: (data) => {

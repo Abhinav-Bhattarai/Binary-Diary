@@ -74,17 +74,17 @@ $faint-white: rgb(250, 250, 249);
     #abs-img-el {
       position: absolute;
       bottom: -18px;
-      left: 48.8%;
-      width: 40px;
-      height: 40px;
+      left: 49.0%;
+      width: 36px;
+      height: 36px;
       background-color:rgb(226,226,226);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
       transition: 0.5s;
       cursor: pointer;
+      border: 2px solid #f3f3f3;
 
       &:hover {
         transform: scale(1.03);
@@ -173,7 +173,7 @@ $faint-white: rgb(250, 250, 249);
       cursor: pointer;
     }
   }
-}
+};
 
 #config-logo-container {
   padding: 20px 20px;
@@ -215,6 +215,14 @@ $faint-white: rgb(250, 250, 249);
   justify-content: center;
   background-color: rgb(24, 24, 24);
   background-color: rgba(0, 0, 0, 0.95);
+};
+
+.send-icon {
+  transition: 0.3s;
+  font-size: 21px;
+  &:hover {
+    color: #13a0fd;
+  }
 }
 
 @media all and (max-width: 1200px) {

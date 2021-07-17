@@ -5,7 +5,7 @@ $faint-white: rgb(243, 243, 243);
   margin: 10px 0;
   background-color: $faint-white;
   border-radius: 5px;
-  padding: 0 0.5%;
+  padding: 0 0.4%;
 
   #post-card-header {
     padding: 15px 0;
@@ -29,7 +29,7 @@ $faint-white: rgb(243, 243, 243);
     align-items: center;
     justify-content: center;
     height: 300px;
-    border-radius: 5px;
+    background-color: rgb(250, 250, 250);
 
     img {
       max-width: 100%;

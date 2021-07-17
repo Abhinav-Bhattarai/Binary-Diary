@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { COMMENTS } from "./inteface";
 import DefaultProfile from "../../../assets/Images/profile-user.svg";
 
@@ -22,19 +22,13 @@ interface PROPS {
   PostID: string;
   isFetchLimitReached: boolean | null;
   FetchMoreComments: () => void;
-}
+};
 
 const CommentSection: React.FC<PROPS> = (props) => {
   const { Comments, userInfo, PostID, isFetchLimitReached, FetchMoreComments } = props;
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
+  const editableRef = useRef<HTMLDivElement>(null);
   const [MutateComments] = useMutation(MutatePostComments);
-
-  const ChangeComment = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = event.target.value;
-    if (commentInputRef.current) {
-      commentInputRef.current.value = value;
-    }
-  };
 
   const AddCommentHandler = (): void => {
     const config = {
@@ -51,15 +45,6 @@ const CommentSection: React.FC<PROPS> = (props) => {
     if (commentInputRef.current) commentInputRef.current.value = "";
   };
 
-  const GetKeyboardEvent = (
-    event: React.KeyboardEvent<HTMLTextAreaElement>
-  ) => {
-    if (event.code === "Enter" && commentInputRef.current) {
-      if (commentInputRef.current.value.length > 0) {
-        AddCommentHandler();
-      }
-    }
-  };
   let comments_list: any = <h4> no comments </h4>;
   if (Comments.length > 0) {
     comments_list = Comments.map((comment) => {
@@ -79,7 +64,28 @@ const CommentSection: React.FC<PROPS> = (props) => {
         </CommentCardContainer>
       );
     });
+  };
+
+  const ChangeReferenceValue = (event: any) => {
+    event.stopPropagation();
+    if (event.inputType === 'insertParagraph' && event.data === null && commentInputRef.current) {
+      if (commentInputRef.current.value.length > 0) AddCommentHandler();
+    } else {
+      if (commentInputRef.current) {
+        commentInputRef.current.value += event.data; 
+      }
+    }
   }
+
+  useEffect(() => {
+    if (editableRef.current) {
+      const PersistantRef = editableRef.current
+      PersistantRef.addEventListener('input', ChangeReferenceValue);
+      return () => {
+        PersistantRef.removeEventListener('input', ChangeReferenceValue!);
+      }
+    }
+  })
 
   return (
     <React.Fragment>
@@ -91,8 +97,7 @@ const CommentSection: React.FC<PROPS> = (props) => {
       </main>
       <CommentInput
         reference={commentInputRef}
-        GetKeyboardEvent={GetKeyboardEvent}
-        Change={ChangeComment}
+        EditableRef={editableRef}
       />
     </React.Fragment>
   );
