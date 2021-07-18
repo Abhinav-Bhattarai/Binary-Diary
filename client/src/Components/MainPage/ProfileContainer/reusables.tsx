@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
 import { IconContext } from "react-icons";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiFillHeart, AiOutlinePlus } from "react-icons/ai";
 import { UserInfo } from "../../../Container/MainPage/interfaces";
 import { FollowRequestMutations } from "../../../GraphQL/mutations";
 import { ProfilePostDetailsType, PROFILESTATEBTN } from "../interfaces";
@@ -167,7 +167,12 @@ export const ProfilePostOverview: React.FC<ProfilePostOverviewProps> = (
     <React.Fragment>
       <div id="profile-post-overview" onClick={Click.bind(this, config)}>
         <img draggable={false} src={source} alt="profile-overview" />
-        <div id="profile-hover"></div>
+        <div id="profile-hover">
+          <Logo className='heart'>
+            <AiFillHeart/>
+          </Logo>
+          <div>{Likes.length}</div>
+        </div>
       </div>
     </React.Fragment>
   );

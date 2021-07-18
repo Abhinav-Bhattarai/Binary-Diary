@@ -22,13 +22,21 @@ interface PROPS {
   PostID: string;
   isFetchLimitReached: boolean | null;
   FetchMoreComments: () => void;
+  AddNewCommentHandler: (MutateComments: COMMENTS) => void;
 };
 
 const CommentSection: React.FC<PROPS> = (props) => {
-  const { Comments, userInfo, PostID, isFetchLimitReached, FetchMoreComments } = props;
+  const { Comments, userInfo, PostID, isFetchLimitReached, FetchMoreComments, AddNewCommentHandler } = props;
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
   const editableRef = useRef<HTMLDivElement>(null);
-  const [MutateComments] = useMutation(MutatePostComments);
+  const [MutateComments] = useMutation(MutatePostComments, {
+    onCompleted: (data) => {
+      const { MutateComments }: { MutateComments: COMMENTS } = data;
+      if (MutateComments.Error !== true) {
+        AddNewCommentHandler(MutateComments);
+      }
+    }
+  });
 
   const AddCommentHandler = (): void => {
     const config = {

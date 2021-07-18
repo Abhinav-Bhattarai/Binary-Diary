@@ -277,7 +277,15 @@ export const UpdateRequestList = async (id, RequesterID) => {
 
 export const AddNewComment = async (config) => {
   const response = new CommentModel(config);
-  await response.save();
+  const data = await response.save();
+  const Commentconfig = {
+    CommenterID: data.CommenterID,
+    CommenterUsername: data.CommenterUsername,
+    _id: data._id,
+    Comment: data.Comment,
+    PostID: data.PostID
+  }
+  return Commentconfig;
 };
 
 export const AddProfilePictureToPpCacheLayer = async (

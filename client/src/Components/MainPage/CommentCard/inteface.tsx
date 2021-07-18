@@ -6,4 +6,5 @@ export interface COMMENTS {
   Comment: string;
   PostID: string;
   Error: boolean | null;
+  Mutated?: boolean | null;
 }

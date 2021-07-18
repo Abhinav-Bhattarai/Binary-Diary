@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { AiOutlineLike, AiOutlinePlusCircle } from "react-icons/ai";
 import { MdComment } from "react-icons/md";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -104,6 +104,14 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
     }
   };
 
+  const AddNewCommentHandler = useCallback((NewComment: COMMENTS) => {
+    if (comments) {
+      const dummy = [...comments];
+      dummy.push(NewComment);
+      setComments(dummy);
+    }
+  }, [comments])
+
   const FetchMoreComments = () => {
     if (isFetchlimitReached === false) {
       setIsFetchLimitReached(true);
@@ -156,6 +164,7 @@ const PostCard: React.FC<POSTCARDPROPS> = (props) => {
             {props.UserInfo && (
               <>
                 <CommentSection
+                  AddNewCommentHandler={AddNewCommentHandler}
                   PostID={props.id}
                   Comments={comments}
                   userInfo={props.UserInfo}

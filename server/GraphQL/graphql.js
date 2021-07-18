@@ -519,8 +519,9 @@ const Mutation = new GraphQLObjectType({
               PostID,
               Comment,
             };
-            AddNewComment(config);
-            return { Mutated: true };
+            const response = await AddNewComment(config);
+            const ProfilePicture = await cache.get(`ProfilePicture/${id}`);
+            return {...response, Mutated: true, ProfilePicture };
           }
           return { Mutated: false };
         } catch {

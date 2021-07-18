@@ -112,7 +112,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
           setPostList(serialized_post_list);
         } else {
           if (GetProfileData.Verified === true){
-            document.title = userInfo?.username + '  Search?';
+            document.title = userInfo?.username + '';
             setOwnerStatus(true)
           }
           const serialized_post_list = SerializeNewPosts(PostData, post_list);

@@ -115,6 +115,11 @@ export const MutatePostComments = gql`
     ) {
       Mutated
       Error
+      ProfilePicture
+      Comment
+      CommenterID
+      CommenterUsername
+      _id
     }
   }
 `;
