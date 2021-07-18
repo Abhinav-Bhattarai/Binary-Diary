@@ -50,12 +50,30 @@ $faint-white: rgb(250, 250, 249);
       border-radius: 8px;
       max-width: 100%;
       max-height: 80%;
-      height: 180px;
+      height: 190px;
       width: auto;
     }
   }
 }
+#profile-username {
+  margin: 10px auto;
+  margin-top: 40px;
+  font-weight: 650;
+  font-size: 18px;
+  color: #333;
+  padding: 10px 3%;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+  &::before {
+    content: "@";
+    font-weight: 650;
+    color: #333;
+    font-size: 18px;
+  }
+}
 #profile-header-container {
   width: 100%;
   flex: 1;
@@ -74,10 +92,10 @@ $faint-white: rgb(250, 250, 249);
     #abs-img-el {
       position: absolute;
       bottom: -18px;
-      left: 49.0%;
+      left: 49%;
       width: 36px;
       height: 36px;
-      background-color:rgb(226,226,226);
+      background-color: rgb(226, 226, 226);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -107,7 +125,7 @@ $faint-white: rgb(250, 250, 249);
     align-items: center;
     width: 60%;
     margin: 20px auto;
-    margin-top: 50px;
+    margin-top: 10px;
     margin-bottom: 10px;
     padding-top: 10px;
 
@@ -173,7 +191,7 @@ $faint-white: rgb(250, 250, 249);
       cursor: pointer;
     }
   }
-};
+}
 
 #config-logo-container {
   padding: 20px 20px;
@@ -215,7 +233,7 @@ $faint-white: rgb(250, 250, 249);
   justify-content: center;
   background-color: rgb(24, 24, 24);
   background-color: rgba(0, 0, 0, 0.95);
-};
+}
 
 .send-icon {
   transition: 0.3s;
@@ -225,9 +243,22 @@ $faint-white: rgb(250, 250, 249);
   }
 }
 
+@media screen and (max-width: 1400px) {
+  #profile-post-area-container {
+    #profile-post-area {
+      width: 65%;
+    }
+  }
+}
+
 @media all and (max-width: 1200px) {
   #profile-config-container {
     width: 50%;
+  }
+  #profile-post-area-container {
+    #profile-post-area {
+      width: 75%;
+    }
   }
 }
 
@@ -238,7 +269,7 @@ $faint-white: rgb(250, 250, 249);
 
   #profile-post-area-container {
     #profile-post-area {
-      width: 60%;
+      width: 80%;
     }
   }
 
@@ -256,6 +287,12 @@ $faint-white: rgb(250, 250, 249);
     width: 80%;
   }
 
+  #profile-post-area-container {
+    #profile-post-area {
+      width: 85%;
+    }
+  }
+
   #profile-state-btn {
     width: 35%;
   }
@@ -265,29 +302,61 @@ $faint-white: rgb(250, 250, 249);
   #profile-header-container #profile-information-overview {
     width: 100%;
   }
+  #profile-post-area-container {
+    #profile-post-area {
+      width: 95%;
+    }
+  }
+}
+
+@media screen and (max-width: 760px) {
+  #profile-post-area-container {
+    #profile-post-area {
+      width: 98%;
+    }
+  }
 }
 
 @media screen and (max-width: 700px) {
   #profile-config-container {
     width: 70%;
   }
-  #profile-post-area-container {
-    #profile-post-area {
-      width: 70%;
-    }
-  }
 }
 
 @media screen and (max-width: 600px) {
   #profile-post-area-container {
     #profile-post-area {
-      width: 90%;
+      width: 98%;
+
+      #profile-post-overview {
+        background-color: rgb(240, 240, 240);
+        img {
+          height: 160px;
+        }
+      }
+      
     }
   }
 
   #profile-state-btn {
     width: 45%;
     color: #13a0fd;
+  }
+};
+
+@media screen and (max-width: 480px) {
+  #profile-post-area-container {
+    #profile-post-area {
+      width: 98%;
+
+      #profile-post-overview {
+        background-color: rgb(240, 240, 240);
+        img {
+          height: 150px;
+        }
+      }
+      
+    }
   }
 }
 
@@ -297,11 +366,44 @@ $faint-white: rgb(250, 250, 249);
   }
   #profile-post-area-container {
     #profile-post-area {
-      width: 98%;
+      #profile-post-overview {
+        img {
+          height: 140px;
+        }
+      }
     }
   }
 
   #profile-state-btn {
     width: 85%;
+  }
+};
+
+@media screen and (max-width: 380px) {
+  #profile-post-area-container {
+    #profile-post-area {
+      grid-template-columns: 49% 49%;
+      #profile-post-overview {
+        img {
+          height: 140px;
+        }
+      }
+    }
+  }
+};
+
+@media screen and (max-width: 300px) {
+  #profile-post-area-container {
+    #profile-post-area {
+      grid-template-columns: 98%;
+      justify-content: center;
+      align-items: center;
+      #profile-post-overview {
+        img {
+          min-width: 80%;
+          height:200px;
+        }
+      }
+    }
   }
 }

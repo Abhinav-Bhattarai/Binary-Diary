@@ -239,6 +239,14 @@ export const ProfileStateButton: React.FC<PROFILESTATEBTN> = (props) => {
   );
 };
 
+export const ProfileUsername: React.FC<{name: string | undefined}> = ({ name }) => {
+  return (
+    <div id='profile-username'>
+      { name }
+    </div>
+  )
+}
+
 const DetailedPostContainer: React.FC<ProfilePostDetailsType> = (props) => {
   const {
     LikeStatus,

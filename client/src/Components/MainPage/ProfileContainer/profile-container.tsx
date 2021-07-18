@@ -39,6 +39,7 @@ import {
   SettingsOverViewElement,
   ProfileStateButton,
   Paginate,
+  ProfileUsername,
 } from "./reusables";
 import { AddPost, MutateProfilePicture } from "../../../GraphQL/mutations";
 import { UserData, UserInfo } from "../../../Container/MainPage/interfaces";
@@ -480,6 +481,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
             source={profile_info.ProfilePicture}
             ownerStatus={owner_status}
           />
+          <ProfileUsername name={profile_info.ProfileData?.Username}/>
           <ProfileInformationOverView>
             <ProfileHeaderInfo
               name="Followers"
