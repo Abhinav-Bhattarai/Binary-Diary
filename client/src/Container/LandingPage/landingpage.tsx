@@ -107,7 +107,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
           Password: login_password,
         };
         context = Encrypt(context);
-        SendPOSTRequest("/login", { ContextData: context });
+        SendPOSTRequest("https://localhost:8000/login", { ContextData: context });
       } else {
         const dummy = { ...login_error };
         dummy.password_err = "Password must contain a number";
@@ -136,7 +136,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
           Phone: signup_phone,
         };
         context = Encrypt(context);
-        SendPOSTRequest("/signup", { ContextData: context });
+        SendPOSTRequest("https://localhost:8000/signup", { ContextData: context });
       } else {
         const dummy = { ...signup_error };
         dummy.password_err = "Password must contain a number";

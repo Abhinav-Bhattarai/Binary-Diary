@@ -2,3 +2,5 @@
 .env
 cert.pem
 key.pem
+/build
+/Cache

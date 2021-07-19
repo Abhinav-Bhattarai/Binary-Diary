@@ -8,6 +8,7 @@ interface PostCardHeaderProps {
   source: string;
   Username: string;
   PostDate: string;
+  ownerStatus?: boolean;
 }
 
 export const PostCardImageContainer: React.FC<{

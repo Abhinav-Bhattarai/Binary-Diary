@@ -13,7 +13,7 @@ function App() {
       const username = localStorage.getItem("username");
       if (token && username) {
         const config = { token, username };
-        const { data } = await axios.post("/check-auth", config);
+        const { data } = await axios.post("https://localhost:8000/check-auth", config);
         if (data.error === false) setAuthStatus(data.auth_status);
       } else {
         setAuthStatus(false);

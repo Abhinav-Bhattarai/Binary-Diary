@@ -10,6 +10,7 @@ import cors from "cors";
 import https from "https";
 import redis from "async-redis";
 import fs from "fs";
+import path from "path";
 dotenv.config();
 const cache = redis.createClient();
 
@@ -28,18 +29,22 @@ export const RunServerClusters = () => {
   };
   const server = https.createServer(options, app);
   const io = socket(server);
-  const PORT = 8000;
+  const PORT = process.env.PORT || 8000;
 
   // middleware
   app.use(
     cors({
       origin: [
         "https://localhost:3000",
+        "https://localhost",
         "https://192.168.56.1:3000",
+        "http://localhost:5000",
+        "http://192.168.56.1:5000",
         "https://192.168.0.106:3000",
       ],
     })
   );
+  app.use(express.static(path.join(process.cwd(), "build")));
   app.use(express.json({ limit: "50mb" }));
 
   // socket
@@ -50,26 +55,23 @@ export const RunServerClusters = () => {
 
     socket.on("accept-follow-request", (config) => {});
 
-    socket.on(
-      "send-request",
-      async(extenedFrom, extendedTo, Username) => {
-        console.log('socket received in server');
-        const ProfilePicture = await cache.get(`ProfilePicture/${extenedFrom}`)
-        socket.broadcast.to(extendedTo).emit("real-time-request-receiver", {
-          Username,
-          extenderID: extenedFrom,
-          ProfilePicture: ProfilePicture ? ProfilePicture : "",
-        });
-      }
-    );
+    socket.on("send-request", async (extenedFrom, extendedTo, Username) => {
+      console.log("socket received in server");
+      const ProfilePicture = await cache.get(`ProfilePicture/${extenedFrom}`);
+      socket.broadcast.to(extendedTo).emit("real-time-request-receiver", {
+        Username,
+        extenderID: extenedFrom,
+        ProfilePicture: ProfilePicture ? ProfilePicture : "",
+      });
+    });
 
     socket.on("comment-room-join", (postID) => {
       socket.join(postID);
     });
 
     socket.on("test", () => {
-      console.log('test-passed')
-    })
+      console.log("test-passed");
+    });
 
     socket.on("leave-comment-room", (postID) => {
       socket.leave(postID);
@@ -94,7 +96,6 @@ export const RunServerClusters = () => {
     "/graphql",
     ExpressGraphQL({
       schema: MainSchema,
-      graphiql: true,
       // prevention from circular query overload
       validationRules: [depthLimit(2)],
     })
@@ -106,6 +107,10 @@ export const RunServerClusters = () => {
   app.use("/signup", RegisterRoute);
   app.use("/delete", DeleteRoute);
   app.use("/search-profile", SearchSuggestionRoute);
+
+  app.use("*", (_, res) => {
+    res.sendFile(path.join(process.cwd(), "build", "index.html"));
+  });
 
   // DB connection
   mongoose

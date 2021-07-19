@@ -33,7 +33,7 @@ const CreateRequestModel = async (id) => {
 router.post("/", SignupMiddleware, async (req, res) => {
   try {
     const { Username, Password, Phone } = req.body;
-    const response = await RegisterModel.find({ Username });
+    const response = await RegisterModel.find({$or: [{Username}, {Phone}]});
     if (response.length === 0) {
       const HashedPassword = await HashPassword(Password);
       const UniqueID = GenerateUniqueID();

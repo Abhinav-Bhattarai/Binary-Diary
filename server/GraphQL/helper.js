@@ -8,7 +8,7 @@ export function FlattenPost(posts, sort) {
         const DAY = 60 * 60 * 24;
         const date_difference =
           (new Date() - new Date(post.CreationDate)) / 1000;
-        if (date_difference <= DAY * 4) {
+        if (date_difference <= DAY * 2) {
           new_post.push(post.PostID);
         }
       } else {

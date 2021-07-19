@@ -214,7 +214,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       setSearchSuggestionLoading(true);
       setTimeout(() => {
         axios
-          .get(`/search-profile/${value}`, {
+          .get(`https://localhost:8000/search-profile/${value}`, {
             cancelToken: token.token,
           })
           .then(({ data }) => {
