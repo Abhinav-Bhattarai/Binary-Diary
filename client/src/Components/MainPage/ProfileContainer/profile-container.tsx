@@ -128,7 +128,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     return () => {
       document.title = 'Binary Diary';
     }
-  }, [])
+  }, []);
 
   const [FetchMorePostData] = useLazyQuery(FetchMoreProfilePosts, {
     onCompleted: (data) => {
