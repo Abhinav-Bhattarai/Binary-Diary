@@ -4,6 +4,7 @@ import { IconContext } from "react-icons";
 import "./reusable.scss";
 import { Logo } from "../ProfileContainer/reusables";
 import { AiOutlinePlus } from "react-icons/ai";
+import PopupSpinner from "../../UI/Spinner/PopupSpinner/popup-spinner";
 
 // interfaces
 interface MainPageContainerProps {
@@ -57,12 +58,21 @@ export const MainPageContainer: React.FC<MainPageContainerProps> = React.memo(
   }
 );
 
-const BigPopupContainer: React.FC<{ status: string; ID: string }> = (props) => {
-  const { children, ID } = props;
+const PopupContainerAbsLoader = () => {
+  return (
+    <div id='popup-container-abs-loader'>
+      <PopupSpinner/>
+    </div>
+  )
+}
+
+const BigPopupContainer: React.FC<{ status: string; ID: string, ProcessingStatus: boolean }> = (props) => {
+  const { children, ID, ProcessingStatus } = props;
   return (
     <React.Fragment>
       <main id={ID} className="big-popup-container">
         {children}
+        {ProcessingStatus && <PopupContainerAbsLoader/>}
       </main>
     </React.Fragment>
   );

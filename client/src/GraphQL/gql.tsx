@@ -88,6 +88,7 @@ export const FetchMoreProfilePosts = gql`
         CreatorID
         Caption
         PostDate
+        Likes
         Error
       }
     }

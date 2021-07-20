@@ -146,7 +146,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
     },
   });
 
-  const [MutatePost] = useMutation(AddPost, {
+  const [MutatePost, AddPostMutationConfig] = useMutation(AddPost, {
     onCompleted: (data) => {
       const { AddPost }: { AddPost: PostListType } = data;
       if (AddPost.Error !== true && AddPost.Mutated === true) {
@@ -214,6 +214,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
   const FetchImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const image = event.target.files[0];
+      console.log(image)
       // @ts-ignore
       const compressed_image: string = await resizeFile(image);
       setPost(compressed_image);
@@ -427,6 +428,7 @@ const ProfileContainer: React.FC<PROPS> = (props) => {
             <AsyncBigPopupContainer
               ID={`popup-container-${status}`}
               status={status}
+              ProcessingStatus={AddPostMutationConfig.loading}
             >
               <PopupHeader Exit={ExitPopup} name="Add new Photo" />
               <PopupImageContainer
