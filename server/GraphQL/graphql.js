@@ -302,7 +302,7 @@ const RootQuery = new GraphQLObjectType({
         }
       },
     },
-
+    // problem
     GetMoreProfilePosts: {
       type: ProfileSchema,
       args: {
