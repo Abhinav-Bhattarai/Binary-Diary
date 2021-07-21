@@ -8,7 +8,8 @@
     "start": "nodemon server.js",
     "client": "cd ../client && npm start",
     "redis": "cd C:/Program Files/Redis && redis-cli",
-    "dev": "concurrently \"npm start\" \"npm run client\" \"npm run redis\""
+    "dev": "concurrently \"npm start\" \"npm run client\" \"npm run redis\"",
+    "prod": "concurrently \"npm start\" \"cd ../clientFetch && npm start\" \"npm run redis\""
   },
   "author": "Abhinav Bhattarai",
   "license": "MIT",

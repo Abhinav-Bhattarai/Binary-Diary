@@ -11,7 +11,6 @@ import https from "https";
 import redis from "async-redis";
 import fs from "fs";
 import path from "path";
-import ipware from 'ipware';
 dotenv.config();
 const cache = redis.createClient();
 
@@ -110,9 +109,7 @@ export const RunServerClusters = () => {
   app.use("/search-profile", SearchSuggestionRoute);
 
   app.use("/", (req, res) => {
-    const ipInfo = ipware().get_ip(req);
-    console.log(ipInfo);
-    res.sendFile(path.join(process.cwd(), "build", "index.html"));
+    return res.sendFile(path.join(process.cwd(), "build", "index.html"));
   });
 
   // DB connection
