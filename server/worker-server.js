@@ -21,7 +21,7 @@ import DeleteRoute from "./Routes/deleter.js";
 import MainSchema from "./GraphQL/graphql.js";
 import SearchSuggestionRoute from "./Routes/search-suggestion.js";
 
-export const RunServerClusters = () => {
+export const RunServerClusters = (PORT) => {
   const app = express();
   const options = {
     key: fs.readFileSync("key.pem"),
@@ -29,22 +29,18 @@ export const RunServerClusters = () => {
   };
   const server = https.createServer(options, app);
   const io = socket(server);
-  const PORT = process.env.PORT || 8000;
+  // const PORT = process.env.PORT || 8000;
 
   // middleware
   app.use(
     cors({
       origin: [
-        "https://localhost:3000",
-        "https://localhost",
-        "https://192.168.56.1:3000",
-        "http://localhost:5000",
-        "http://192.168.56.1:5000",
-        "https://192.168.0.106:3000",
+        "http://localhost:80",
+        "https://localhost:3000"
       ],
     })
   );
-  app.use(express.static(path.join(process.cwd(), "build")));
+  // app.use(express.static(path.join(process.cwd(), "build")));
   app.use(express.json({ limit: "50mb" }));
 
   // socket
@@ -108,9 +104,9 @@ export const RunServerClusters = () => {
   app.use("/delete", DeleteRoute);
   app.use("/search-profile", SearchSuggestionRoute);
 
-  app.use("/", (req, res) => {
-    return res.sendFile(path.join(process.cwd(), "build", "index.html"));
-  });
+  // app.use("/", (req, res) => {
+  //   return res.sendFile(path.join(process.cwd(), "build", "index.html"));
+  // });
 
   // DB connection
   mongoose

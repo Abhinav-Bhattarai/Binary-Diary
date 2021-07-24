@@ -51,7 +51,7 @@ import { SuggestedUserCard } from "../../Components/MainPage/SearchSuggestion/re
 import { RespondToRequest } from "../../GraphQL/mutations";
 
 const client = new ApolloClient({
-  uri: "https://localhost:8000/graphql",
+  uri: "http://localhost/graphql",
   cache: new InMemoryCache(),
 });
 
@@ -214,7 +214,7 @@ const MainPage: React.FC<PROPS> = React.memo((props) => {
       setSearchSuggestionLoading(true);
       setTimeout(() => {
         axios
-          .get(`https://localhost:8000/search-profile/${value}`, {
+          .get(`http://localhost/search-profile/${value}`, {
             cancelToken: token.token,
           })
           .then(({ data }) => {

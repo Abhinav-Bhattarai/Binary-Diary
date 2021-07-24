@@ -107,7 +107,7 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
           Password: login_password,
         };
         context = Encrypt(context);
-        SendPOSTRequest("https://localhost:8000/login", { ContextData: context });
+        SendPOSTRequest("http://localhost/login", { ContextData: context });
       } else {
         const dummy = { ...login_error };
         dummy.password_err = "Password must contain a number";
@@ -125,10 +125,9 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
   const SignupFormSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
     const ValidationStatus = validateSignupForm(signup_username, signup_password, signup_confirm, signup_phone);
-
-    if (ValidationStatus) {
-      const RegexCheck = ValidateRegex(login_password);
-      if (RegexCheck) {
+    if (ValidationStatus === true) {
+      const RegexCheck = ValidateRegex(signup_password);
+      if (RegexCheck === true) {
         let context: any = {
           Username: signup_username,
           Password: signup_password,
@@ -136,11 +135,11 @@ const LandingPage: React.FC<PROPS> = ({ ChangeAuthentication }) => {
           Phone: signup_phone,
         };
         context = Encrypt(context);
-        SendPOSTRequest("https://localhost:8000/signup", { ContextData: context });
+        SendPOSTRequest("http://localhost/signup", { ContextData: context });
       } else {
         const dummy = { ...signup_error };
         dummy.password_err = "Password must contain a number";
-        SignupUsernameRef.current && (SignupUsernameRef.current.style.border = "2px solid #ff385c");
+        SignupPasswordRef.current && (SignupPasswordRef.current.style.border = "2px solid #ff385c");
         setSignupError(dummy);
       }
     } else {

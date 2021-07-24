@@ -74,7 +74,7 @@ export const validateSignupForm = (
   return false;
 };
 
-export const ValidateRegex = (password: string) => {
+export const ValidateRegex = (password: string): boolean => {
   const number_regex = /[0-9]/;
   if (number_regex.exec(password)) {
     return true;
